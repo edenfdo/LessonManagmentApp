@@ -9,7 +9,8 @@ import SwiftUI
 
 struct StudentHomeView: View {
 
-    @StateObject var viewModel: HomeViewModel
+    @StateObject var viewModel: StudentHomeViewModel
+    let lessonRepository: LessonRepository
 
     let studentID: UUID
 
@@ -63,6 +64,34 @@ struct StudentHomeView: View {
 
                             Text(lesson.location)
                                 .foregroundStyle(.secondary)
+
+                            // View Calendar link
+                            HStack {
+
+                                Spacer()
+
+                                NavigationLink {
+
+                                    CalendarView(
+                                        viewModel: CalendarViewModel(
+                                            lessonRepository: lessonRepository
+                                        ),
+                                        studentID: studentID
+                                    )
+
+                                } label: {
+
+                                    HStack(spacing: 5) {
+
+                                        Text("View Calendar")
+
+                                        Image(systemName: "arrow.right")
+                                    }
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                }
+                            }
+                            .padding(.top, 4)
                         }
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -184,13 +213,14 @@ struct StudentHomeView: View {
     practiceTaskRepository.addTask(task2)
     practiceTaskRepository.addTask(task3)
 
-    let viewModel = HomeViewModel(
+    let viewModel = StudentHomeViewModel(
         lessonRepository: lessonRepository,
         practiceTaskRepository: practiceTaskRepository
     )
 
     return StudentHomeView(
         viewModel: viewModel,
+        lessonRepository: lessonRepository,
         studentID: studentID
     )
 }
