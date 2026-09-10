@@ -1,18 +1,18 @@
 //
-//  HomeView.swift
+//  LoginView.swift
 //  LessonManagmentApp
 //
-//  Created by Eden Fernando on 30/8/2026.
+//  Created by Eden Fernando on 10/9/2026.
 //
 
 import SwiftUI
 
-struct HomeView: View {
+struct LoginView: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    HomeView()
+    LoginView()
 }
