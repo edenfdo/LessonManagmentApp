@@ -6,23 +6,50 @@
 //
 
 import SwiftUI
+import Lottie
 
 struct PracticeView: View {
 
     @StateObject var viewModel: PracticeViewModel
+    @Binding var showMenu: Bool
+
     let studentID: UUID
+
+    @State private var animatingTaskID: UUID?
 
     var body: some View {
 
-        NavigationStack {
+        ZStack {
 
             ScrollView {
 
                 VStack(alignment: .leading, spacing: 20) {
 
+                    // MARK: - Header
+
+                    HStack {
+
+                        Text("Logo")
+                            .font(.title)
+                            .fontWeight(.bold)
+
+                        Spacer()
+
+                        Button {
+                            showMenu = true
+                        } label: {
+                            Image(systemName: "line.3.horizontal")
+                                .font(.title)
+                        }
+                    }
+
+                    // MARK: - Page Title
+
                     Text("Practice")
                         .font(.largeTitle)
                         .fontWeight(.bold)
+
+                    // MARK: - Weekly Progress
 
                     VStack(alignment: .leading, spacing: 8) {
 
@@ -40,25 +67,66 @@ struct PracticeView: View {
 
                     Divider()
 
+                    // MARK: - Tasks
+
                     Text("Your Tasks")
                         .font(.headline)
 
                     ForEach(viewModel.practiceTasks) { task in
 
                         Button {
+
+                            let wasCompleted = task.isCompleted
+
                             viewModel.toggleTaskCompletion(task)
+
+                            if !wasCompleted {
+
+                                animatingTaskID = task.id
+
+                                DispatchQueue.main.asyncAfter(
+                                    deadline: .now() + 1.5
+                                ) {
+                                    animatingTaskID = nil
+                                }
+                            }
+
                         } label: {
 
                             HStack(alignment: .top, spacing: 12) {
 
-                                Image(
-                                    systemName:
-                                        task.isCompleted
-                                        ? "checkmark.circle.fill"
-                                        : "circle"
-                                )
+                                ZStack {
 
-                                VStack(alignment: .leading, spacing: 4) {
+                                    if animatingTaskID == task.id {
+
+                                        LottieView(
+                                            animation: .named("taskComplete")
+                                        )
+                                        .playing()
+                                        .frame(
+                                            width: 32,
+                                            height: 32
+                                        )
+
+                                    } else {
+
+                                        Image(
+                                            systemName:
+                                                task.isCompleted
+                                                ? "checkmark.circle.fill"
+                                                : "circle"
+                                        )
+                                        .font(.title3)
+                                    }
+                                }
+                                .frame(
+                                    width: 32,
+                                    height: 32
+                                )
+                                VStack(
+                                    alignment: .leading,
+                                    spacing: 4
+                                ) {
 
                                     Text(task.title)
                                         .fontWeight(.semibold)
@@ -69,9 +137,11 @@ struct PracticeView: View {
 
                                     if let dueDate = task.dueDate {
 
-                                        Text("Due \(dueDate, style: .date)")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                        Text(
+                                            "Due \(dueDate, style: .date)"
+                                        )
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
                                     }
                                 }
 
@@ -82,7 +152,9 @@ struct PracticeView: View {
                                 maxWidth: .infinity,
                                 alignment: .leading
                             )
-                            .background(.gray.opacity(0.15))
+                            .background(
+                                .gray.opacity(0.15)
+                            )
                             .cornerRadius(12)
                         }
                         .buttonStyle(.plain)
@@ -90,6 +162,8 @@ struct PracticeView: View {
                 }
                 .padding()
             }
+
+            // MARK: - Completion Animation
         }
         .onAppear {
             viewModel.loadTasks(for: studentID)
@@ -99,10 +173,13 @@ struct PracticeView: View {
 
 #Preview {
 
+    @Previewable @State var showMenu = false
+
     let studentID = UUID()
     let teacherID = UUID()
 
-    let practiceTaskRepository = LocalPracticeTaskRepository()
+    let practiceTaskRepository =
+        LocalPracticeTaskRepository()
 
     let task1 = PracticeTask(
         id: UUID(),
@@ -144,6 +221,7 @@ struct PracticeView: View {
 
     return PracticeView(
         viewModel: viewModel,
+        showMenu: $showMenu,
         studentID: studentID
     )
 }

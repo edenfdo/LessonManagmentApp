@@ -8,11 +8,47 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+
+    @Binding var showMenu: Bool
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+
+        VStack(alignment: .leading, spacing: 20) {
+
+            HStack {
+
+                Text("Logo")
+                    .font(.title)
+                    .fontWeight(.bold)
+
+                Spacer()
+
+                Button {
+                    showMenu = true
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .font(.title)
+                }
+            }
+
+            Text("Leaderboard")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            Text("Student rankings will appear here.")
+                .foregroundStyle(.secondary)
+
+            Spacer()
+        }
+        .padding()
     }
 }
 
 #Preview {
-    LeaderboardView()
+
+    @Previewable @State var showMenu = false
+
+    LeaderboardView(
+        showMenu: $showMenu
+    )
 }

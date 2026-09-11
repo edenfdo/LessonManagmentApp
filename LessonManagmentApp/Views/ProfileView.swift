@@ -8,11 +8,50 @@
 import SwiftUI
 
 struct ProfileView: View {
+
+    let studentName: String
+
+    @Binding var showMenu: Bool
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+
+        VStack(alignment: .leading, spacing: 20) {
+
+            HStack {
+
+                Text("Logo")
+                    .font(.title)
+                    .fontWeight(.bold)
+
+                Spacer()
+
+                Button {
+                    showMenu = true
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .font(.title)
+                }
+            }
+
+            Text("Profile")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            Text(studentName)
+                .font(.title2)
+
+            Spacer()
+        }
+        .padding()
     }
 }
 
 #Preview {
-    ProfileView()
+
+    @Previewable @State var showMenu = false
+
+    ProfileView(
+        studentName: "Mia",
+        showMenu: $showMenu
+    )
 }

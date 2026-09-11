@@ -6,13 +6,42 @@
 //
 
 import SwiftUI
+import PDFKit
 
-struct PDFResourceView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct PDFResourceView: UIViewRepresentable {
+
+    let fileName: String
+
+    func makeUIView(context: Context) -> PDFView {
+
+        let pdfView = PDFView()
+
+        pdfView.autoScales = true
+        pdfView.displayMode = .singlePageContinuous
+        pdfView.displayDirection = .vertical
+
+        if let url = Bundle.main.url(
+            forResource: fileNameWithoutExtension,
+            withExtension: "pdf"
+        ) {
+
+            pdfView.document = PDFDocument(url: url)
+        }
+
+        return pdfView
     }
-}
 
-#Preview {
-    PDFResourceView()
+    func updateUIView(
+        _ uiView: PDFView,
+        context: Context
+    ) {
+    }
+
+    private var fileNameWithoutExtension: String {
+
+        fileName.replacingOccurrences(
+            of: ".pdf",
+            with: ""
+        )
+    }
 }

@@ -10,37 +10,168 @@ import SwiftUI
 struct CalendarView: View {
 
     @StateObject var viewModel: CalendarViewModel
+    @Binding var showMenu: Bool
 
     let studentID: UUID
 
     @State private var selectedLesson: Lesson?
+    @State private var displayedMonth: Date = Date()
+
+    private let calendar = Calendar.current
+    private let weekdaySymbols = ["M", "T", "W", "T", "F", "S", "S"]
 
     var body: some View {
 
         ZStack {
 
-            NavigationStack {
+            ScrollView {
 
                 VStack(alignment: .leading, spacing: 20) {
+
+                    // MARK: - Header
+
+                    HStack {
+
+                        Text("Logo")
+                            .font(.title)
+                            .fontWeight(.bold)
+
+                        Spacer()
+
+                        Button {
+                            showMenu = true
+                        } label: {
+                            Image(systemName: "line.3.horizontal")
+                                .font(.title)
+                        }
+                    }
+
+                    // MARK: - Page Title
 
                     Text("Calendar")
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    DatePicker(
-                        "Select Date",
-                        selection: $viewModel.selectedDate,
-                        displayedComponents: .date
-                    )
-                    .datePickerStyle(.graphical)
+                    // MARK: - Month Navigation
+
+                    HStack {
+
+                        Button {
+                            changeMonth(by: -1)
+                        } label: {
+                            Image(systemName: "chevron.left")
+                                .font(.headline)
+                        }
+
+                        Spacer()
+
+                        Text(monthTitle)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+
+                        Spacer()
+
+                        Button {
+                            changeMonth(by: 1)
+                        } label: {
+                            Image(systemName: "chevron.right")
+                                .font(.headline)
+                        }
+                    }
+
+                    // MARK: - Weekday Headings
+
+                    HStack {
+
+                        ForEach(weekdaySymbols, id: \.self) { day in
+
+                            Text(day)
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+
+                    // MARK: - Calendar Grid
+
+                    let days = daysForDisplayedMonth
+
+                    LazyVGrid(
+                        columns: Array(
+                            repeating: GridItem(.flexible()),
+                            count: 7
+                        ),
+                        spacing: 12
+                    ) {
+
+                        ForEach(days.indices, id: \.self) { index in
+
+                            if let date = days[index] {
+
+                                Button {
+
+                                    viewModel.selectedDate = date
+
+                                } label: {
+
+                                    Text(
+                                        "\(calendar.component(.day, from: date))"
+                                    )
+                                    .fontWeight(
+                                        isSelected(date)
+                                        ? .semibold
+                                        : .regular
+                                    )
+                                    .foregroundStyle(
+                                        isToday(date)
+                                        ? Color.white
+                                        : Color.primary
+                                    )
+                                    .frame(
+                                        width: 38,
+                                        height: 38
+                                    )
+                                    .background(
+                                        dayFill(for: date)
+                                    )
+                                    .clipShape(Circle())
+                                    .overlay {
+
+                                        if isSelected(date) {
+
+                                            Circle()
+                                                .stroke(
+                                                    Color.primary.opacity(0.7),
+                                                    lineWidth: 2
+                                                )
+                                        }
+                                    }
+                                }
+                                .buttonStyle(.plain)
+
+                            } else {
+
+                                Color.clear
+                                    .frame(
+                                        width: 38,
+                                        height: 38
+                                    )
+                            }
+                        }
+                    }
 
                     Divider()
+
+                    // MARK: - Lessons
 
                     Text("Lessons")
                         .font(.headline)
 
                     let selectedLessons =
-                        viewModel.lessons(for: viewModel.selectedDate)
+                        viewModel.lessons(
+                            for: viewModel.selectedDate
+                        )
 
                     if selectedLessons.isEmpty {
 
@@ -55,50 +186,70 @@ struct CalendarView: View {
                                 selectedLesson = lesson
                             } label: {
 
-                                VStack(
-                                    alignment: .leading,
-                                    spacing: 6
-                                ) {
+                                VStack(alignment: .leading, spacing: 10) {
 
+                                    // Lesson title
                                     Text(lesson.title)
                                         .font(.headline)
+                                        .foregroundStyle(.primary)
 
-                                    Text(
-                                        lesson.date,
-                                        style: .time
-                                    )
-                                    .foregroundStyle(.secondary)
+                                    // Lesson time
+                                    Text(lesson.date, style: .time)
+                                        .foregroundStyle(.secondary)
 
+                                    // Lesson location
                                     Text(lesson.location)
                                         .foregroundStyle(.secondary)
+
+                                    // Visual cue
+                                    HStack {
+
+                                        Spacer()
+
+                                        HStack(spacing: 5) {
+
+                                            Text("View Details")
+
+                                            Image(systemName: "chevron.right")
+                                                .font(.caption)
+                                        }
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(.blue)
+                                    }
                                 }
                                 .padding()
                                 .frame(
                                     maxWidth: .infinity,
                                     alignment: .leading
                                 )
-                                .background(
-                                    .gray.opacity(0.15)
-                                )
+                                .background(.gray.opacity(0.15))
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
                         }
                     }
-
-                    Spacer()
                 }
                 .padding()
             }
             .onAppear {
-                viewModel.loadLessons(for: studentID)
+
+                viewModel.loadLessons(
+                    for: studentID
+                )
+
+                displayedMonth = viewModel.selectedDate
             }
 
-            // Popup
+            // MARK: - Lesson Details Popup
+
             if let lesson = selectedLesson {
 
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
+                    .onTapGesture {
+                        selectedLesson = nil
+                    }
 
                 VStack(
                     alignment: .leading,
@@ -129,9 +280,15 @@ struct CalendarView: View {
                         spacing: 6
                     ) {
 
-                        Text(lesson.date, style: .date)
+                        Text(
+                            lesson.date,
+                            style: .date
+                        )
 
-                        Text(lesson.date, style: .time)
+                        Text(
+                            lesson.date,
+                            style: .time
+                        )
 
                         Text(lesson.location)
                     }
@@ -149,20 +306,16 @@ struct CalendarView: View {
                     Text("Practice Tasks")
                         .font(.headline)
 
-                    Text(
-                        "Practice tasks will appear here."
-                    )
-                    .foregroundStyle(.secondary)
+                    Text("Practice tasks will appear here.")
+                        .foregroundStyle(.secondary)
 
                     Divider()
 
                     Text("Resources")
                         .font(.headline)
 
-                    Text(
-                        "Lesson resources will appear here."
-                    )
-                    .foregroundStyle(.secondary)
+                    Text("Lesson resources will appear here.")
+                        .foregroundStyle(.secondary)
                 }
                 .padding()
                 .frame(maxWidth: 320)
@@ -175,9 +328,135 @@ struct CalendarView: View {
             }
         }
     }
+
+    // MARK: - Month Title
+
+    private var monthTitle: String {
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+
+        return formatter.string(
+            from: displayedMonth
+        )
+    }
+
+    // MARK: - Calendar Days
+
+    private var daysForDisplayedMonth: [Date?] {
+
+        guard let monthInterval =
+                calendar.dateInterval(
+                    of: .month,
+                    for: displayedMonth
+                )
+        else {
+            return []
+        }
+
+        let firstDay = monthInterval.start
+
+        guard let numberOfDays =
+                calendar.range(
+                    of: .day,
+                    in: .month,
+                    for: firstDay
+                )?.count
+        else {
+            return []
+        }
+
+        let weekday =
+            calendar.component(
+                .weekday,
+                from: firstDay
+            )
+
+        let leadingEmptyDays =
+            (weekday + 5) % 7
+
+        var days: [Date?] =
+            Array(
+                repeating: nil,
+                count: leadingEmptyDays
+            )
+
+        for day in 0..<numberOfDays {
+
+            if let date = calendar.date(
+                byAdding: .day,
+                value: day,
+                to: firstDay
+            ) {
+
+                days.append(date)
+            }
+        }
+
+        return days
+    }
+
+    // MARK: - Date Styling
+
+    private func hasLesson(
+        on date: Date
+    ) -> Bool {
+
+        !viewModel.lessons(
+            for: date
+        ).isEmpty
+    }
+
+    private func isSelected(
+        _ date: Date
+    ) -> Bool {
+
+        calendar.isDate(
+            date,
+            inSameDayAs: viewModel.selectedDate
+        )
+    }
+
+    private func isToday(
+        _ date: Date
+    ) -> Bool {
+
+        calendar.isDateInToday(date)
+    }
+
+    private func dayFill(for date: Date) -> Color {
+
+        if isToday(date) {
+            return Color.red
+        }
+
+        if hasLesson(on: date) {
+            return Color.blue.opacity(0.18)
+        }
+
+        return Color.clear
+    }
+
+    // MARK: - Change Month
+
+    private func changeMonth(
+        by value: Int
+    ) {
+
+        if let newMonth = calendar.date(
+            byAdding: .month,
+            value: value,
+            to: displayedMonth
+        ) {
+
+            displayedMonth = newMonth
+        }
+    }
 }
 
 #Preview {
+
+    @Previewable @State var showMenu = false
 
     let studentID = UUID()
     let teacherID = UUID()
@@ -185,17 +464,45 @@ struct CalendarView: View {
     let lessonRepository =
         LocalLessonRepository()
 
-    let sampleLesson = Lesson(
+    let calendar = Calendar.current
+    let today = Date()
+
+    let lessonDate1 =
+        calendar.date(
+            byAdding: .day,
+            value: 2,
+            to: today
+        )!
+
+    let lessonDate2 =
+        calendar.date(
+            byAdding: .day,
+            value: 7,
+            to: today
+        )!
+
+    let lesson1 = Lesson(
         id: UUID(),
         title: "Piano Lesson",
-        date: Date(),
+        date: lessonDate1,
         studentID: studentID,
         teacherID: teacherID,
         notes: "Practise C major scale and bars 1–16.",
         location: "Room 3"
     )
 
-    lessonRepository.addLesson(sampleLesson)
+    let lesson2 = Lesson(
+        id: UUID(),
+        title: "Piano Lesson",
+        date: lessonDate2,
+        studentID: studentID,
+        teacherID: teacherID,
+        notes: "Focus on rhythm and dynamics.",
+        location: "Room 3"
+    )
+
+    lessonRepository.addLesson(lesson1)
+    lessonRepository.addLesson(lesson2)
 
     let viewModel = CalendarViewModel(
         lessonRepository: lessonRepository
@@ -203,6 +510,7 @@ struct CalendarView: View {
 
     return CalendarView(
         viewModel: viewModel,
+        showMenu: $showMenu,
         studentID: studentID
     )
 }

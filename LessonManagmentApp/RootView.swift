@@ -102,14 +102,15 @@ struct RootView: View {
 
             case .student:
 
-                StudentHomeView(
-                    viewModel: StudentHomeViewModel(
-                        lessonRepository: lessonRepository,
-                        practiceTaskRepository: practiceTaskRepository
-                    ),
+                StudentRootView(
+                    student: user,
                     lessonRepository: lessonRepository,
-                    studentID: user.id
+                    practiceTaskRepository: practiceTaskRepository,
+                    onLogout: {
+                        currentUser = nil
+                    }
                 )
+
             case .teacher:
 
                 Text("Teacher Home")

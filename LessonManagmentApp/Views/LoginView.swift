@@ -40,6 +40,10 @@ struct LoginView: View {
 
                 SecureField("Password", text: $password)
                     .textFieldStyle(.roundedBorder)
+                    .submitLabel(.go)
+                    .onSubmit {
+                        login()
+                    }
             }
 
             if !errorMessage.isEmpty {
