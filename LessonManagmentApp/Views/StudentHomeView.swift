@@ -6,16 +6,13 @@
 //
 
 import SwiftUI
-
-import SwiftUI
+import SwiftData
 import Lottie
 
 struct StudentHomeView: View {
 
     @StateObject var viewModel: StudentHomeViewModel
 
-    let lessonRepository: LessonRepository
-    let practiceTaskRepository: PracticeTaskRepository
     let studentID: UUID
 
     @Binding var showMenu: Bool
@@ -226,7 +223,7 @@ struct StudentHomeView: View {
                                     Text(task.title)
                                         .fontWeight(.semibold)
                                     
-                                    Text(task.description)
+                                    Text(task.taskDescription)
                                         .font(.subheadline)
                                         .foregroundStyle(.secondary)
                                     
@@ -271,112 +268,117 @@ struct StudentHomeView: View {
     }
 }
 
+// MARK: - Preview Helper
+
+private func makeStudentHomePreviewViewModel(
+    lessonRepository: LocalLessonRepository,
+    practiceTaskRepository: LocalPracticeTaskRepository,
+    studentID: UUID,
+    teacherID: UUID
+) -> StudentHomeViewModel {
+
+    let lessonID = UUID()
+
+    let sampleLesson = Lesson(
+        id: lessonID,
+        title: "Piano Lesson",
+        date: Date().addingTimeInterval(86400),
+        studentID: studentID,
+        teacherID: teacherID,
+        notes: "Practise C major scale and bars 1–16.",
+        location: "Room 3"
+    )
+
+    lessonRepository.addLesson(sampleLesson)
+
+    let task1 = PracticeTask(
+        id: UUID(),
+        title: "Practise C Major scale",
+        description: "Practise slowly with both hands.",
+        studentID: studentID,
+        teacherID: teacherID,
+        lessonID: lessonID,
+        dueDate: Date().addingTimeInterval(86400),
+        isCompleted: true
+    )
+
+    let task2 = PracticeTask(
+        id: UUID(),
+        title: "Complete rhythm quiz",
+        description: "Complete the rhythm quiz before your next lesson.",
+        studentID: studentID,
+        teacherID: teacherID,
+        lessonID: lessonID,
+        dueDate: Date().addingTimeInterval(172800),
+        isCompleted: false
+    )
+
+    let task3 = PracticeTask(
+        id: UUID(),
+        title: "Practise bars 1–16",
+        description: "Focus on accurate notes and rhythm.",
+        studentID: studentID,
+        teacherID: teacherID,
+        lessonID: lessonID,
+        dueDate: Date().addingTimeInterval(259200),
+        isCompleted: false
+    )
+
+    practiceTaskRepository.addTask(task1)
+    practiceTaskRepository.addTask(task2)
+    practiceTaskRepository.addTask(task3)
+
+    return StudentHomeViewModel(
+        lessonRepository: lessonRepository,
+        practiceTaskRepository: practiceTaskRepository
+    )
+}
+
+
+// MARK: - Preview
+
 #Preview {
 
     @Previewable
     @State var showMenu = false
 
     @Previewable
-    @State var selectedSection:
-        StudentSection = .home
+    @State var selectedSection: StudentSection = .home
 
     let studentID = UUID()
     let teacherID = UUID()
 
+    let container = try! ModelContainer(
+        for: PracticeTask.self,
+        Lesson.self,
+        configurations: ModelConfiguration(
+            isStoredInMemoryOnly: true
+        )
+    )
+
     let lessonRepository =
-        LocalLessonRepository()
-
-    let practiceTaskRepository =
-        LocalPracticeTaskRepository()
-
-    let sampleLesson = Lesson(
-        id: UUID(),
-        title: "Piano Lesson",
-        date:
-            Date()
-                .addingTimeInterval(86400),
-        studentID: studentID,
-        teacherID: teacherID,
-        notes:
-            "Practise C major scale and bars 1–16.",
-        location: "Room 3"
-    )
-
-    lessonRepository.addLesson(
-        sampleLesson
-    )
-
-    let task1 = PracticeTask(
-        id: UUID(),
-        title:
-            "Practise C Major scale",
-        description:
-            "Practise slowly with both hands.",
-        studentID: studentID,
-        teacherID: teacherID,
-        dueDate:
-            Date()
-                .addingTimeInterval(86400),
-        isCompleted: true
-    )
-
-    let task2 = PracticeTask(
-        id: UUID(),
-        title:
-            "Complete rhythm quiz",
-        description:
-            "Complete the rhythm quiz before your next lesson.",
-        studentID: studentID,
-        teacherID: teacherID,
-        dueDate:
-            Date()
-                .addingTimeInterval(172800),
-        isCompleted: false
-    )
-
-    let task3 = PracticeTask(
-        id: UUID(),
-        title:
-            "Practise bars 1–16",
-        description:
-            "Focus on accurate notes and rhythm.",
-        studentID: studentID,
-        teacherID: teacherID,
-        dueDate:
-            Date()
-                .addingTimeInterval(259200),
-        isCompleted: false
-    )
-
-    practiceTaskRepository.addTask(
-        task1
-    )
-
-    practiceTaskRepository.addTask(
-        task2
-    )
-
-    practiceTaskRepository.addTask(
-        task3
-    )
-
-    let viewModel =
-        StudentHomeViewModel(
-            lessonRepository:
-                lessonRepository,
-            practiceTaskRepository:
-                practiceTaskRepository
+        LocalLessonRepository(
+            modelContext: container.mainContext
         )
 
-    return StudentHomeView(
+    let practiceTaskRepository =
+        LocalPracticeTaskRepository(
+            modelContext: container.mainContext
+        )
+
+    let viewModel =
+        makeStudentHomePreviewViewModel(
+            lessonRepository: lessonRepository,
+            practiceTaskRepository: practiceTaskRepository,
+            studentID: studentID,
+            teacherID: teacherID
+        )
+
+    StudentHomeView(
         viewModel: viewModel,
-        lessonRepository:
-            lessonRepository,
-        practiceTaskRepository:
-            practiceTaskRepository,
         studentID: studentID,
         showMenu: $showMenu,
-        selectedSection:
-            $selectedSection
+        selectedSection: $selectedSection
     )
+    .modelContainer(container)
 }

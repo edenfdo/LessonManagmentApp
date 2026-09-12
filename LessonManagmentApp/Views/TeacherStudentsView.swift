@@ -8,11 +8,171 @@
 import SwiftUI
 
 struct TeacherStudentsView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-#Preview {
-    TeacherStudentsView()
+    @Binding var showMenu: Bool
+    @State private var showAddStudentSheet = false
+
+    @StateObject var viewModel: TeacherStudentsViewModel
+    
+    let lessonRepository: LessonRepository
+    let practiceTaskRepository: PracticeTaskRepository
+
+    @State private var selectedStudent: User?
+
+    var body: some View {
+
+        ScrollView {
+
+            VStack(
+                alignment: .leading,
+                spacing: 20
+            ) {
+
+                // MARK: - Header
+
+                HStack {
+
+                    Text("Logo")
+                        .font(.title)
+                        .fontWeight(.bold)
+
+                    Spacer()
+
+                    Button {
+                        showMenu = true
+                    } label: {
+
+                        Image(
+                            systemName: "line.3.horizontal"
+                        )
+                        .font(.title)
+                    }
+                }
+
+                // MARK: - Page Title
+
+                Text("Students")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+
+                Text("View and manage your students.")
+                    .foregroundStyle(.secondary)
+                
+                Button {
+                    showAddStudentSheet = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus")
+
+                        Text("Add Student")
+                            .fontWeight(.semibold)
+
+                        Spacer()
+                    }
+                    .padding()
+                    .foregroundStyle(.white)
+                    .background(.blue)
+                    .cornerRadius(12)
+                }
+                .buttonStyle(.plain)
+
+                // MARK: - Students
+
+                if viewModel.students.isEmpty {
+
+                    Text("No students found.")
+                        .foregroundStyle(.secondary)
+                        .padding(.top)
+
+                } else {
+
+                    ForEach(viewModel.students) { student in
+                        
+                        Button {
+
+                            selectedStudent = student
+
+                        } label: {
+
+                            HStack(spacing: 16) {
+
+                                Image(
+                                    systemName: "person.circle.fill"
+                                )
+                                .font(.system(size: 44))
+                                .foregroundStyle(.blue)
+
+                                VStack(
+                                    alignment: .leading,
+                                    spacing: 5
+                                ) {
+
+                                    Text(student.name)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+
+                                    Text(student.email)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+
+                                    Text("Music Student")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                Spacer()
+
+                                Image(
+                                    systemName: "chevron.right"
+                                )
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            }
+                            .padding()
+                            .frame(
+                                maxWidth: .infinity,
+                                alignment: .leading
+                            )
+                            .background(
+                                .gray.opacity(0.12)
+                            )
+                            .cornerRadius(14)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding()
+        }
+
+        // MARK: - Student Details Sheet
+
+        .sheet(
+            item: $selectedStudent
+        ) { student in
+
+            TeacherStudentDetailView(
+                student: student,
+                viewModel:
+                    TeacherStudentDetailViewModel(
+                        lessonRepository:
+                            lessonRepository,
+                        practiceTaskRepository:
+                            practiceTaskRepository
+                    )
+            )
+        }
+        .sheet(
+            isPresented: $showAddStudentSheet
+        ) {
+            AddStudentView(
+                viewModel: viewModel
+            )
+        }
+        .onAppear {
+            viewModel.loadStudents()
+        }
+    }
 }

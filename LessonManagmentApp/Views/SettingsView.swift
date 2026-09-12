@@ -11,7 +11,11 @@ struct SettingsView: View {
 
     @Binding var showMenu: Bool
 
+    let studentName: String
+    let studentEmail: String
     let onLogout: () -> Void
+
+    @State private var showProfileSheet = false
 
     var body: some View {
 
@@ -51,13 +55,63 @@ struct SettingsView: View {
 
                 // MARK: - Account
 
-                settingsSectionTitle("Account")
+                Text("Account")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 4)
 
-                settingsRow(
-                    icon: "person.circle",
-                    title: "Profile",
-                    subtitle: "View and manage your account details"
-                )
+                Button {
+
+                    showProfileSheet = true
+
+                } label: {
+
+                    HStack(spacing: 14) {
+
+                        Image(systemName: "person.circle")
+                            .font(.title3)
+                            .frame(
+                                width: 36,
+                                height: 36
+                            )
+                            .background(
+                                .blue.opacity(0.10)
+                            )
+                            .clipShape(
+                                RoundedRectangle(
+                                    cornerRadius: 9
+                                )
+                            )
+
+                        VStack(
+                            alignment: .leading,
+                            spacing: 4
+                        ) {
+
+                            Text("Profile")
+                                .fontWeight(.medium)
+                                .foregroundStyle(.primary)
+
+                            Text("View your account details")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(
+                            systemName: "chevron.right"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    .background(
+                        .gray.opacity(0.10)
+                    )
+                    .cornerRadius(14)
+                }
+                .buttonStyle(.plain)
 
                 // MARK: - Log Out
 
@@ -92,80 +146,18 @@ struct SettingsView: View {
             }
             .padding()
         }
-    }
 
-    // MARK: - Section Title
+        // MARK: - Profile Sheet
 
-    private func settingsSectionTitle(
-        _ title: String
-    ) -> some View {
+        .sheet(
+            isPresented: $showProfileSheet
+        ) {
 
-        Text(title)
-            .font(.headline)
-            .foregroundStyle(.secondary)
-            .padding(.top, 4)
-    }
-
-    // MARK: - Settings Row
-
-    private func settingsRow(
-        icon: String,
-        title: String,
-        subtitle: String
-    ) -> some View {
-
-        Button {
-
-            print("Open \(title)")
-
-        } label: {
-
-            HStack(spacing: 14) {
-
-                Image(systemName: icon)
-                    .font(.title3)
-                    .frame(
-                        width: 36,
-                        height: 36
-                    )
-                    .background(
-                        .blue.opacity(0.10)
-                    )
-                    .clipShape(
-                        RoundedRectangle(
-                            cornerRadius: 9
-                        )
-                    )
-
-                VStack(
-                    alignment: .leading,
-                    spacing: 4
-                ) {
-
-                    Text(title)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.primary)
-
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Image(
-                    systemName: "chevron.right"
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
-            .padding()
-            .background(
-                .gray.opacity(0.10)
+            ProfileDetailsView(
+                name: studentName,
+                email: studentEmail
             )
-            .cornerRadius(14)
         }
-        .buttonStyle(.plain)
     }
 }
 
@@ -176,6 +168,8 @@ struct SettingsView: View {
 
     SettingsView(
         showMenu: $showMenu,
+        studentName: "Mia",
+        studentEmail: "mia@email.com",
         onLogout: {
             print("Logged out")
         }

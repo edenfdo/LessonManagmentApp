@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CalendarView: View {
 
@@ -454,15 +455,11 @@ struct CalendarView: View {
     }
 }
 
-#Preview {
-
-    @Previewable @State var showMenu = false
-
-    let studentID = UUID()
-    let teacherID = UUID()
-
-    let lessonRepository =
-        LocalLessonRepository()
+private func makeCalendarPreviewViewModel(
+    lessonRepository: LocalLessonRepository,
+    studentID: UUID,
+    teacherID: UUID
+) -> CalendarViewModel {
 
     let calendar = Calendar.current
     let today = Date()
@@ -470,14 +467,14 @@ struct CalendarView: View {
     let lessonDate1 =
         calendar.date(
             byAdding: .day,
-            value: 2,
+            value: 1,
             to: today
         )!
 
     let lessonDate2 =
         calendar.date(
             byAdding: .day,
-            value: 7,
+            value: 3,
             to: today
         )!
 
@@ -504,13 +501,42 @@ struct CalendarView: View {
     lessonRepository.addLesson(lesson1)
     lessonRepository.addLesson(lesson2)
 
-    let viewModel = CalendarViewModel(
+    return CalendarViewModel(
         lessonRepository: lessonRepository
     )
+}
 
-    return CalendarView(
+#Preview {
+
+    @Previewable
+    @State var showMenu = false
+
+    let studentID = UUID()
+    let teacherID = UUID()
+
+    let container = try! ModelContainer(
+        for: Lesson.self,
+        configurations: ModelConfiguration(
+            isStoredInMemoryOnly: true
+        )
+    )
+
+    let lessonRepository =
+        LocalLessonRepository(
+            modelContext: container.mainContext
+        )
+
+    let viewModel =
+        makeCalendarPreviewViewModel(
+            lessonRepository: lessonRepository,
+            studentID: studentID,
+            teacherID: teacherID
+        )
+
+    CalendarView(
         viewModel: viewModel,
         showMenu: $showMenu,
         studentID: studentID
     )
+    .modelContainer(container)
 }

@@ -5,27 +5,45 @@
 //  Created by Eden Fernando on 30/8/2026.
 //
 
+
 import Foundation
+import SwiftData
 
-/// Represents a practice activity assigned by a music teacher to a student.
-///
-/// Practice tasks help students understand what they should work on
-/// between lessons and allow progress to be tracked.
-///
-/// Business Rules:
-/// - Every task must belong to a student.
-/// - Every task must be assigned by a teacher.
-/// - Every task must have a title.
-/// - A task can be marked as completed by the assigned student.
-struct PracticeTask: Identifiable, Codable {
+@Model
+final class PracticeTask: Identifiable {
 
-    let id: UUID
-    let title: String
-    let description: String
+    @Attribute(.unique)
+    var id: UUID
 
-    let studentID: UUID
-    let teacherID: UUID
+    var title: String
+    var taskDescription: String
 
-    let dueDate: Date?
+    var studentID: UUID
+    var teacherID: UUID
+
+    // Every practice task belongs to a lesson
+    var lessonID: UUID
+
+    var dueDate: Date?
     var isCompleted: Bool
+
+    init(
+        id: UUID,
+        title: String,
+        description: String,
+        studentID: UUID,
+        teacherID: UUID,
+        lessonID: UUID,
+        dueDate: Date?,
+        isCompleted: Bool
+    ) {
+        self.id = id
+        self.title = title
+        self.taskDescription = description
+        self.studentID = studentID
+        self.teacherID = teacherID
+        self.lessonID = lessonID
+        self.dueDate = dueDate
+        self.isCompleted = isCompleted
+    }
 }

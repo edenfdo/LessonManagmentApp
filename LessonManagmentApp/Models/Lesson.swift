@@ -6,27 +6,38 @@
 //
 
 import Foundation
+import SwiftData
 
-/// Represents a scheduled music lesson between a student and music teacher.
-///
-/// A lesson contains the information required by students and teachers
-/// to identify when and where the lesson takes place and what learning
-/// information is associated with it.
-///
-/// Business Rules:
-/// - Every lesson must belong to one student and one teacher.
-/// - A lesson must have a scheduled date and time.
-/// - Lesson information should only be modified by an authorised teacher or administrator.
-struct Lesson: Identifiable, Codable {
+@Model
+final class Lesson: Identifiable {
 
-    let id: UUID
-    let title: String
-    let date: Date
+    @Attribute(.unique)
+    var id: UUID
 
-    let studentID: UUID
-    let teacherID: UUID
+    var title: String
+    var date: Date
 
-    let notes: String
-    let location: String
+    var studentID: UUID
+    var teacherID: UUID
+
+    var notes: String
+    var location: String
+
+    init(
+        id: UUID,
+        title: String,
+        date: Date,
+        studentID: UUID,
+        teacherID: UUID,
+        notes: String,
+        location: String
+    ) {
+        self.id = id
+        self.title = title
+        self.date = date
+        self.studentID = studentID
+        self.teacherID = teacherID
+        self.notes = notes
+        self.location = location
+    }
 }
-

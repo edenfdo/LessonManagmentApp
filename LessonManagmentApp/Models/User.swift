@@ -6,20 +6,46 @@
 //
 
 import Foundation
+import SwiftData
 
-/// Represents a person who has an account in the music lesson management system.
-///
-/// A user may be a student or teacher.
-/// Their role determines the features and actions available to them.
-///
-/// Business Rules:
-/// - Every user must have a unique identifier.
-/// - Every user must have a name and email address.
-/// - Every user must be assigned a valid role.
-struct User: Identifiable, Codable {
+@Model
+final class User: Identifiable {
 
-    let id: UUID
-    let name: String
-    let email: String
-    let role: UserRole
+    @Attribute(.unique)
+    var id: UUID
+
+    var name: String
+    var email: String
+    var passwordHash: String
+    var roleRawValue: String
+
+    var role: UserRole {
+        get {
+            UserRole(rawValue: roleRawValue) ?? .student
+        }
+
+        set {
+            roleRawValue = newValue.rawValue
+        }
+    }
+
+    init(
+        id: UUID,
+        name: String,
+        email: String,
+        password: String,
+        role: UserRole
+    ) {
+        self.id = id
+        self.name = name
+        self.email = email
+
+        self.passwordHash =
+            PasswordHasher.hash(
+                password
+            )
+
+        self.roleRawValue =
+            role.rawValue
+    }
 }

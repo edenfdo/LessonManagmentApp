@@ -15,6 +15,7 @@ struct StudentRootView: View {
     let student: User
     let lessonRepository: LessonRepository
     let practiceTaskRepository: PracticeTaskRepository
+    let resourceRepository: ResourceRepository
 
     let onLogout: () -> Void
 
@@ -94,17 +95,7 @@ struct StudentRootView: View {
                             section: .quizzes
                         )
 
-                        menuButton(
-                            title: "Leaderboard",
-                            icon: "trophy",
-                            section: .leaderboard
-                        )
-
-                        menuButton(
-                            title: "Profile",
-                            icon: "person",
-                            section: .profile
-                        )
+                    
 
                         menuButton(
                             title: "Settings",
@@ -137,8 +128,6 @@ struct StudentRootView: View {
                     lessonRepository: lessonRepository,
                     practiceTaskRepository: practiceTaskRepository
                 ),
-                lessonRepository: lessonRepository,
-                practiceTaskRepository: practiceTaskRepository,
                 studentID: student.id,
                 showMenu: $showMenu,
                 selectedSection: $selectedSection
@@ -167,32 +156,32 @@ struct StudentRootView: View {
         case .resources:
 
             ResourcesView(
-                showMenu: $showMenu
+                showMenu: $showMenu,
+                viewModel:
+                    StudentResourcesViewModel(
+                        resourceRepository:
+                            resourceRepository
+                    ),
+                studentID: student.id
             )
 
         case .quizzes:
 
             QuizzesView(
-                showMenu: $showMenu
+                showMenu: $showMenu,
+                viewModel: QuizViewModel(
+                    quizRepository: LocalQuizRepository()
+                )
             )
-
-        case .leaderboard:
-
-            LeaderboardView(
-                showMenu: $showMenu
-            )
-
-        case .profile:
-
-            ProfileView(
-                studentName: student.name,
-                showMenu: $showMenu
-            )
+            
+        
 
         case .settings:
 
             SettingsView(
                 showMenu: $showMenu,
+                studentName: student.name,
+                studentEmail: student.email,
                 onLogout: onLogout
             )
         }

@@ -6,30 +6,63 @@
 //
 
 import Foundation
+import SwiftData
 
-/// Stores and retrieves practice task data locally while the application is running.
-class LocalPracticeTaskRepository: PracticeTaskRepository {
+final class LocalPracticeTaskRepository: PracticeTaskRepository {
 
-    private var tasks: [PracticeTask] = []
+    private let modelContext: ModelContext
 
-    func getAllTasks() -> [PracticeTask] {
-        return tasks
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
 
-    func getTasks(forStudentID studentID: UUID) -> [PracticeTask] {
-        return tasks.filter { task in
-            task.studentID == studentID
+    func getAllTasks() -> [PracticeTask] {
+
+        let descriptor = FetchDescriptor<PracticeTask>()
+
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch practice tasks: \(error)")
+            return []
         }
     }
 
-    func addTask(_ task: PracticeTask) {
-        tasks.append(task)
+    func getTasks(
+        forStudentID studentID: UUID
+    ) -> [PracticeTask] {
+
+        let allTasks = getAllTasks()
+
+        return allTasks.filter {
+            $0.studentID == studentID
+        }
     }
 
-    func updateTask(_ task: PracticeTask) {
+    func addTask(
+        _ task: PracticeTask
+    ) {
 
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index] = task
+        modelContext.insert(task)
+
+        saveContext()
+    }
+
+    func updateTask(
+        _ task: PracticeTask
+    ) {
+
+        saveContext()
+    }
+
+    private func saveContext() {
+
+        do {
+            try modelContext.save()
+        } catch {
+            print(
+                "Failed to save practice tasks: \(error)"
+            )
         }
     }
 }

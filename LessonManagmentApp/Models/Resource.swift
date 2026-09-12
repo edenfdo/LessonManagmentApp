@@ -6,20 +6,62 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Resource: Identifiable {
+@Model
+final class Resource: Identifiable {
 
-    let id: UUID
+    @Attribute(.unique)
+    var id: UUID
 
-    let title: String
-    let teacherName: String
-    let datePosted: Date
+    var lessonID: UUID?
+    
+    var title: String
+    var teacherID: UUID
+    var studentID: UUID
 
-    let fileName: String
-    let fileType: ResourceFileType
+    var teacherName: String
+    var datePosted: Date
+
+    var fileName: String
+    var fileTypeRawValue: String
+
+    var fileType: ResourceFileType {
+        get {
+            ResourceFileType(
+                rawValue: fileTypeRawValue
+            ) ?? .pdf
+        }
+
+        set {
+            fileTypeRawValue = newValue.rawValue
+        }
+    }
+
+    init(
+        id: UUID,
+        title: String,
+        teacherID: UUID,
+        studentID: UUID,
+        lessonID: UUID?,
+        teacherName: String,
+        datePosted: Date,
+        fileName: String,
+        fileType: ResourceFileType
+    ) {
+        self.id = id
+        self.title = title
+        self.teacherID = teacherID
+        self.studentID = studentID
+        self.lessonID = lessonID
+        self.teacherName = teacherName
+        self.datePosted = datePosted
+        self.fileName = fileName
+        self.fileTypeRawValue = fileType.rawValue
+    }
 }
 
-enum ResourceFileType {
+enum ResourceFileType: String {
     case pdf
     case image
 }
@@ -34,5 +76,17 @@ extension Resource {
         return components
             .dropLast()
             .joined(separator: ".")
+    }
+}
+
+
+extension Resource {
+
+    var localFileURL: URL {
+
+        ResourceFileStorage.fileURL(
+            resourceID: id,
+            fileName: fileName
+        )
     }
 }

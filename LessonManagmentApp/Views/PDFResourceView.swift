@@ -10,9 +10,11 @@ import PDFKit
 
 struct PDFResourceView: UIViewRepresentable {
 
-    let fileName: String
+    let fileURL: URL
 
-    func makeUIView(context: Context) -> PDFView {
+    func makeUIView(
+        context: Context
+    ) -> PDFView {
 
         let pdfView = PDFView()
 
@@ -20,12 +22,13 @@ struct PDFResourceView: UIViewRepresentable {
         pdfView.displayMode = .singlePageContinuous
         pdfView.displayDirection = .vertical
 
-        if let url = Bundle.main.url(
-            forResource: fileNameWithoutExtension,
-            withExtension: "pdf"
-        ) {
+        if let document =
+            PDFDocument(
+                url: fileURL
+            ) {
 
-            pdfView.document = PDFDocument(url: url)
+            pdfView.document =
+                document
         }
 
         return pdfView
@@ -35,13 +38,14 @@ struct PDFResourceView: UIViewRepresentable {
         _ uiView: PDFView,
         context: Context
     ) {
-    }
 
-    private var fileNameWithoutExtension: String {
+        if uiView.document?.documentURL
+            != fileURL {
 
-        fileName.replacingOccurrences(
-            of: ".pdf",
-            with: ""
-        )
+            uiView.document =
+                PDFDocument(
+                    url: fileURL
+                )
+        }
     }
 }

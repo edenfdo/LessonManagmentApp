@@ -11,7 +11,5 @@ enum StudentSection {
     case practice
     case resources
     case quizzes
-    case leaderboard
-    case profile
     case settings
 }

@@ -8,11 +8,201 @@
 import SwiftUI
 
 struct TeacherPracticeView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-#Preview {
-    TeacherPracticeView()
+    @Binding var showMenu: Bool
+
+    let teacher: User
+    
+    @StateObject var viewModel: TeacherPracticeViewModel
+
+    @State private var showAssignTaskSheet = false
+
+    var body: some View {
+
+        ScrollView {
+
+            VStack(
+                alignment: .leading,
+                spacing: 20
+            ) {
+
+                // MARK: - Header
+
+                HStack {
+
+                    Text("Logo")
+                        .font(.title)
+                        .fontWeight(.bold)
+
+                    Spacer()
+
+                    Button {
+                        showMenu = true
+                    } label: {
+
+                        Image(systemName: "line.3.horizontal")
+                            .font(.title)
+                    }
+                }
+
+                // MARK: - Page Title
+
+                Text("Practice Tasks")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+
+                Text(
+                    "Create and manage practice tasks for your students."
+                )
+                .foregroundStyle(.secondary)
+
+                // MARK: - Assign Task Button
+
+                Button {
+
+                    showAssignTaskSheet = true
+
+                } label: {
+
+                    HStack {
+
+                        Image(systemName: "plus")
+
+                        Text("Assign Practice Task")
+                            .fontWeight(.semibold)
+
+                        Spacer()
+                    }
+                    .padding()
+                    .foregroundStyle(.white)
+                    .background(.blue)
+                    .cornerRadius(12)
+                }
+                .buttonStyle(.plain)
+
+                // MARK: - Assigned Tasks
+
+                Text("Assigned Tasks")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.top, 4)
+
+                if viewModel.tasks.isEmpty {
+
+                    Text("No practice tasks assigned.")
+                        .foregroundStyle(.secondary)
+
+                } else {
+
+                    ForEach(viewModel.tasks, id: \.id) { task in
+
+                        taskCard(task)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding()
+        }
+        .onAppear {
+            viewModel.loadData(
+                teacherID: teacher.id
+            )
+        }
+        .sheet(
+            isPresented: $showAssignTaskSheet
+        ) {
+            AssignPracticeTaskView(
+                teacher: teacher,
+                viewModel: viewModel
+            )
+        }
+    }
+
+    // MARK: - Task Card
+
+    private func taskCard(
+        _ task: PracticeTask
+    ) -> some View {
+
+        VStack(
+            alignment: .leading,
+            spacing: 10
+        ) {
+
+            HStack(
+                alignment: .top,
+                spacing: 12
+            ) {
+
+                Image(
+                    systemName:
+                        task.isCompleted
+                        ? "checkmark.circle.fill"
+                        : "circle"
+                )
+                .font(.title3)
+                .foregroundStyle(
+                    task.isCompleted
+                    ? .green
+                    : .secondary
+                )
+
+                VStack(
+                    alignment: .leading,
+                    spacing: 6
+                ) {
+
+                    Text(task.title)
+                        .font(.headline)
+
+                    Text(task.taskDescription)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    if let student =
+                        viewModel.studentForTask(task) {
+
+                        Text("Student: \(student.name)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let dueDate = task.dueDate {
+
+                        Text(
+                            "Due \(dueDate.formatted(date: .abbreviated, time: .omitted))"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
+                }
+
+                Spacer()
+            }
+
+            Text(
+                task.isCompleted
+                ? "Completed"
+                : "In Progress"
+            )
+            .font(.caption)
+            .fontWeight(.semibold)
+            .foregroundStyle(
+                task.isCompleted
+                ? .green
+                : .orange
+            )
+        }
+        .padding()
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
+        .background(
+            .gray.opacity(0.12)
+        )
+        .cornerRadius(14)
+    }
+
 }

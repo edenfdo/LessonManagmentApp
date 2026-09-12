@@ -41,16 +41,9 @@ class StudentHomeViewModel: ObservableObject {
     
     func toggleTaskCompletion(_ task: PracticeTask) {
 
-        var updatedTask = task
-        updatedTask.isCompleted.toggle()
+        task.isCompleted.toggle()
 
-        practiceTaskRepository.updateTask(updatedTask)
-
-        if let index = practiceTasks.firstIndex(
-            where: { $0.id == updatedTask.id }
-        ) {
-            practiceTasks[index] = updatedTask
-        }
+        practiceTaskRepository.updateTask(task)
     }
 
     var progress: Double {

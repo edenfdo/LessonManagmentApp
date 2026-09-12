@@ -6,29 +6,59 @@
 //
 
 import Foundation
+import SwiftData
 
-/// Stores and retrieves lesson data locally while the application is running.
-class LocalLessonRepository: LessonRepository {
+final class LocalLessonRepository: LessonRepository {
 
-    private var lessons: [Lesson] = []
+    private let modelContext: ModelContext
 
-    func getAllLessons() -> [Lesson] {
-        return lessons
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
 
-    func getLessons(forStudentID studentID: UUID) -> [Lesson] {
-        return lessons.filter { lesson in
-            lesson.studentID == studentID
+    func getAllLessons() -> [Lesson] {
+
+        let descriptor = FetchDescriptor<Lesson>()
+
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch lessons: \(error)")
+            return []
         }
     }
 
-    func getLessons(forTeacherID teacherID: UUID) -> [Lesson] {
-        return lessons.filter { lesson in
-            lesson.teacherID == teacherID
+    func getLessons(
+        forStudentID studentID: UUID
+    ) -> [Lesson] {
+
+        getAllLessons().filter {
+            $0.studentID == studentID
+        }
+    }
+
+    func getLessons(
+        forTeacherID teacherID: UUID
+    ) -> [Lesson] {
+
+        getAllLessons().filter {
+            $0.teacherID == teacherID
         }
     }
 
     func addLesson(_ lesson: Lesson) {
-        lessons.append(lesson)
+
+        modelContext.insert(lesson)
+
+        saveContext()
+    }
+
+    private func saveContext() {
+
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save lesson: \(error)")
+        }
     }
 }

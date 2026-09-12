@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 import Lottie
 
 struct PracticeView: View {
 
     @StateObject var viewModel: PracticeViewModel
+
     @Binding var showMenu: Bool
 
     let studentID: UUID
@@ -23,7 +25,10 @@ struct PracticeView: View {
 
             ScrollView {
 
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(
+                    alignment: .leading,
+                    spacing: 20
+                ) {
 
                     // MARK: - Header
 
@@ -38,8 +43,11 @@ struct PracticeView: View {
                         Button {
                             showMenu = true
                         } label: {
-                            Image(systemName: "line.3.horizontal")
-                                .font(.title)
+
+                            Image(
+                                systemName: "line.3.horizontal"
+                            )
+                            .font(.title)
                         }
                     }
 
@@ -51,12 +59,17 @@ struct PracticeView: View {
 
                     // MARK: - Weekly Progress
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(
+                        alignment: .leading,
+                        spacing: 8
+                    ) {
 
                         Text("Weekly Progress")
                             .font(.headline)
 
-                        ProgressView(value: viewModel.progress)
+                        ProgressView(
+                            value: viewModel.progress
+                        )
 
                         Text(
                             "\(viewModel.completedTaskCount) of \(viewModel.practiceTasks.count) tasks complete"
@@ -72,35 +85,55 @@ struct PracticeView: View {
                     Text("Your Tasks")
                         .font(.headline)
 
-                    ForEach(viewModel.practiceTasks) { task in
+                    ForEach(
+                        viewModel.practiceTasks
+                    ) { task in
 
                         Button {
 
-                            let wasCompleted = task.isCompleted
+                            let wasCompleted =
+                                task.isCompleted
 
-                            viewModel.toggleTaskCompletion(task)
+                            viewModel
+                                .toggleTaskCompletion(
+                                    task
+                                )
 
                             if !wasCompleted {
 
-                                animatingTaskID = task.id
+                                animatingTaskID =
+                                    task.id
 
-                                DispatchQueue.main.asyncAfter(
-                                    deadline: .now() + 1.5
-                                ) {
-                                    animatingTaskID = nil
-                                }
+                                DispatchQueue.main
+                                    .asyncAfter(
+                                        deadline:
+                                            .now() + 1.5
+                                    ) {
+
+                                        animatingTaskID =
+                                            nil
+                                    }
                             }
 
                         } label: {
 
-                            HStack(alignment: .top, spacing: 12) {
+                            HStack(
+                                alignment: .top,
+                                spacing: 12
+                            ) {
+
+                                // MARK: - Checkbox
 
                                 ZStack {
 
-                                    if animatingTaskID == task.id {
+                                    if animatingTaskID
+                                        == task.id {
 
                                         LottieView(
-                                            animation: .named("taskComplete")
+                                            animation:
+                                                .named(
+                                                    "taskComplete"
+                                                )
                                         )
                                         .playing()
                                         .frame(
@@ -117,12 +150,20 @@ struct PracticeView: View {
                                                 : "circle"
                                         )
                                         .font(.title3)
+                                        .foregroundStyle(
+                                            task.isCompleted
+                                            ? .green
+                                            : .primary
+                                        )
                                     }
                                 }
                                 .frame(
                                     width: 32,
                                     height: 32
                                 )
+
+                                // MARK: - Task Details
+
                                 VStack(
                                     alignment: .leading,
                                     spacing: 4
@@ -131,11 +172,14 @@ struct PracticeView: View {
                                     Text(task.title)
                                         .fontWeight(.semibold)
 
-                                    Text(task.description)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
+                                    Text(
+                                        task.taskDescription
+                                    )
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
 
-                                    if let dueDate = task.dueDate {
+                                    if let dueDate =
+                                        task.dueDate {
 
                                         Text(
                                             "Due \(dueDate, style: .date)"
@@ -162,24 +206,28 @@ struct PracticeView: View {
                 }
                 .padding()
             }
-
-            // MARK: - Completion Animation
         }
         .onAppear {
-            viewModel.loadTasks(for: studentID)
+
+            viewModel.loadTasks(
+                for: studentID
+            )
         }
     }
 }
 
-#Preview {
 
-    @Previewable @State var showMenu = false
+// MARK: - Preview Helper
 
-    let studentID = UUID()
-    let teacherID = UUID()
+// MARK: - Preview Helper
 
-    let practiceTaskRepository =
-        LocalPracticeTaskRepository()
+private func makePreviewPracticeViewModel(
+    repository: LocalPracticeTaskRepository,
+    studentID: UUID,
+    teacherID: UUID
+) -> PracticeViewModel {
+
+    let lessonID = UUID()
 
     let task1 = PracticeTask(
         id: UUID(),
@@ -187,6 +235,7 @@ struct PracticeView: View {
         description: "Practise slowly with both hands.",
         studentID: studentID,
         teacherID: teacherID,
+        lessonID: lessonID,
         dueDate: Date().addingTimeInterval(86400),
         isCompleted: true
     )
@@ -194,9 +243,11 @@ struct PracticeView: View {
     let task2 = PracticeTask(
         id: UUID(),
         title: "Complete rhythm quiz",
-        description: "Complete the rhythm quiz before your next lesson.",
+        description:
+            "Complete the rhythm quiz before your next lesson.",
         studentID: studentID,
         teacherID: teacherID,
+        lessonID: lessonID,
         dueDate: Date().addingTimeInterval(172800),
         isCompleted: false
     )
@@ -204,24 +255,57 @@ struct PracticeView: View {
     let task3 = PracticeTask(
         id: UUID(),
         title: "Practise bars 1–16",
-        description: "Focus on accurate notes and rhythm.",
+        description:
+            "Focus on accurate notes and rhythm.",
         studentID: studentID,
         teacherID: teacherID,
+        lessonID: lessonID,
         dueDate: Date().addingTimeInterval(259200),
         isCompleted: false
     )
 
-    practiceTaskRepository.addTask(task1)
-    practiceTaskRepository.addTask(task2)
-    practiceTaskRepository.addTask(task3)
+    repository.addTask(task1)
+    repository.addTask(task2)
+    repository.addTask(task3)
 
-    let viewModel = PracticeViewModel(
-        practiceTaskRepository: practiceTaskRepository
+    return PracticeViewModel(
+        practiceTaskRepository: repository
+    )
+}
+
+// MARK: - Preview
+
+#Preview {
+
+    @Previewable
+    @State var showMenu = false
+
+    let studentID = UUID()
+    let teacherID = UUID()
+
+    let container = try! ModelContainer(
+        for: PracticeTask.self,
+        configurations: ModelConfiguration(
+            isStoredInMemoryOnly: true
+        )
     )
 
-    return PracticeView(
+    let practiceTaskRepository =
+        LocalPracticeTaskRepository(
+            modelContext: container.mainContext
+        )
+
+    let viewModel =
+        makePreviewPracticeViewModel(
+            repository: practiceTaskRepository,
+            studentID: studentID,
+            teacherID: teacherID
+        )
+
+    PracticeView(
         viewModel: viewModel,
         showMenu: $showMenu,
         studentID: studentID
     )
+    .modelContainer(container)
 }

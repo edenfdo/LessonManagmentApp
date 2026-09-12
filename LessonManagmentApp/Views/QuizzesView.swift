@@ -14,113 +14,8 @@ struct QuizzesView: View {
     @State private var showTrebleQuiz = false
     @State private var showBassQuiz = false
 
-    // MARK: - Sample Treble Clef Question
+    @StateObject var viewModel: QuizViewModel
 
-    private let trebleQuestions: [QuizQuestion] = [
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-c",
-            answers: ["C", "D", "E", "F"],
-            correctAnswer: "C"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-d",
-            answers: ["C", "D", "E", "F"],
-            correctAnswer: "D"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-e",
-            answers: ["D", "E", "F", "G"],
-            correctAnswer: "E"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-f",
-            answers: ["E", "F", "G", "A"],
-            correctAnswer: "F"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-g",
-            answers: ["F", "G", "A", "B"],
-            correctAnswer: "G"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-a",
-            answers: ["G", "A", "B", "C"],
-            correctAnswer: "A"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "treble-note-b",
-            answers: ["A", "B", "C", "D"],
-            correctAnswer: "B"
-        )
-    ]
-    
-    // MARK: - Bass Clef Questions
-
-    private let bassQuestions: [QuizQuestion] = [
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-c",
-            answers: ["C", "D", "E", "F"],
-            correctAnswer: "C"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-d",
-            answers: ["C", "D", "E", "F"],
-            correctAnswer: "D"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-e",
-            answers: ["D", "E", "F", "G"],
-            correctAnswer: "E"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-f",
-            answers: ["E", "F", "G", "A"],
-            correctAnswer: "F"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-g",
-            answers: ["F", "G", "A", "B"],
-            correctAnswer: "G"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-a",
-            answers: ["G", "A", "B", "C"],
-            correctAnswer: "A"
-        ),
-
-        QuizQuestion(
-            id: UUID(),
-            imageName: "bass-note-b",
-            answers: ["A", "B", "C", "D"],
-            correctAnswer: "B"
-        )
-    ]
     var body: some View {
 
         ScrollView {
@@ -164,39 +59,43 @@ struct QuizzesView: View {
 
                 // MARK: - Treble Clef Quiz
 
-                Button {
+                if let trebleQuiz = viewModel.trebleQuiz {
 
-                    showTrebleQuiz = true
+                    Button {
 
-                } label: {
+                        showTrebleQuiz = true
 
-                    quizCardContent(
-                        title: "Treble Clef Note Reading",
-                        description:
-                            "Practise identifying notes written in the treble clef.",
-                        time: "5 min",
-                        icon: "music.note"
-                    )
+                    } label: {
+
+                        quizCardContent(
+                            title: trebleQuiz.title,
+                            description: trebleQuiz.description,
+                            time: trebleQuiz.estimatedTime,
+                            icon: "music.note"
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 // MARK: - Bass Clef Quiz
 
-                Button {
+                if let bassQuiz = viewModel.bassQuiz {
 
-                    showBassQuiz = true
+                    Button {
 
-                } label: {
+                        showBassQuiz = true
 
-                    quizCardContent(
-                        title: "Bass Clef Note Reading",
-                        description:
-                            "Practise identifying notes written in the bass clef.",
-                        time: "5 min",
-                        icon: "music.note"
-                    )
+                    } label: {
+
+                        quizCardContent(
+                            title: bassQuiz.title,
+                            description: bassQuiz.description,
+                            time: bassQuiz.estimatedTime,
+                            icon: "music.note"
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 Spacer()
             }
@@ -209,21 +108,36 @@ struct QuizzesView: View {
             isPresented: $showTrebleQuiz
         ) {
 
-            QuizPlayerView(
-                title: "Treble Clef Note Reading",
-                questions: trebleQuestions,
-                isShowingQuiz: $showTrebleQuiz
-            )
+            if let trebleQuiz = viewModel.trebleQuiz {
+
+                QuizPlayerView(
+                    title: trebleQuiz.title,
+                    questions: trebleQuiz.questions,
+                    isShowingQuiz: $showTrebleQuiz
+                )
+            }
         }
+
+        // MARK: - Open Bass Clef Quiz
+
         .fullScreenCover(
             isPresented: $showBassQuiz
         ) {
 
-            QuizPlayerView(
-                title: "Bass Clef Note Reading",
-                questions: bassQuestions,
-                isShowingQuiz: $showBassQuiz
-            )
+            if let bassQuiz = viewModel.bassQuiz {
+
+                QuizPlayerView(
+                    title: bassQuiz.title,
+                    questions: bassQuiz.questions,
+                    isShowingQuiz: $showBassQuiz
+                )
+            }
+        }
+
+        // MARK: - Load Quizzes
+
+        .onAppear {
+            viewModel.loadQuizzes()
         }
     }
 
@@ -332,6 +246,9 @@ struct QuizzesView: View {
     @State var showMenu = false
 
     QuizzesView(
-        showMenu: $showMenu
+        showMenu: $showMenu,
+        viewModel: QuizViewModel(
+            quizRepository: LocalQuizRepository()
+        )
     )
 }
