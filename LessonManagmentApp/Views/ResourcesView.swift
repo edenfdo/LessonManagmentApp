@@ -5,16 +5,8 @@
 //  Created by Eden Fernando on 10/9/2026.
 //
 
-//
-//  ResourcesView.swift
-//  LessonManagmentApp
-//
-//  Created by Eden Fernando on 10/9/2026.
-//
-
 import SwiftUI
 import SwiftData
-import UIKit
 
 struct ResourcesView: View {
     
@@ -206,133 +198,25 @@ struct ResourcesView: View {
             
             // MARK: - Resource Popup
             
-            if let resource =
-                selectedResource {
+            if let resource = selectedResource {
                 
                 Color.black
                     .opacity(0.35)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        
-                        selectedResource =
-                        nil
+                        selectedResource = nil
                     }
                 
-                VStack(
-                    alignment: .leading,
-                    spacing: 14
-                ) {
-                    
-                    // MARK: Popup Header
-                    
-                    HStack {
-                        
-                        VStack(
-                            alignment: .leading,
-                            spacing: 3
-                        ) {
-                            
-                            Text(
-                                resource.title
-                            )
-                            .font(.headline)
-                            
-                            Text(
-                                "From \(resource.teacherName)"
-                            )
-                            .font(.caption)
-                            .foregroundStyle(
-                                .secondary
-                            )
-                        }
-                        
-                        Spacer()
-                        
-                        Button {
-                            
-                            selectedResource =
-                            nil
-                            
-                        } label: {
-                            
-                            Image(
-                                systemName:
-                                    "xmark"
-                            )
-                            .font(
-                                .headline
-                            )
-                        }
+                ResourcePreviewView(
+                    resource: resource,
+                    subtitle: "From \(resource.teacherName)",
+                    onClose: {
+                        selectedResource = nil
                     }
-                    
-                    Divider()
-                    
-                    // MARK: - File Viewer
-                    
-                    if resource.fileType
-                        == .pdf {
-                        
-                        PDFResourceView(
-                            fileURL:
-                                resource.localFileURL
-                        )
-                        .frame(
-                            height: 430
-                        )
-                        .clipShape(
-                            RoundedRectangle(
-                                cornerRadius: 10
-                            )
-                        )
-                        
-                    } else {
-                        
-                        imageViewer(
-                            resource
-                        )
-                    }
-                    
-                    Divider()
-                    
-                    // MARK: - File Information
-                    
-                    HStack {
-                        
-                        Image(
-                            systemName:
-                                resource.fileType
-                            == .pdf
-                            ? "doc.fill"
-                            : "photo.fill"
-                        )
-                        
-                        Text(
-                            resource.fileName
-                        )
-                        .font(.caption)
-                        .foregroundStyle(
-                            .secondary
-                        )
-                        
-                        Spacer()
-                    }
-                }
-                .padding()
-                .frame(
-                    maxWidth: 360
                 )
-                .background(
-                    Color(
-                        .systemBackground
-                    )
-                )
-                .cornerRadius(18)
-                .shadow(
-                    radius: 12
-                )
-                .padding()
             }
-        }
+            
+        } // closes ZStack
         
         // MARK: - Load Resources
         
@@ -449,72 +333,7 @@ struct ResourcesView: View {
         )
         .cornerRadius(14)
     }
-    
-    
-    // MARK: - Image Viewer
-    
-    @ViewBuilder
-    private func imageViewer(
-        _ resource: Resource
-    ) -> some View {
-        
-        if let uiImage =
-            UIImage(
-                contentsOfFile:
-                    resource
-                    .localFileURL
-                    .path
-            ) {
-            
-            Image(
-                uiImage: uiImage
-            )
-            .resizable()
-            .scaledToFit()
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: 430
-            )
-            .clipShape(
-                RoundedRectangle(
-                    cornerRadius: 10
-                )
-            )
-            
-        } else {
-            
-            VStack(
-                spacing: 10
-            ) {
-                
-                Image(
-                    systemName:
-                        "photo"
-                )
-                .font(
-                    .system(
-                        size: 50
-                    )
-                )
-                .foregroundStyle(
-                    .secondary
-                )
-                
-                Text(
-                    "Unable to load image."
-                )
-                .foregroundStyle(
-                    .secondary
-                )
-            }
-            .frame(
-                maxWidth: .infinity,
-                minHeight: 220
-            )
-        }
-    }
 }
-
 
 // MARK: - Preview
 

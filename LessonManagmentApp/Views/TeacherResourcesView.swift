@@ -5,6 +5,13 @@
 //  Created by Eden Fernando on 12/9/2026.
 //
 
+//
+//  TeacherResourcesView.swift
+//  LessonManagmentApp
+//
+//  Created by Eden Fernando on 12/9/2026.
+//
+
 import SwiftUI
 
 struct TeacherResourcesView: View {
@@ -16,94 +23,142 @@ struct TeacherResourcesView: View {
     @StateObject var viewModel: TeacherResourcesViewModel
 
     @State private var showAddResourceSheet = false
+    @State private var selectedResource: Resource?
 
     var body: some View {
 
-        ScrollView {
+        ZStack {
 
-            VStack(
-                alignment: .leading,
-                spacing: 20
-            ) {
+            ScrollView {
 
-                // MARK: - Header
+                VStack(
+                    alignment: .leading,
+                    spacing: 20
+                ) {
 
-                MenuBarView(
-                    showMenu: $showMenu
-                )
-                
-                // MARK: - Page Title
+                    // MARK: - Header
 
-                Text("Resources")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    MenuBarView(
+                        showMenu: $showMenu
+                    )
 
-                Text(
-                    "Share learning resources with your students."
-                )
-                .foregroundStyle(.secondary)
+                    // MARK: - Page Title
 
-                // MARK: - Add Resource
+                    Text("Resources")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
 
-                Button {
+                    Text(
+                        "Share learning resources with your students."
+                    )
+                    .foregroundStyle(.secondary)
 
-                    showAddResourceSheet = true
+                    // MARK: - Add Resource
 
-                } label: {
+                    Button {
 
-                    HStack {
+                        showAddResourceSheet = true
 
-                        Image(systemName: "plus")
+                    } label: {
 
-                        Text("Add Resource")
-                            .fontWeight(.semibold)
+                        HStack {
 
-                        Spacer()
+                            Image(
+                                systemName: "plus"
+                            )
+
+                            Text("Add Resource")
+                                .fontWeight(.semibold)
+
+                            Spacer()
+                        }
+                        .padding()
+                        .foregroundStyle(.white)
+                        .background(.blue)
+                        .cornerRadius(12)
                     }
-                    .padding()
-                    .foregroundStyle(.white)
-                    .background(.blue)
-                    .cornerRadius(12)
-                }
-                .buttonStyle(.plain)
+                    .buttonStyle(.plain)
 
-                // MARK: - Shared Resources
+                    // MARK: - Shared Resources
 
-                Text("Shared Resources")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.top, 4)
+                    Text("Shared Resources")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding(.top, 4)
 
-                if viewModel.resources.isEmpty {
+                    if viewModel.resources.isEmpty {
 
-                    Text("No resources shared yet.")
+                        Text(
+                            "No resources shared yet."
+                        )
                         .foregroundStyle(.secondary)
 
-                } else {
+                    } else {
 
-                    ForEach(
-                        viewModel.resources,
-                        id: \.id
-                    ) { resource in
+                        ForEach(
+                            viewModel.resources,
+                            id: \.id
+                        ) { resource in
 
-                        resourceCard(
-                            resource
-                        )
+                            Button {
+
+                                selectedResource =
+                                    resource
+
+                            } label: {
+
+                                resourceCard(
+                                    resource
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                }
 
-                Spacer()
+                    Spacer()
+                }
+                .padding()
             }
-            .padding()
+
+            // MARK: - Resource Popup
+
+            if let resource =
+                selectedResource {
+
+                Color.black
+                    .opacity(0.35)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+
+                        selectedResource =
+                            nil
+                    }
+
+                ResourcePreviewView(
+                    resource: resource,
+                    subtitle:
+                        popupSubtitle(
+                            for: resource
+                        ),
+                    onClose: {
+
+                        selectedResource =
+                            nil
+                    }
+                )
+            }
         }
+
         .onAppear {
 
             viewModel.loadData(
                 teacherID: teacher.id
             )
         }
+
         .sheet(
-            isPresented: $showAddResourceSheet
+            isPresented:
+                $showAddResourceSheet
         ) {
 
             AddResourceView(
@@ -150,8 +205,11 @@ struct TeacherResourcesView: View {
                 spacing: 6
             ) {
 
-                Text(resource.title)
-                    .font(.headline)
+                Text(
+                    resource.title
+                )
+                .font(.headline)
+                .foregroundStyle(.primary)
 
                 if let student =
                     viewModel.studentForResource(
@@ -165,15 +223,63 @@ struct TeacherResourcesView: View {
                     .foregroundStyle(.secondary)
                 }
 
-                Text(resource.fileName)
+                if let lessonID =
+                    resource.lessonID,
+                   let lesson =
+                    viewModel.lessons.first(
+                        where: {
+                            $0.id == lessonID
+                        }
+                    ) {
+
+                    Text(
+                        "Lesson: \(lesson.title)"
+                    )
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
+                } else {
+
+                    Text(
+                        "General resource"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
 
                 Text(
                     "Shared \(resource.datePosted, style: .date)"
                 )
                 .font(.caption)
                 .foregroundStyle(.secondary)
+
+                HStack {
+
+                    Text(
+                        resource.fileName
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
+                    Spacer()
+
+                    HStack(
+                        spacing: 4
+                    ) {
+
+                        Text("View")
+
+                        Image(
+                            systemName:
+                                "chevron.right"
+                        )
+                        .font(.caption)
+                    }
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.blue)
+                }
             }
 
             Spacer()
@@ -187,5 +293,22 @@ struct TeacherResourcesView: View {
             .gray.opacity(0.12)
         )
         .cornerRadius(14)
+    }
+
+    // MARK: - Popup Subtitle
+
+    private func popupSubtitle(
+        for resource: Resource
+    ) -> String {
+
+        if let student =
+            viewModel.studentForResource(
+                resource
+            ) {
+
+            return "Shared with \(student.name)"
+        }
+
+        return "Shared resource"
     }
 }
