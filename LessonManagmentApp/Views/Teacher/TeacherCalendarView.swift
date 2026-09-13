@@ -87,99 +87,20 @@ struct TeacherCalendarView: View {
 
                     // MARK: - Calendar
 
-                    VStack(
-                        spacing: 16
-                    ) {
-
-                        // MARK: Month Navigation
-
-                        HStack {
-
-                            Button {
-
-                                changeMonth(by: -1)
-
-                            } label: {
-
-                                Image(
-                                    systemName: "chevron.left"
-                                )
-                            }
-
-                            Spacer()
-
-                            Text(monthTitle)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-
-                            Spacer()
-
-                            Button {
-
-                                changeMonth(by: 1)
-
-                            } label: {
-
-                                Image(
-                                    systemName: "chevron.right"
-                                )
-                            }
-                        }
-
-                        // MARK: Weekday Headings
-
-                        HStack {
-
-                            ForEach(
-                                weekdaySymbols,
-                                id: \.self
-                            ) { day in
-
-                                Text(day)
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
-                                    .frame(
-                                        maxWidth: .infinity
-                                    )
-                            }
-                        }
-
-                        // MARK: Calendar Grid
-
-                        LazyVGrid(
-                            columns: calendarColumns,
-                            spacing: 10
-                        ) {
-
-                            ForEach(
-                                calendarDays.indices,
-                                id: \.self
-                            ) { index in
-
-                                if let date =
-                                    calendarDays[index] {
-
-                                    calendarDay(
-                                        date
-                                    )
-
-                                } else {
-
-                                    Color.clear
-                                        .frame(
-                                            height: 42
-                                        )
-                                }
-                            }
-                        }
-                    }
+                    LessonCalendarView(
+                        selectedDate:
+                            $selectedDate,
+                        displayedMonth:
+                            $displayedMonth,
+                        lessons:
+                            viewModel.lessons
+                    )
                     .padding()
                     .background(
                         .gray.opacity(0.08)
                     )
                     .cornerRadius(14)
-
+                    
                     // MARK: - Selected Date
 
                     Text(
@@ -352,82 +273,6 @@ struct TeacherCalendarView: View {
         }
     }
     
-
-    // MARK: - Calendar Day
-
-    private func calendarDay(
-        _ date: Date
-    ) -> some View {
-
-        let isToday =
-            calendar.isDateInToday(
-                date
-            )
-
-        let isSelected =
-            calendar.isDate(
-                date,
-                inSameDayAs: selectedDate
-            )
-
-        let hasLesson =
-            viewModel.lessons.contains {
-
-                calendar.isDate(
-                    $0.date,
-                    inSameDayAs: date
-                )
-            }
-
-        return Button {
-
-            selectedDate = date
-
-        } label: {
-
-            Text(
-                "\(calendar.component(.day, from: date))"
-            )
-            .frame(
-                maxWidth: .infinity
-            )
-            .frame(
-                height: 42
-            )
-            .foregroundStyle(
-                isToday
-                    ? .white
-                    : .primary
-            )
-            .background {
-
-                if isToday {
-
-                    Circle()
-                        .fill(.red)
-
-                } else if hasLesson {
-
-                    Circle()
-                        .fill(
-                            Color.blue.opacity(0.15)
-                        )
-                }
-            }
-            .overlay {
-
-                if isSelected {
-
-                    Circle()
-                        .stroke(
-                            Color.blue,
-                            lineWidth: 2
-                        )
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
 
     // MARK: - Lesson Card
 
@@ -633,120 +478,6 @@ struct TeacherCalendarView: View {
             }
     }
 
-    // MARK: - Month Title
-
-    private var monthTitle: String {
-
-        displayedMonth.formatted(
-            .dateTime
-                .month(.wide)
-                .year()
-        )
-    }
-
-    // MARK: - Weekdays
-
-    private var weekdaySymbols:
-        [String] {
-
-        [
-            "S",
-            "M",
-            "T",
-            "W",
-            "T",
-            "F",
-            "S"
-        ]
-    }
-
-    // MARK: - Calendar Columns
-
-    private var calendarColumns:
-        [GridItem] {
-
-        Array(
-            repeating:
-                GridItem(
-                    .flexible()
-                ),
-            count: 7
-        )
-    }
-
-    // MARK: - Calendar Days
-
-    private var calendarDays:
-        [Date?] {
-
-        guard let monthInterval =
-            calendar.dateInterval(
-                of: .month,
-                for: displayedMonth
-            )
-        else {
-
-            return []
-        }
-
-        let firstDay =
-            monthInterval.start
-
-        let weekday =
-            calendar.component(
-                .weekday,
-                from: firstDay
-            )
-
-        let range =
-            calendar.range(
-                of: .day,
-                in: .month,
-                for: displayedMonth
-            ) ?? 1..<1
-
-        var days: [Date?] = []
-
-        // Empty spaces before first day
-
-        for _ in 1..<weekday {
-
-            days.append(nil)
-        }
-
-        // Actual dates
-
-        for day in range {
-
-            if let date =
-                calendar.date(
-                    byAdding: .day,
-                    value: day - 1,
-                    to: firstDay
-                ) {
-
-                days.append(date)
-            }
-        }
-
-        return days
-    }
-
-    // MARK: - Change Month
-
-    private func changeMonth(
-        by value: Int
-    ) {
-
-        if let newMonth =
-            calendar.date(
-                byAdding: .month,
-                value: value,
-                to: displayedMonth
-            ) {
-
-            displayedMonth = newMonth
-            selectedDate = newMonth
-        }
-    }
+   
+   
 }

@@ -21,8 +21,6 @@ struct CalendarView: View {
     @Binding var selectedSection: StudentSection
     @Binding var resourceToOpen: Resource?
 
-    private let calendar = Calendar.current
-    private let weekdaySymbols = ["M", "T", "W", "T", "F", "S", "S"]
 
     var body: some View {
 
@@ -47,116 +45,15 @@ struct CalendarView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    // MARK: - Month Navigation
-
-                    HStack {
-
-                        Button {
-                            changeMonth(by: -1)
-                        } label: {
-                            Image(systemName: "chevron.left")
-                                .font(.headline)
-                        }
-
-                        Spacer()
-
-                        Text(monthTitle)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-
-                        Spacer()
-
-                        Button {
-                            changeMonth(by: 1)
-                        } label: {
-                            Image(systemName: "chevron.right")
-                                .font(.headline)
-                        }
-                    }
-
-                    // MARK: - Weekday Headings
-
-                    HStack {
-
-                        ForEach(weekdaySymbols, id: \.self) { day in
-
-                            Text(day)
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
-
-                    // MARK: - Calendar Grid
-
-                    let days = daysForDisplayedMonth
-
-                    LazyVGrid(
-                        columns: Array(
-                            repeating: GridItem(.flexible()),
-                            count: 7
-                        ),
-                        spacing: 12
-                    ) {
-
-                        ForEach(days.indices, id: \.self) { index in
-
-                            if let date = days[index] {
-
-                                Button {
-
-                                    viewModel.selectedDate = date
-
-                                } label: {
-
-                                    Text(
-                                        "\(calendar.component(.day, from: date))"
-                                    )
-                                    .fontWeight(
-                                        isSelected(date)
-                                        ? .semibold
-                                        : .regular
-                                    )
-                                    .foregroundStyle(
-                                        isToday(date)
-                                        ? Color.white
-                                        : Color.primary
-                                    )
-                                    .frame(
-                                        width: 38,
-                                        height: 38
-                                    )
-                                    .background(
-                                        dayFill(for: date)
-                                    )
-                                    .clipShape(Circle())
-                                    .overlay {
-
-                                        if isSelected(date) {
-
-                                            Circle()
-                                                .stroke(
-                                                    Color.primary.opacity(0.7),
-                                                    lineWidth: 2
-                                                )
-                                        }
-                                    }
-                                }
-                                .buttonStyle(.plain)
-
-                            } else {
-
-                                Color.clear
-                                    .frame(
-                                        width: 38,
-                                        height: 38
-                                    )
-                            }
-                        }
-                    }
-
-                    Divider()
+                    
+                    LessonCalendarView(
+                        selectedDate:
+                            $viewModel.selectedDate,
+                        displayedMonth:
+                            $displayedMonth,
+                        lessons:
+                            viewModel.lessons
+                    )
 
                     // MARK: - Lessons
 
@@ -356,130 +253,7 @@ struct CalendarView: View {
             }
         }
     }
-
-    // MARK: - Month Title
-
-    private var monthTitle: String {
-
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-
-        return formatter.string(
-            from: displayedMonth
-        )
-    }
-
-    // MARK: - Calendar Days
-
-    private var daysForDisplayedMonth: [Date?] {
-
-        guard let monthInterval =
-                calendar.dateInterval(
-                    of: .month,
-                    for: displayedMonth
-                )
-        else {
-            return []
-        }
-
-        let firstDay = monthInterval.start
-
-        guard let numberOfDays =
-                calendar.range(
-                    of: .day,
-                    in: .month,
-                    for: firstDay
-                )?.count
-        else {
-            return []
-        }
-
-        let weekday =
-            calendar.component(
-                .weekday,
-                from: firstDay
-            )
-
-        let leadingEmptyDays =
-            (weekday + 5) % 7
-
-        var days: [Date?] =
-            Array(
-                repeating: nil,
-                count: leadingEmptyDays
-            )
-
-        for day in 0..<numberOfDays {
-
-            if let date = calendar.date(
-                byAdding: .day,
-                value: day,
-                to: firstDay
-            ) {
-
-                days.append(date)
-            }
-        }
-
-        return days
-    }
-
-    // MARK: - Date Styling
-
-    private func hasLesson(
-        on date: Date
-    ) -> Bool {
-
-        !viewModel.lessons(
-            for: date
-        ).isEmpty
-    }
-
-    private func isSelected(
-        _ date: Date
-    ) -> Bool {
-
-        calendar.isDate(
-            date,
-            inSameDayAs: viewModel.selectedDate
-        )
-    }
-
-    private func isToday(
-        _ date: Date
-    ) -> Bool {
-
-        calendar.isDateInToday(date)
-    }
-
-    private func dayFill(for date: Date) -> Color {
-
-        if isToday(date) {
-            return Color.red
-        }
-
-        if hasLesson(on: date) {
-            return Color.blue.opacity(0.18)
-        }
-
-        return Color.clear
-    }
-
-    // MARK: - Change Month
-
-    private func changeMonth(
-        by value: Int
-    ) {
-
-        if let newMonth = calendar.date(
-            byAdding: .month,
-            value: value,
-            to: displayedMonth
-        ) {
-
-            displayedMonth = newMonth
-        }
-    }
+   
 }
 
 private func makeCalendarPreviewViewModel(
