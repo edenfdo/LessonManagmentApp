@@ -223,11 +223,9 @@ struct StudentRootView: View {
             SettingsView(
                 showMenu: $showMenu,
                 user: student,
-                viewModel:
-                    SettingsViewModel(
-                        userRepository:
-                            userRepository
-                    )
+                viewModel: SettingsViewModel(
+                    userRepository: userRepository
+                )
             )
         }
     }
