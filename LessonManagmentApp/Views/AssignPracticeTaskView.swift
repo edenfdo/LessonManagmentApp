@@ -10,23 +10,44 @@ import SwiftUI
 struct AssignPracticeTaskView: View {
 
     let teacher: User
-    
+
     @ObservedObject var viewModel: TeacherPracticeViewModel
 
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
+
+    @State private var title = ""
+    @State private var taskDescription = ""
 
     @State private var selectedStudentID: UUID?
     @State private var selectedLessonID: UUID?
-    
-    @State private var title = ""
-    @State private var description = ""
+
     @State private var dueDate = Date()
+
+    @State private var errorMessage = ""
 
     var body: some View {
 
         NavigationStack {
 
             Form {
+
+                // MARK: - Task Details
+
+                Section("Task Details") {
+
+                    TextField(
+                        "Task Title",
+                        text: $title
+                    )
+
+                    TextField(
+                        "Description",
+                        text: $taskDescription,
+                        axis: .vertical
+                    )
+                    .lineLimit(3...6)
+                }
 
                 // MARK: - Student
 
@@ -37,37 +58,39 @@ struct AssignPracticeTaskView: View {
                         selection: $selectedStudentID
                     ) {
 
-                        Text("Select a student")
+                        Text("Select Student")
                             .tag(UUID?.none)
 
-                        ForEach(viewModel.students) { student in
+                        ForEach(
+                            viewModel.students
+                        ) { student in
 
                             Text(student.name)
                                 .tag(
-                                    Optional(student.id)
+                                    Optional(
+                                        student.id
+                                    )
                                 )
                         }
                     }
                 }
-                .onChange(
-                    of: selectedStudentID
-                ) {
-                    selectedLessonID = nil
-                }
-                
+
+                // MARK: - Lesson
+
                 Section("Lesson") {
 
-                    if let selectedStudentID {
+                    if let studentID =
+                        selectedStudentID {
 
                         let studentLessons =
                             viewModel.lessonsForStudent(
-                                studentID: selectedStudentID
+                                studentID: studentID
                             )
 
                         if studentLessons.isEmpty {
 
                             Text(
-                                "This student has no lessons available."
+                                "No lessons available for this student."
                             )
                             .foregroundStyle(.secondary)
 
@@ -75,19 +98,21 @@ struct AssignPracticeTaskView: View {
 
                             Picker(
                                 "Select Lesson",
-                                selection: $selectedLessonID
+                                selection:
+                                    $selectedLessonID
                             ) {
 
-                                Text("Select a lesson")
+                                Text("Select Lesson")
                                     .tag(UUID?.none)
 
                                 ForEach(
-                                    studentLessons,
-                                    id: \.id
+                                    studentLessons
                                 ) { lesson in
 
                                     Text(
-                                        "\(lesson.title) - \(lesson.date.formatted(date: .abbreviated, time: .shortened))"
+                                        lessonDisplayName(
+                                            lesson
+                                        )
                                     )
                                     .tag(
                                         Optional(
@@ -107,35 +132,68 @@ struct AssignPracticeTaskView: View {
                     }
                 }
 
-                // MARK: - Task Details
-
-                Section("Task Details") {
-
-                    TextField(
-                        "Task title",
-                        text: $title
-                    )
-
-                    TextField(
-                        "Description",
-                        text: $description,
-                        axis: .vertical
-                    )
-                    .lineLimit(3...6)
-                }
-
                 // MARK: - Due Date
 
                 Section("Due Date") {
 
-                    DatePicker(
-                        "Due Date",
-                        selection: $dueDate,
-                        displayedComponents: .date
-                    )
+                    if let lesson =
+                        selectedLesson {
+
+                        let minimumDueDate =
+                            lesson.date
+                                .addingTimeInterval(
+                                    60
+                                )
+
+                        DatePicker(
+                            "Due Date",
+                            selection: $dueDate,
+                            in: minimumDueDate...,
+                            displayedComponents: [
+                                .date,
+                                .hourAndMinute
+                            ]
+                        )
+
+                        Text(
+                            "Due date must be after the lesson."
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    } else {
+
+                        DatePicker(
+                            "Due Date",
+                            selection: $dueDate,
+                            displayedComponents: [
+                                .date,
+                                .hourAndMinute
+                            ]
+                        )
+                        .disabled(true)
+
+                        Text(
+                            "Select a lesson before choosing a due date."
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
                 }
 
-                // MARK: - Assign
+                // MARK: - Error Message
+
+                if !errorMessage.isEmpty {
+
+                    Section {
+
+                        Text(errorMessage)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
+                }
+
+                // MARK: - Assign Button
 
                 Section {
 
@@ -145,23 +203,12 @@ struct AssignPracticeTaskView: View {
 
                     } label: {
 
-                        Text("Assign Task")
+                        Text("Assign Practice Task")
                             .fontWeight(.semibold)
                             .frame(
                                 maxWidth: .infinity
                             )
                     }
-                    .disabled(
-                        selectedStudentID == nil
-                        ||
-                        selectedLessonID == nil
-                        ||
-                        title
-                            .trimmingCharacters(
-                                in: .whitespacesAndNewlines
-                            )
-                            .isEmpty
-                    )
                 }
             }
             .navigationTitle(
@@ -177,10 +224,54 @@ struct AssignPracticeTaskView: View {
                 ) {
 
                     Button("Cancel") {
+
                         dismiss()
                     }
                 }
             }
+
+            .onChange(
+                of: selectedStudentID
+            ) {
+
+                selectedLessonID = nil
+                errorMessage = ""
+            }
+
+            .onChange(
+                of: selectedLessonID
+            ) {
+
+                errorMessage = ""
+
+                if let lesson =
+                    selectedLesson {
+
+                    dueDate =
+                        lesson.date
+                            .addingTimeInterval(
+                                3600
+                            )
+                }
+            }
+        }
+    }
+
+    // MARK: - Selected Lesson
+
+    private var selectedLesson:
+        Lesson? {
+
+        guard let selectedLessonID
+        else {
+
+            return nil
+        }
+
+        return viewModel.lessons.first {
+
+            $0.id ==
+                selectedLessonID
         }
     }
 
@@ -188,22 +279,79 @@ struct AssignPracticeTaskView: View {
 
     private func assignTask() {
 
-        guard
-            let selectedStudentID,
-            let selectedLessonID
+        errorMessage = ""
+
+        guard !title
+            .trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+            .isEmpty
         else {
+
+            errorMessage =
+                "Please enter a task title."
+
             return
         }
 
-        viewModel.assignTask(
-            title: title,
-            description: description,
-            studentID: selectedStudentID,
-            teacherID: teacher.id,
-            lessonID: selectedLessonID,
-            dueDate: dueDate
-        )
+        guard let studentID =
+            selectedStudentID
+        else {
 
-        dismiss()
+            errorMessage =
+                "Please select a student."
+
+            return
+        }
+
+        guard let lessonID =
+            selectedLessonID
+        else {
+
+            errorMessage =
+                "Please select a lesson."
+
+            return
+        }
+
+        let success =
+            viewModel.assignTask(
+                title: title,
+                description:
+                    taskDescription,
+                studentID:
+                    studentID,
+                teacherID:
+                    teacher.id,
+                lessonID:
+                    lessonID,
+                dueDate:
+                    dueDate
+            )
+
+        if success {
+
+            dismiss()
+
+        } else {
+
+            errorMessage =
+                "Due date must be after the lesson date."
+        }
+    }
+
+    // MARK: - Lesson Display Name
+
+    private func lessonDisplayName(
+        _ lesson: Lesson
+    ) -> String {
+
+        let date =
+            lesson.date.formatted(
+                date: .abbreviated,
+                time: .shortened
+            )
+
+        return "\(lesson.title) - \(date)"
     }
 }

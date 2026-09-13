@@ -58,10 +58,25 @@ final class TeacherPracticeViewModel: ObservableObject {
         studentID: UUID,
         teacherID: UUID,
         lessonID: UUID,
-        dueDate: Date
-    ) {
+        dueDate: Date?
+    ) -> Bool {
 
-        let newTask = PracticeTask(
+        guard let lesson = lessons.first(
+            where: {
+                $0.id == lessonID
+            }
+        ) else {
+            return false
+        }
+
+        if let dueDate = dueDate {
+
+            guard dueDate > lesson.date else {
+                return false
+            }
+        }
+
+        let task = PracticeTask(
             id: UUID(),
             title: title,
             description: description,
@@ -73,12 +88,14 @@ final class TeacherPracticeViewModel: ObservableObject {
         )
 
         practiceTaskRepository.addTask(
-            newTask
+            task
         )
 
         loadData(
             teacherID: teacherID
         )
+
+        return true
     }
 
     func studentForTask(
