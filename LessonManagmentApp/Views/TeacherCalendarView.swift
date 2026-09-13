@@ -426,6 +426,33 @@ struct TeacherCalendarView: View {
             .font(.subheadline)
             .foregroundStyle(.secondary)
 
+            HStack(spacing: 20) {
+
+                HStack(spacing: 6) {
+
+                    Image(
+                        systemName: "paperclip"
+                    )
+
+                    Text(
+                        "\(viewModel.resourcesForLesson(lesson).count)"
+                    )
+                }
+
+                HStack(spacing: 6) {
+
+                    Image(
+                        systemName: "checklist"
+                    )
+
+                    Text(
+                        "\(viewModel.practiceTasksForLesson(lesson).count)"
+                    )
+                }
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            
             HStack {
 
                 Spacer()

@@ -47,12 +47,15 @@ struct LessonDetailView: View {
                     )
 
                     Text(
-                        lesson.date,
-                        style: .time
+                        "\(lesson.date.formatted(date: .omitted, time: .shortened)) – \(lessonEndTime.formatted(date: .omitted, time: .shortened))"
                     )
 
                     Text(
                         lesson.location
+                    )
+                    
+                    Text(
+                        "Ends \(lessonEndTime, style: .time)"
                     )
                 }
                 .foregroundStyle(.secondary)
@@ -260,6 +263,14 @@ struct LessonDetailView: View {
             }
             .padding()
         }
+    }
+    private var lessonEndTime: Date {
+
+        lesson.date.addingTimeInterval(
+            TimeInterval(
+                lesson.durationMinutes * 60
+            )
+        )
     }
 }
 
