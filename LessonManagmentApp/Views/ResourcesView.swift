@@ -19,6 +19,8 @@ struct ResourcesView: View {
     @State private var sortNewestFirst = true
     @State private var selectedResource: Resource?
     
+    @Binding var resourceToOpen: Resource?
+    
     // MARK: - Filtered Resources
     
     private var filteredResources: [Resource] {
@@ -221,10 +223,20 @@ struct ResourcesView: View {
         // MARK: - Load Resources
         
         .onAppear {
-            
+
             viewModel.loadResources(
                 studentID: studentID
             )
+
+            if let resource =
+                resourceToOpen {
+
+                selectedResource =
+                    resource
+
+                resourceToOpen =
+                    nil
+            }
         }
     }
     
@@ -341,6 +353,9 @@ struct ResourcesView: View {
 
         @Previewable
         @State var showMenu = false
+        
+        @Previewable
+        @State var resourceToOpen: Resource?
 
         let studentID = UUID()
 
@@ -366,7 +381,9 @@ struct ResourcesView: View {
                     resourceRepository:
                         resourceRepository
                 ),
-            studentID: studentID
+            studentID: studentID,
+            resourceToOpen:
+                $resourceToOpen
         )
         .modelContainer(
             container

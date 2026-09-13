@@ -20,6 +20,9 @@ struct LessonDetailView: View {
 
     let practiceTasks: [PracticeTask]
     let resources: [Resource]
+    
+    let onToggleTask: (PracticeTask) -> Void
+    let onOpenResource: (Resource) -> Void
 
     var body: some View {
 
@@ -116,67 +119,67 @@ struct LessonDetailView: View {
                             practiceTasks
                         ) { task in
 
-                            HStack(
-                                alignment: .top,
-                                spacing: 12
-                            ) {
+                            Button {
 
-                                Image(
-                                    systemName:
-                                        task.isCompleted
-                                        ? "checkmark.circle.fill"
-                                        : "circle"
-                                )
-                                .foregroundStyle(
-                                    task.isCompleted
-                                    ? .green
-                                    : .secondary
+                                onToggleTask(
+                                    task
                                 )
 
-                                VStack(
-                                    alignment: .leading,
-                                    spacing: 4
+                            } label: {
+
+                                HStack(
+                                    alignment: .top,
+                                    spacing: 12
                                 ) {
 
-                                    Text(
-                                        task.title
-                                    )
-                                    .fontWeight(
-                                        .semibold
-                                    )
-
-                                    Text(
-                                        task.taskDescription
-                                    )
-                                    .font(
-                                        .subheadline
+                                    Image(
+                                        systemName:
+                                            task.isCompleted
+                                            ? "checkmark.circle.fill"
+                                            : "circle"
                                     )
                                     .foregroundStyle(
-                                        .secondary
+                                        task.isCompleted
+                                        ? .green
+                                        : .secondary
                                     )
 
-                                    if let dueDate =
-                                        task.dueDate {
+                                    VStack(
+                                        alignment: .leading,
+                                        spacing: 4
+                                    ) {
 
                                         Text(
-                                            "Due \(dueDate, style: .date)"
+                                            task.title
                                         )
-                                        .font(.caption)
-                                        .foregroundStyle(
-                                            .secondary
-                                        )
-                                    }
-                                }
+                                        .fontWeight(.semibold)
 
-                                Spacer()
-                            }
-                            .padding()
-                            .background(
-                                .gray.opacity(
-                                    0.08
+                                        Text(
+                                            task.taskDescription
+                                        )
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+
+                                        if let dueDate =
+                                            task.dueDate {
+
+                                            Text(
+                                                "Due \(dueDate, style: .date)"
+                                            )
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        }
+                                    }
+
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(
+                                    .gray.opacity(0.08)
                                 )
-                            )
-                            .cornerRadius(10)
+                                .cornerRadius(10)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -208,53 +211,59 @@ struct LessonDetailView: View {
                             resources
                         ) { resource in
 
-                            HStack(
-                                spacing: 12
-                            ) {
+                            Button {
 
-                                Image(
-                                    systemName:
-                                        resource.fileType == .pdf
-                                        ? "doc.fill"
-                                        : "photo.fill"
-                                )
-                                .foregroundStyle(
-                                    .blue
-                                )
-                                .frame(
-                                    width: 24
+                                onOpenResource(
+                                    resource
                                 )
 
-                                VStack(
-                                    alignment: .leading,
-                                    spacing: 3
+                            } label: {
+
+                                HStack(
+                                    spacing: 12
                                 ) {
 
-                                    Text(
-                                        resource.title
+                                    Image(
+                                        systemName:
+                                            resource.fileType == .pdf
+                                            ? "doc.fill"
+                                            : "photo.fill"
                                     )
-                                    .fontWeight(
-                                        .semibold
-                                    )
+                                    .foregroundStyle(.blue)
+                                    .frame(width: 24)
 
-                                    Text(
-                                        resource.fileName
+                                    VStack(
+                                        alignment: .leading,
+                                        spacing: 3
+                                    ) {
+
+                                        Text(
+                                            resource.title
+                                        )
+                                        .fontWeight(.semibold)
+
+                                        Text(
+                                            resource.fileName
+                                        )
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(
+                                        systemName: "chevron.right"
                                     )
                                     .font(.caption)
-                                    .foregroundStyle(
-                                        .secondary
-                                    )
+                                    .foregroundStyle(.blue)
                                 }
-
-                                Spacer()
-                            }
-                            .padding()
-                            .background(
-                                .gray.opacity(
-                                    0.08
+                                .padding()
+                                .background(
+                                    .gray.opacity(0.08)
                                 )
-                            )
-                            .cornerRadius(10)
+                                .cornerRadius(10)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -294,6 +303,8 @@ struct LessonDetailView: View {
             location: "Room 3"
         ),
         practiceTasks: [],
-        resources: []
+        resources: [],
+        onToggleTask: { _ in },
+        onOpenResource: { _ in }
     )
 }

@@ -102,4 +102,32 @@ enum ResourceFileStorage {
                 fileName
             )
     }
+    
+    static func replaceFile(
+        from sourceURL: URL,
+        resourceID: UUID,
+        oldFileName: String
+    ) throws -> String {
+
+        let fileManager = FileManager.default
+
+        let oldFileURL =
+            fileURL(
+                resourceID: resourceID,
+                fileName: oldFileName
+            )
+
+        if fileManager.fileExists(
+            atPath: oldFileURL.path
+        ) {
+            try fileManager.removeItem(
+                at: oldFileURL
+            )
+        }
+
+        return try saveFile(
+            from: sourceURL,
+            resourceID: resourceID
+        )
+    }
 }

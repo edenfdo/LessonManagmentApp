@@ -17,6 +17,9 @@ struct CalendarView: View {
 
     @State private var selectedLesson: Lesson?
     @State private var displayedMonth: Date = Date()
+    
+    @Binding var selectedSection: StudentSection
+    @Binding var resourceToOpen: Resource?
 
     private let calendar = Calendar.current
     private let weekdaySymbols = ["M", "T", "W", "T", "F", "S", "S"]
@@ -223,12 +226,14 @@ struct CalendarView: View {
             }
             .onAppear {
 
-                viewModel.loadLessons(
-                    for: studentID
+                viewModel.loadData(
+                    studentID: studentID
                 )
 
-                displayedMonth = viewModel.selectedDate
+                displayedMonth =
+                    viewModel.selectedDate
             }
+
 
             // MARK: - Lesson Details Popup
 
@@ -241,8 +246,7 @@ struct CalendarView: View {
                     }
 
                 VStack(
-                    alignment: .leading,
-                    spacing: 16
+                    spacing: 0
                 ) {
 
                     HStack {
@@ -254,60 +258,54 @@ struct CalendarView: View {
                         Spacer()
 
                         Button {
+
                             selectedLesson = nil
+
                         } label: {
-                            Image(systemName: "xmark")
-                                .font(.headline)
+
+                            Image(
+                                systemName: "xmark"
+                            )
+                            .font(.headline)
+                            .foregroundStyle(.blue)
                         }
                     }
-
-                    Text(lesson.title)
-                        .font(.headline)
-
-                    VStack(
-                        alignment: .leading,
-                        spacing: 6
-                    ) {
-
-                        Text(
-                            lesson.date,
-                            style: .date
-                        )
-
-                        Text(
-                            lesson.date,
-                            style: .time
-                        )
-
-                        Text(lesson.location)
-                    }
-                    .foregroundStyle(.secondary)
+                    .padding()
 
                     Divider()
 
-                    Text("Lesson Notes")
-                        .font(.headline)
+                    LessonDetailView(
+                        lesson: lesson,
+                        practiceTasks:
+                            viewModel.practiceTasksForLesson(
+                                lesson
+                            ),
+                        resources:
+                            viewModel.resourcesForLesson(
+                                lesson
+                            ),
+                        onToggleTask: { task in
 
-                    Text(lesson.notes)
+                            viewModel.toggleTaskCompletion(
+                                task
+                            )
+                        },
+                        onOpenResource: { resource in
 
-                    Divider()
+                            selectedLesson = nil
 
-                    Text("Practice Tasks")
-                        .font(.headline)
+                            resourceToOpen =
+                                resource
 
-                    Text("Practice tasks will appear here.")
-                        .foregroundStyle(.secondary)
-
-                    Divider()
-
-                    Text("Resources")
-                        .font(.headline)
-
-                    Text("Lesson resources will appear here.")
-                        .foregroundStyle(.secondary)
+                            selectedSection =
+                                .resources
+                        }
+                    )
                 }
-                .padding()
-                .frame(maxWidth: 320)
+                .frame(
+                    maxWidth: 320,
+                    maxHeight: 700
+                )
                 .background(
                     Color(.systemBackground)
                 )
@@ -445,6 +443,8 @@ struct CalendarView: View {
 
 private func makeCalendarPreviewViewModel(
     lessonRepository: LocalLessonRepository,
+    practiceTaskRepository: LocalPracticeTaskRepository,
+    resourceRepository: LocalResourceRepository,
     studentID: UUID,
     teacherID: UUID
 ) -> CalendarViewModel {
@@ -492,7 +492,9 @@ private func makeCalendarPreviewViewModel(
     lessonRepository.addLesson(lesson2)
 
     return CalendarViewModel(
-        lessonRepository: lessonRepository
+        lessonRepository: lessonRepository,
+        practiceTaskRepository: practiceTaskRepository,
+        resourceRepository: resourceRepository
     )
 }
 
@@ -500,12 +502,20 @@ private func makeCalendarPreviewViewModel(
 
     @Previewable
     @State var showMenu = false
+    
+    @Previewable
+    @State var selectedSection: StudentSection = .calendar
+
+    @Previewable
+    @State var resourceToOpen: Resource?
 
     let studentID = UUID()
     let teacherID = UUID()
 
     let container = try! ModelContainer(
         for: Lesson.self,
+        PracticeTask.self,
+        Resource.self,
         configurations: ModelConfiguration(
             isStoredInMemoryOnly: true
         )
@@ -515,10 +525,22 @@ private func makeCalendarPreviewViewModel(
         LocalLessonRepository(
             modelContext: container.mainContext
         )
+    
+    let practiceTaskRepository =
+        LocalPracticeTaskRepository(
+            modelContext: container.mainContext
+        )
+
+    let resourceRepository =
+        LocalResourceRepository(
+            modelContext: container.mainContext
+        )
 
     let viewModel =
         makeCalendarPreviewViewModel(
             lessonRepository: lessonRepository,
+            practiceTaskRepository: practiceTaskRepository,
+            resourceRepository: resourceRepository,
             studentID: studentID,
             teacherID: teacherID
         )
@@ -526,7 +548,9 @@ private func makeCalendarPreviewViewModel(
     CalendarView(
         viewModel: viewModel,
         showMenu: $showMenu,
-        studentID: studentID
+        studentID: studentID,
+        selectedSection: $selectedSection,
+        resourceToOpen: $resourceToOpen
     )
     .modelContainer(container)
 }

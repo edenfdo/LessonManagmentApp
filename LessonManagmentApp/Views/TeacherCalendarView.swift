@@ -260,7 +260,13 @@ struct TeacherCalendarView: View {
                         resources:
                             viewModel.resourcesForLesson(
                                 lesson
-                            )
+                            ),
+                        onToggleTask: { _ in
+                            // Teacher does not toggle student task completion here
+                        },
+                        onOpenResource: { _ in
+                            // Teacher resource navigation can be added later
+                        }
                     )
                 }
                 .frame(

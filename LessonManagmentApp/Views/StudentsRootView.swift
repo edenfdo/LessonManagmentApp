@@ -9,9 +9,6 @@ import SwiftUI
 
 struct StudentRootView: View {
 
-    @State private var selectedSection: StudentSection = .home
-    @State private var showMenu = false
-
     let student: User
 
     let lessonRepository: LessonRepository
@@ -20,6 +17,11 @@ struct StudentRootView: View {
     let userRepository: UserRepository
 
     let onLogout: () -> Void
+    
+    @State private var selectedSection: StudentSection = .home
+    @State private var showMenu = false
+    @State private var resourceToOpen: Resource?
+
 
     var body: some View {
 
@@ -178,11 +180,18 @@ struct StudentRootView: View {
 
             CalendarView(
                 viewModel: CalendarViewModel(
-                    lessonRepository:
-                        lessonRepository
+                    lessonRepository: lessonRepository,
+                    practiceTaskRepository:
+                        practiceTaskRepository,
+                    resourceRepository:
+                        resourceRepository
                 ),
                 showMenu: $showMenu,
-                studentID: student.id
+                studentID: student.id,
+                selectedSection:
+                    $selectedSection,
+                resourceToOpen:
+                    $resourceToOpen
             )
 
         case .practice:
@@ -205,7 +214,9 @@ struct StudentRootView: View {
                         resourceRepository:
                             resourceRepository
                     ),
-                studentID: student.id
+                studentID: student.id,
+                resourceToOpen:
+                    $resourceToOpen
             )
 
         case .quizzes:

@@ -148,5 +148,56 @@ final class TeacherResourcesViewModel: ObservableObject {
             $0.studentID == studentID
         }
     }
+    
+    // MARK: - Update Resource
+
+    func updateResource(
+        resource: Resource,
+        title: String,
+        selectedFileURL: URL?,
+        teacherID: UUID
+    ) throws {
+
+        resource.title = title
+
+        if let selectedFileURL {
+
+            let accessing =
+                selectedFileURL
+                    .startAccessingSecurityScopedResource()
+
+            defer {
+
+                if accessing {
+                    selectedFileURL
+                        .stopAccessingSecurityScopedResource()
+                }
+            }
+
+            let savedFileName =
+                try ResourceFileStorage
+                    .replaceFile(
+                        from: selectedFileURL,
+                        resourceID: resource.id,
+                        oldFileName: resource.fileName
+                    )
+
+            resource.fileName =
+                savedFileName
+
+            resource.fileType =
+                determineFileType(
+                    url: selectedFileURL
+                )
+        }
+
+        resourceRepository.updateResource(
+            resource
+        )
+
+        loadData(
+            teacherID: teacherID
+        )
+    }
 }
 

@@ -22,4 +22,8 @@ protocol ResourceRepository {
     func addResource(
         _ resource: Resource
     )
+    
+    func updateResource(
+        _ resource: Resource
+    )
 }

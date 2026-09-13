@@ -83,4 +83,17 @@ final class LocalResourceRepository:
             )
         }
     }
+    
+    func updateResource(
+        _ resource: Resource
+    ) {
+
+        do {
+            try modelContext.save()
+        } catch {
+            print(
+                "Failed to update resource: \(error)"
+            )
+        }
+    }
 }

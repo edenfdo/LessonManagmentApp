@@ -25,6 +25,8 @@ struct TeacherResourcesView: View {
     @State private var showAddResourceSheet = false
     @State private var selectedResource: Resource?
 
+    
+    @State private var resourceToEdit: Resource?
     var body: some View {
 
         ZStack {
@@ -100,17 +102,9 @@ struct TeacherResourcesView: View {
                             id: \.id
                         ) { resource in
 
-                            Button {
-
-                                selectedResource =
-                                    resource
-
-                            } label: {
-
-                                resourceCard(
-                                    resource
-                                )
-                            }
+                            resourceCard(
+                                resource
+                            )
                             .buttonStyle(.plain)
                         }
                     }
@@ -134,18 +128,23 @@ struct TeacherResourcesView: View {
                             nil
                     }
 
-                ResourcePreviewView(
-                    resource: resource,
-                    subtitle:
-                        popupSubtitle(
-                            for: resource
-                        ),
-                    onClose: {
+                VStack(
+                    spacing: 12
+                ) {
 
-                        selectedResource =
-                            nil
-                    }
-                )
+                    ResourcePreviewView(
+                        resource: resource,
+                        subtitle:
+                            popupSubtitle(
+                                for: resource
+                            ),
+                        onClose: {
+                            selectedResource = nil
+                        }
+                    )
+
+                    
+                }
             }
         }
 
@@ -162,6 +161,16 @@ struct TeacherResourcesView: View {
         ) {
 
             AddResourceView(
+                teacher: teacher,
+                viewModel: viewModel
+            )
+        }
+        .sheet(
+            item: $resourceToEdit
+        ) { resource in
+
+            EditResourceView(
+                resource: resource,
                 teacher: teacher,
                 viewModel: viewModel
             )
@@ -264,21 +273,50 @@ struct TeacherResourcesView: View {
 
                     Spacer()
 
-                    HStack(
-                        spacing: 4
-                    ) {
+                    Button {
 
-                        Text("View")
+                        resourceToEdit = resource
 
-                        Image(
-                            systemName:
-                                "chevron.right"
-                        )
+                    } label: {
+
+                        HStack(
+                            spacing: 4
+                        ) {
+
+                            Image(
+                                systemName: "pencil"
+                            )
+
+                            Text("Edit")
+                        }
                         .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.blue)
                     }
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.blue)
+                    .buttonStyle(.plain)
+
+                    Button {
+
+                        selectedResource = resource
+
+                    } label: {
+
+                        HStack(
+                            spacing: 4
+                        ) {
+
+                            Text("View")
+
+                            Image(
+                                systemName: "chevron.right"
+                            )
+                            .font(.caption)
+                        }
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
 
