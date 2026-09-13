@@ -67,8 +67,6 @@ struct LessonDetailView: View {
             }
             .padding()
         }
-        .navigationTitle("Lesson Details")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
