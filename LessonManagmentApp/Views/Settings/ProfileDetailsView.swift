@@ -60,6 +60,7 @@ struct ProfileDetailsView: View {
         }
     }
 
+    // creates a reusable field for displaying profile information
     private func profileField(
         title: String,
         value: String

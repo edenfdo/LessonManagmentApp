@@ -12,6 +12,7 @@ struct PDFResourceView: UIViewRepresentable {
 
     let fileURL: URL
 
+    // creates and configures the PDF view using the selected resource file
     func makeUIView(
         context: Context
     ) -> PDFView {
@@ -34,6 +35,7 @@ struct PDFResourceView: UIViewRepresentable {
         return pdfView
     }
 
+    // updates the PDF document when the resource file changes
     func updateUIView(
         _ uiView: PDFView,
         context: Context

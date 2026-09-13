@@ -15,7 +15,6 @@ struct TeacherStudentDetailView: View {
 
     @Environment(\.dismiss) private var dismiss
 
-
     var body: some View {
 
         NavigationStack {
@@ -26,8 +25,6 @@ struct TeacherStudentDetailView: View {
                     alignment: .leading,
                     spacing: 24
                 ) {
-
-                    // MARK: - Profile
 
                     HStack(spacing: 16) {
 
@@ -56,8 +53,6 @@ struct TeacherStudentDetailView: View {
                     }
 
                     Divider()
-
-                    // MARK: - Upcoming Lesson
 
                     Text("Upcoming Lesson")
                         .font(.title2)
@@ -132,8 +127,6 @@ struct TeacherStudentDetailView: View {
                         Text("No upcoming lesson.")
                             .foregroundStyle(.secondary)
                     }
-
-                    // MARK: - Practice Tasks
 
                     Text("Practice Tasks")
                         .font(.title2)

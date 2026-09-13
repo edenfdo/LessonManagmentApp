@@ -22,8 +22,7 @@ struct ResourcesView: View {
     
     @Binding var resourceToOpen: Resource?
     
-    // MARK: - Filtered Resources
-    
+    // filters resources by the search text and sorts them by their posted date
     private var filteredResources: [Resource] {
         
         let filtered =
@@ -68,24 +67,18 @@ struct ResourcesView: View {
                     alignment: .leading,
                     spacing: 20
                 ) {
-                    
-                    // MARK: - Header
-                    
+                                        
                     MenuBarView(
                         showMenu: $showMenu,
                         onLogoTap: {
                             selectedSection = .home
                         }
                     )
-                    
-                    // MARK: - Page Title
-                    
+                                        
                     Text("Resources")
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                    
-                    // MARK: - Search Bar
-                    
+                                        
                     HStack(
                         spacing: 10
                     ) {
@@ -108,9 +101,7 @@ struct ResourcesView: View {
                         .gray.opacity(0.12)
                     )
                     .cornerRadius(12)
-                    
-                    // MARK: - Resources Header
-                    
+                                        
                     HStack {
                         
                         Text(
@@ -160,9 +151,7 @@ struct ResourcesView: View {
                             )
                         }
                     }
-                    
-                    // MARK: - Resource Cards
-                    
+                                        
                     if filteredResources.isEmpty {
                         
                         Text(
@@ -201,9 +190,7 @@ struct ResourcesView: View {
                 }
                 .padding()
             }
-            
-            // MARK: - Resource Popup
-            
+                        
             if let resource = selectedResource {
                 
                 Color.black
@@ -222,10 +209,8 @@ struct ResourcesView: View {
                 )
             }
             
-        } // closes ZStack
-        
-        // MARK: - Load Resources
-        
+        }
+                
         .onAppear {
 
             viewModel.loadResources(
@@ -244,9 +229,8 @@ struct ResourcesView: View {
         }
     }
     
-    
-    // MARK: - Resource Card
-    
+        
+    // builds the reusable card layout for each resource
     private func resourceCard(
         _ resource: Resource
     ) -> some View {
@@ -379,7 +363,6 @@ struct ResourcesView: View {
     }
 }
 
-// MARK: - Preview
 
     #Preview {
 

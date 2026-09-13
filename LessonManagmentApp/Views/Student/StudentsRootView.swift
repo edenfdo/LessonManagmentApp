@@ -46,8 +46,6 @@ struct StudentRootView: View {
                         spacing: 0
                     ) {
 
-                        // MARK: - Menu Header
-
                         HStack {
 
                             Text("Menu")
@@ -71,8 +69,6 @@ struct StudentRootView: View {
                         .padding(.bottom, 25)
 
                         Divider()
-
-                        // MARK: - Menu Items
 
                         menuButton(
                             title: "Home",
@@ -111,8 +107,6 @@ struct StudentRootView: View {
                         )
 
                         Spacer()
-
-                        // MARK: - Logout
 
                         Divider()
 
@@ -155,8 +149,7 @@ struct StudentRootView: View {
         }
     }
 
-    // MARK: - Current Page
-
+    // displays the student screen that matches the selected menu section
     @ViewBuilder
     private var currentPage: some View {
 
@@ -241,8 +234,7 @@ struct StudentRootView: View {
         }
     }
 
-    // MARK: - Menu Button
-
+    // creates a reusable menu button that navigates to the selected section
     private func menuButton(
         title: String,
         icon: String,

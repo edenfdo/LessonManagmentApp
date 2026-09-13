@@ -27,7 +27,6 @@ struct TeacherPracticeView: View {
                 spacing: 20
             ) {
 
-                // MARK: - Header
 
                 MenuBarView(
                     showMenu: $showMenu,
@@ -36,7 +35,6 @@ struct TeacherPracticeView: View {
                     }
                 )
 
-                // MARK: - Page Title
 
                 Text("Practice Tasks")
                     .font(.largeTitle)
@@ -47,7 +45,6 @@ struct TeacherPracticeView: View {
                 )
                 .foregroundStyle(.secondary)
 
-                // MARK: - Assign Task Button
 
                 Button {
 
@@ -71,7 +68,6 @@ struct TeacherPracticeView: View {
                 }
                 .buttonStyle(.plain)
 
-                // MARK: - Assigned Tasks
 
                 Text("Assigned Tasks")
                     .font(.title2)
@@ -110,8 +106,8 @@ struct TeacherPracticeView: View {
         }
     }
 
-    // MARK: - Task Card
 
+    // builds the reusable card layout for each practice task
     private func taskCard(
         _ task: PracticeTask
     ) -> some View {
@@ -172,7 +168,6 @@ struct TeacherPracticeView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    // Lesson attached to this task
                     if let lesson =
                         viewModel.lessons.first(
                             where: {

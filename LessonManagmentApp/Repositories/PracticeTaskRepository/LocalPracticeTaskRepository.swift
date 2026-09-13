@@ -12,10 +12,12 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
 
     private let modelContext: ModelContext
 
+    // creates the repository using the SwiftData model context
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
 
+    // fetches all practice tasks stored in SwiftData
     func getAllTasks() -> [PracticeTask] {
 
         let descriptor = FetchDescriptor<PracticeTask>()
@@ -28,6 +30,7 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
         }
     }
 
+    // returns only practice tasks assigned to the specified student
     func getTasks(
         forStudentID studentID: UUID
     ) -> [PracticeTask] {
@@ -38,7 +41,8 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
             $0.studentID == studentID
         }
     }
-
+    
+    // adds a new practice task to SwiftData and saves the change
     func addTask(
         _ task: PracticeTask
     ) {
@@ -48,6 +52,7 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
         saveContext()
     }
 
+    // saves changes made to an existing practice task
     func updateTask(
         _ task: PracticeTask
     ) {
@@ -55,6 +60,7 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
         saveContext()
     }
 
+    // saves any pending changes to the SwiftData context
     private func saveContext() {
 
         do {
@@ -66,6 +72,7 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
         }
     }
     
+    // deletes a practice task from SwiftData and saves the change
     func deleteTask(
         _ task: PracticeTask
     ) {

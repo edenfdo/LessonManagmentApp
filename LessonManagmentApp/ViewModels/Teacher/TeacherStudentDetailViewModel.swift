@@ -16,6 +16,7 @@ final class TeacherStudentDetailViewModel: ObservableObject {
     private let lessonRepository: LessonRepository
     private let practiceTaskRepository: PracticeTaskRepository
 
+    // creates the view model with access to lesson and practice task data
     init(
         lessonRepository: LessonRepository,
         practiceTaskRepository: PracticeTaskRepository
@@ -24,6 +25,7 @@ final class TeacherStudentDetailViewModel: ObservableObject {
         self.practiceTaskRepository = practiceTaskRepository
     }
 
+    // loads the selected student's lessons and practice tasks
     func loadStudentData(
         studentID: UUID
     ) {
@@ -41,6 +43,7 @@ final class TeacherStudentDetailViewModel: ObservableObject {
                 )
     }
 
+    // finds the student's closest upcoming lesson
     var upcomingLesson: Lesson? {
 
         lessons

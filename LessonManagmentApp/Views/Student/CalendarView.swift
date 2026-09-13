@@ -30,16 +30,12 @@ struct CalendarView: View {
 
                 VStack(alignment: .leading, spacing: 20) {
 
-                    // MARK: - Header
-
                     MenuBarView(
                         showMenu: $showMenu,
                         onLogoTap: {
                             selectedSection = .home
                         }
                     )
-
-                    // MARK: - Page Title
 
                     Text("Calendar")
                         .font(.largeTitle)
@@ -54,8 +50,6 @@ struct CalendarView: View {
                         lessons:
                             viewModel.lessons
                     )
-
-                    // MARK: - Lessons
 
                     Text("Lessons")
                         .font(.headline)
@@ -173,8 +167,6 @@ struct CalendarView: View {
             }
 
 
-            // MARK: - Lesson Details Popup
-
             if let lesson = selectedLesson {
 
                 Color.black
@@ -229,6 +221,7 @@ struct CalendarView: View {
                                 task
                             )
                         },
+                        // replaces the lesson details popup with the selected resource preview
                         onOpenResource: { resource in
 
                             selectedLesson = nil
@@ -248,8 +241,6 @@ struct CalendarView: View {
                 .padding()
             }
 
-
-            // MARK: - Resource Preview Popup
 
             if let resource = selectedResource {
 
@@ -277,6 +268,7 @@ struct CalendarView: View {
    
 }
 
+// creates sample lesson data and a view model for the calendar preview
 private func makeCalendarPreviewViewModel(
     lessonRepository: LocalLessonRepository,
     practiceTaskRepository: LocalPracticeTaskRepository,

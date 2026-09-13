@@ -9,6 +9,7 @@ import Foundation
 
 enum ResourceFileStorage {
 
+    // saves a resource file into its own folder in the app's Documents directory
     static func saveFile(
         from sourceURL: URL,
         resourceID: UUID
@@ -29,6 +30,7 @@ enum ResourceFileStorage {
                     isDirectory: true
                 )
 
+        // creates the main Resources folder if it does not already exist
         if !fileManager.fileExists(
             atPath: resourcesFolder.path
         ) {
@@ -46,6 +48,7 @@ enum ResourceFileStorage {
                     isDirectory: true
                 )
 
+        // creates a unique folder for the resource using its ID
         if !fileManager.fileExists(
             atPath: resourceFolder.path
         ) {
@@ -61,7 +64,8 @@ enum ResourceFileStorage {
                 .appendingPathComponent(
                     sourceURL.lastPathComponent
                 )
-
+        
+        // removes an existing file with the same name before copying the new file
         if fileManager.fileExists(
             atPath: destinationURL.path
         ) {
@@ -80,6 +84,7 @@ enum ResourceFileStorage {
     }
 
 
+    // builds the local file URL for a stored resource
     static func fileURL(
         resourceID: UUID,
         fileName: String
@@ -103,6 +108,7 @@ enum ResourceFileStorage {
             )
     }
     
+    // removes the old file and saves its replacement
     static func replaceFile(
         from sourceURL: URL,
         resourceID: UUID,
@@ -131,6 +137,7 @@ enum ResourceFileStorage {
         )
     }
     
+    // deletes a resource file from local storage if it exists
     static func deleteFile(
         resourceID: UUID,
         fileName: String

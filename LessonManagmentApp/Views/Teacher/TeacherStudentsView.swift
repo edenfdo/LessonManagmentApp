@@ -29,8 +29,6 @@ struct TeacherStudentsView: View {
                 spacing: 20
             ) {
 
-                // MARK: - Header
-
                 MenuBarView(
                     showMenu: $showMenu,
                     onLogoTap: {
@@ -38,7 +36,6 @@ struct TeacherStudentsView: View {
                     }
                 )
 
-                // MARK: - Page Title
 
                 Text("Students")
                     .font(.largeTitle)
@@ -65,7 +62,6 @@ struct TeacherStudentsView: View {
                 }
                 .buttonStyle(.plain)
 
-                // MARK: - Students
 
                 if viewModel.students.isEmpty {
 
@@ -136,7 +132,6 @@ struct TeacherStudentsView: View {
             .padding()
         }
 
-        // MARK: - Student Details Sheet
 
         .sheet(
             item: $selectedStudent

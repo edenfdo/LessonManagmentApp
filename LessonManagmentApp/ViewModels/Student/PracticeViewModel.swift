@@ -16,6 +16,7 @@ class PracticeViewModel: ObservableObject {
     private let practiceTaskRepository: PracticeTaskRepository
     private let lessonRepository: LessonRepository
 
+    // creates the view model with access to practice task and lesson data
     init(
         practiceTaskRepository: PracticeTaskRepository,
         lessonRepository: LessonRepository
@@ -28,6 +29,7 @@ class PracticeViewModel: ObservableObject {
             lessonRepository
     }
 
+    // loads the student's practice tasks and lessons
     func loadTasks(
         for studentID: UUID
     ) {
@@ -45,6 +47,7 @@ class PracticeViewModel: ObservableObject {
                 )
     }
 
+    // toggles a task's completion status and saves the change
     func toggleTaskCompletion(
         _ task: PracticeTask
     ) {
@@ -56,6 +59,7 @@ class PracticeViewModel: ObservableObject {
         )
     }
 
+    // calculates the number of completed practice tasks
     var completedTaskCount: Int {
 
         practiceTasks
@@ -65,6 +69,7 @@ class PracticeViewModel: ObservableObject {
             .count
     }
 
+    // calculates the student's practice progress as a value between 0 and 1
     var progress: Double {
 
         guard !practiceTasks.isEmpty else {
@@ -80,6 +85,7 @@ class PracticeViewModel: ObservableObject {
         )
     }
 
+    // finds the lesson linked to a specific practice task
     func lessonForTask(
         _ task: PracticeTask
     ) -> Lesson? {

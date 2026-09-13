@@ -15,12 +15,14 @@ final class SettingsViewModel: ObservableObject {
 
     private let userRepository: UserRepository
 
+    // creates the view model with access to stored users
     init(
         userRepository: UserRepository
     ) {
         self.userRepository = userRepository
     }
 
+    // validates and updates the user's password
     func changePassword(
         user: User,
         currentPassword: String,
@@ -31,6 +33,7 @@ final class SettingsViewModel: ObservableObject {
         errorMessage = ""
         successMessage = ""
 
+        // checks that the current password is correct
         guard PasswordHasher.verify(
             password: currentPassword,
             hash: user.passwordHash
@@ -42,6 +45,7 @@ final class SettingsViewModel: ObservableObject {
             return false
         }
 
+        // ensures the new password meets the minimum length
         guard newPassword.count >= 6 else {
 
             errorMessage =
@@ -50,6 +54,7 @@ final class SettingsViewModel: ObservableObject {
             return false
         }
 
+        // ensures both new password entries match
         guard newPassword == confirmPassword else {
 
             errorMessage =

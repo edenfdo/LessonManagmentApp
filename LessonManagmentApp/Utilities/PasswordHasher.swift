@@ -10,6 +10,7 @@ import CryptoKit
 
 enum PasswordHasher {
 
+    // hashes a password using SHA-256 and converts the result into a hexadecimal String
     static func hash(
         _ password: String
     ) -> String {
@@ -31,6 +32,7 @@ enum PasswordHasher {
         .joined()
     }
 
+    // checks whether a password matches a previously stored hash
     static func verify(
         password: String,
         hash: String
@@ -40,6 +42,7 @@ enum PasswordHasher {
             == hash
     }
 
+    // hashes the supplied password for comparison during verification
     private static func hashPassword(
         _ password: String
     ) -> String {

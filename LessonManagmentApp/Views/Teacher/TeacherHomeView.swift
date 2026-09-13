@@ -26,7 +26,6 @@ struct TeacherHomeView: View {
                 spacing: 24
             ) {
 
-                // MARK: - Header
 
                 MenuBarView(
                     showMenu: $showMenu,
@@ -35,7 +34,6 @@ struct TeacherHomeView: View {
                     }
                 )
 
-                // MARK: - Welcome
 
                 VStack(
                     alignment: .leading,
@@ -54,7 +52,6 @@ struct TeacherHomeView: View {
                     .foregroundStyle(.secondary)
                 }
 
-                // MARK: - Today's Lessons
 
                 Text("Today's Lessons")
                     .font(.title2)
@@ -177,7 +174,6 @@ struct TeacherHomeView: View {
                     }
                 }
 
-                // MARK: - Quick Actions
 
                 Text("Quick Actions")
                     .font(.title2)
@@ -242,8 +238,7 @@ struct TeacherHomeView: View {
         }
     }
 
-    // MARK: - Quick Action Button
-
+    // creates a reusable quick action button that runs the provided navigation action
     private func quickActionButton(
         title: String,
         icon: String,

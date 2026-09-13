@@ -5,12 +5,6 @@
 //  Created by Eden Fernando on 12/9/2026.
 //
 
-//
-//  TeacherResourcesView.swift
-//  LessonManagmentApp
-//
-//  Created by Eden Fernando on 12/9/2026.
-//
 
 import SwiftUI
 
@@ -42,7 +36,6 @@ struct TeacherResourcesView: View {
                     spacing: 20
                 ) {
 
-                    // MARK: - Header
 
                     MenuBarView(
                         showMenu: $showMenu,
@@ -51,7 +44,6 @@ struct TeacherResourcesView: View {
                         }
                     )
 
-                    // MARK: - Page Title
 
                     Text("Resources")
                         .font(.largeTitle)
@@ -62,7 +54,6 @@ struct TeacherResourcesView: View {
                     )
                     .foregroundStyle(.secondary)
 
-                    // MARK: - Add Resource
 
                     Button {
 
@@ -87,8 +78,6 @@ struct TeacherResourcesView: View {
                         .cornerRadius(12)
                     }
                     .buttonStyle(.plain)
-
-                    // MARK: - Shared Resources
 
                     Text("Shared Resources")
                         .font(.title2)
@@ -120,8 +109,6 @@ struct TeacherResourcesView: View {
                 }
                 .padding()
             }
-
-            // MARK: - Resource Popup
 
             if let resource =
                 selectedResource {
@@ -218,8 +205,7 @@ struct TeacherResourcesView: View {
         }
     }
 
-    // MARK: - Resource Card
-
+    // builds the reusable card layout for each resource
     private func resourceCard(
         _ resource: Resource
     ) -> some View {
@@ -254,8 +240,6 @@ struct TeacherResourcesView: View {
                 alignment: .leading,
                 spacing: 6
             ) {
-
-                // MARK: - Title + Edit Icon
 
                 HStack {
 
@@ -318,8 +302,6 @@ struct TeacherResourcesView: View {
                     }
                 }
 
-                // MARK: - Student
-
                 if let student =
                     viewModel.studentForResource(
                         resource
@@ -331,8 +313,6 @@ struct TeacherResourcesView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 }
-
-                // MARK: - Lesson
 
                 if let lessonID =
                     resource.lessonID,
@@ -364,7 +344,6 @@ struct TeacherResourcesView: View {
                     .foregroundStyle(.secondary)
                 }
 
-                // MARK: - Shared Date
 
                 Text(
                     "Shared \(resource.datePosted, style: .date)"
@@ -372,7 +351,6 @@ struct TeacherResourcesView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-                // MARK: - File + View
 
                 HStack {
 
@@ -422,8 +400,8 @@ struct TeacherResourcesView: View {
         )
         .cornerRadius(14)
     }
-    // MARK: - Popup Subtitle
-
+    
+    // creates the preview subtitle based on the student the resource was shared with
     private func popupSubtitle(
         for resource: Resource
     ) -> String {

@@ -28,6 +28,7 @@ struct EditResourceView: View {
 
     @State private var errorMessage = ""
 
+    // pre-fills the edit form with the existing resource title
     init(
         resource: Resource,
         teacher: User,
@@ -49,8 +50,6 @@ struct EditResourceView: View {
 
             Form {
 
-                // MARK: - Resource Details
-
                 Section(
                     "Resource Details"
                 ) {
@@ -60,8 +59,6 @@ struct EditResourceView: View {
                         text: $title
                     )
                 }
-
-                // MARK: - Current File
 
                 Section(
                     "Current File"
@@ -105,8 +102,6 @@ struct EditResourceView: View {
                         }
                     }
                 }
-
-                // MARK: - Replacement File
 
                 Section(
                     "Replace File"
@@ -178,8 +173,6 @@ struct EditResourceView: View {
                     )
                 }
 
-                // MARK: - Error
-
                 if !errorMessage.isEmpty {
 
                     Section {
@@ -192,8 +185,6 @@ struct EditResourceView: View {
                         )
                     }
                 }
-
-                // MARK: - Save
 
                 Section {
 
@@ -260,6 +251,7 @@ struct EditResourceView: View {
                     false
             ) { result in
 
+                // stores the replacement file selected by the teacher
                 switch result {
 
                 case .success(
@@ -282,8 +274,7 @@ struct EditResourceView: View {
         }
     }
 
-    // MARK: - Save Changes
-
+    // validates the title and updates the resource with any selected replacement file
     private func saveChanges() {
 
         let cleanedTitle =
@@ -303,6 +294,7 @@ struct EditResourceView: View {
 
         do {
 
+            // updates the resource and replaces the file only if a new file was selected
             try viewModel.updateResource(
                 resource: resource,
                 title: cleanedTitle,

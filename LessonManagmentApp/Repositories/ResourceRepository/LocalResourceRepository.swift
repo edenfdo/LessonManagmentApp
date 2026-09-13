@@ -13,12 +13,14 @@ final class LocalResourceRepository:
 
     private let modelContext: ModelContext
 
+    // creates the repository using the SwiftData model context
     init(
         modelContext: ModelContext
     ) {
         self.modelContext = modelContext
     }
 
+    // fetches all resources stored in SwiftData
     func getAllResources()
     -> [Resource] {
 
@@ -40,7 +42,8 @@ final class LocalResourceRepository:
             return []
         }
     }
-
+    
+    // returns only resources assigned to the specified student
     func getResources(
         forStudentID studentID: UUID
     ) -> [Resource] {
@@ -50,6 +53,7 @@ final class LocalResourceRepository:
         }
     }
 
+    // returns only resources assigned by the specified teacher
     func getResources(
         forTeacherID teacherID: UUID
     ) -> [Resource] {
@@ -59,6 +63,7 @@ final class LocalResourceRepository:
         }
     }
 
+    // adds a new resource to SwiftData and saves the change
     func addResource(
         _ resource: Resource
     ) {
@@ -70,6 +75,7 @@ final class LocalResourceRepository:
         saveContext()
     }
 
+    // saves any pending changes to the SwiftData context
     private func saveContext() {
 
         do {
@@ -84,6 +90,7 @@ final class LocalResourceRepository:
         }
     }
     
+    // saves changes made to an existing resource
     func updateResource(
         _ resource: Resource
     ) {
@@ -97,6 +104,7 @@ final class LocalResourceRepository:
         }
     }
     
+    // deletes a resource from SwiftData and saves the change
     func deleteResource(
         _ resource: Resource
     ) {

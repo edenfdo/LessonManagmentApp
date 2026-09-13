@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Defines the operations required for accessing lesson data
-/// in the music lesson management system.
 protocol LessonRepository {
 
     func getAllLessons() -> [Lesson]

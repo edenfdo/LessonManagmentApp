@@ -14,6 +14,7 @@ final class RootViewModel: ObservableObject {
 
     private var hasSeededData = false
 
+    // seeds the initial users, practice tasks and lessons only once
     func seedDataIfNeeded(
         userRepository: UserRepository,
         practiceTaskRepository: PracticeTaskRepository,
@@ -39,8 +40,8 @@ final class RootViewModel: ObservableObject {
         hasSeededData = true
     }
 
-    // MARK: - Login
 
+    // sets the logged-in user
     func login(
         user: User
     ) {
@@ -48,15 +49,15 @@ final class RootViewModel: ObservableObject {
         currentUser = user
     }
 
-    // MARK: - Logout
-
+    
+    // clears the current user to log out
     func logout() {
 
         currentUser = nil
     }
 
-    // MARK: - Seed Users
-
+   
+    // adds the default student and teacher if no users exist
     private func seedUsersIfNeeded(
         repository: UserRepository
     ) {
@@ -88,8 +89,8 @@ final class RootViewModel: ObservableObject {
         repository.addUser(teacher)
     }
 
-    // MARK: - Seed Practice Tasks
 
+    // adds the default practice tasks if no tasks exist
     private func seedPracticeTasksIfNeeded(
         repository: PracticeTaskRepository
     ) {
@@ -141,8 +142,7 @@ final class RootViewModel: ObservableObject {
         repository.addTask(task3)
     }
 
-    // MARK: - Seed Lessons
-
+    // adds the default lesson if no lessons exist
     private func seedLessonsIfNeeded(
         repository: LessonRepository
     ) {
@@ -169,8 +169,8 @@ final class RootViewModel: ObservableObject {
         repository.addLesson(lesson)
     }
 
-    // MARK: - Fixed IDs
-
+    
+    // fixed IDs keep seeded users, lessons and tasks linked consistently
     static let studentID =
         UUID(
             uuidString:

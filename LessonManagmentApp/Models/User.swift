@@ -18,7 +18,8 @@ final class User: Identifiable {
     var email: String
     var passwordHash: String
     var roleRawValue: String
-
+    
+    // converts the stored String value into a UserRole for use throughout the app
     var role: UserRole {
         get {
             UserRole(rawValue: roleRawValue) ?? .student
@@ -29,6 +30,7 @@ final class User: Identifiable {
         }
     }
 
+    // creates a user, securely storing the password as a hash and the role as a String
     init(
         id: UUID,
         name: String,
@@ -40,6 +42,7 @@ final class User: Identifiable {
         self.name = name
         self.email = email
 
+        // hashes the password so the original password is not stored directly
         self.passwordHash =
             PasswordHasher.hash(
                 password

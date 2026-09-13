@@ -26,7 +26,6 @@ struct QuizzesView: View {
                 spacing: 20
             ) {
 
-                // MARK: - Header
 
                 MenuBarView(
                     showMenu: $showMenu,
@@ -35,7 +34,6 @@ struct QuizzesView: View {
                     }
                 )
 
-                // MARK: - Page Title
 
                 Text("Quizzes")
                     .font(.largeTitle)
@@ -46,7 +44,6 @@ struct QuizzesView: View {
                 )
                 .foregroundStyle(.secondary)
 
-                // MARK: - Treble Clef Quiz
 
                 if let trebleQuiz = viewModel.trebleQuiz {
 
@@ -56,6 +53,7 @@ struct QuizzesView: View {
 
                     } label: {
 
+                        // builds the reusable card layout for each quiz
                         quizCardContent(
                             title: trebleQuiz.title,
                             description: trebleQuiz.description,
@@ -66,7 +64,6 @@ struct QuizzesView: View {
                     .buttonStyle(.plain)
                 }
 
-                // MARK: - Bass Clef Quiz
 
                 if let bassQuiz = viewModel.bassQuiz {
 
@@ -91,7 +88,6 @@ struct QuizzesView: View {
             .padding()
         }
 
-        // MARK: - Open Treble Clef Quiz
 
         .fullScreenCover(
             isPresented: $showTrebleQuiz
@@ -107,7 +103,6 @@ struct QuizzesView: View {
             }
         }
 
-        // MARK: - Open Bass Clef Quiz
 
         .fullScreenCover(
             isPresented: $showBassQuiz
@@ -123,14 +118,12 @@ struct QuizzesView: View {
             }
         }
 
-        // MARK: - Load Quizzes
 
         .onAppear {
             viewModel.loadQuizzes()
         }
     }
 
-    // MARK: - Quiz Card
 
     private func quizCardContent(
         title: String,
@@ -149,7 +142,6 @@ struct QuizzesView: View {
                 spacing: 14
             ) {
 
-                // Quiz Icon
 
                 Image(systemName: icon)
                     .font(.title2)
@@ -166,8 +158,6 @@ struct QuizzesView: View {
                             cornerRadius: 12
                         )
                     )
-
-                // Quiz Information
 
                 VStack(
                     alignment: .leading,
@@ -186,7 +176,6 @@ struct QuizzesView: View {
                 Spacer()
             }
 
-            // MARK: - Bottom Information
 
             HStack {
 

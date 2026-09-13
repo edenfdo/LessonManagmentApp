@@ -14,8 +14,6 @@ struct TeacherRootView: View {
 
     let teacher: User
     
-    
-    
     let lessonRepository: LessonRepository
     let practiceTaskRepository: PracticeTaskRepository
     let userRepository: UserRepository
@@ -106,7 +104,6 @@ struct TeacherRootView: View {
 
                         Spacer()
 
-                        // MARK: - Logout
 
                         Divider()
 
@@ -149,8 +146,8 @@ struct TeacherRootView: View {
         }
     }
 
-    // MARK: - Current Page
 
+    // displays the teacher screen that matches the selected menu section
     @ViewBuilder
     private var currentPage: some View {
 
@@ -235,8 +232,8 @@ struct TeacherRootView: View {
         }
     }
 
-    // MARK: - Menu Button
 
+    // creates a reusable menu button that navigates to the selected section
     private func menuButton(
         title: String,
         icon: String,
@@ -280,8 +277,8 @@ struct TeacherRootView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Temporary Placeholder Page
 
+    // creates a temporary placeholder page for unfinished teacher sections
     private func teacherPlaceholderPage(
         title: String
     ) -> some View {

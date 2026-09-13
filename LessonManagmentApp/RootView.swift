@@ -17,6 +17,7 @@ struct RootView: View {
     
     var body: some View {
         
+        // creates the repositories used throughout the app with the shared SwiftData context
         let resourceRepository =
         LocalResourceRepository(
             modelContext: modelContext
@@ -40,6 +41,7 @@ struct RootView: View {
         
         Group {
             
+            // displays the correct app experience based on the logged-in user's role
             if let user = viewModel.currentUser {
                 
                 switch user.role {

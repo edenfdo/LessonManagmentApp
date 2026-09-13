@@ -32,8 +32,6 @@ struct AssignPracticeTaskView: View {
 
             Form {
 
-                // MARK: - Task Details
-
                 Section("Task Details") {
 
                     TextField(
@@ -48,8 +46,6 @@ struct AssignPracticeTaskView: View {
                     )
                     .lineLimit(3...6)
                 }
-
-                // MARK: - Student
 
                 Section("Student") {
 
@@ -74,8 +70,6 @@ struct AssignPracticeTaskView: View {
                         }
                     }
                 }
-
-                // MARK: - Lesson
 
                 Section("Lesson") {
 
@@ -132,8 +126,6 @@ struct AssignPracticeTaskView: View {
                     }
                 }
 
-                // MARK: - Due Date
-
                 Section("Due Date") {
 
                     if let lesson =
@@ -181,8 +173,6 @@ struct AssignPracticeTaskView: View {
                     }
                 }
 
-                // MARK: - Error Message
-
                 if !errorMessage.isEmpty {
 
                     Section {
@@ -192,8 +182,6 @@ struct AssignPracticeTaskView: View {
                             .foregroundStyle(.red)
                     }
                 }
-
-                // MARK: - Assign Button
 
                 Section {
 
@@ -230,6 +218,7 @@ struct AssignPracticeTaskView: View {
                 }
             }
 
+            // clears the selected lesson when the student changes
             .onChange(
                 of: selectedStudentID
             ) {
@@ -238,6 +227,7 @@ struct AssignPracticeTaskView: View {
                 errorMessage = ""
             }
 
+            // resets the due date when a different lesson is selected
             .onChange(
                 of: selectedLessonID
             ) {
@@ -257,8 +247,7 @@ struct AssignPracticeTaskView: View {
         }
     }
 
-    // MARK: - Selected Lesson
-
+    // finds the lesson currently selected by the teacher
     private var selectedLesson:
         Lesson? {
 
@@ -275,8 +264,7 @@ struct AssignPracticeTaskView: View {
         }
     }
 
-    // MARK: - Assign Task
-
+    // validates the form and assigns the practice task to the selected lesson
     private func assignTask() {
 
         errorMessage = ""
@@ -314,6 +302,7 @@ struct AssignPracticeTaskView: View {
             return
         }
 
+        // attempts to create the task using the selected student, lesson and due date
         let success =
             viewModel.assignTask(
                 title: title,
@@ -340,8 +329,7 @@ struct AssignPracticeTaskView: View {
         }
     }
 
-    // MARK: - Lesson Display Name
-
+    // formats the lesson title and date for display in the lesson picker
     private func lessonDisplayName(
         _ lesson: Lesson
     ) -> String {

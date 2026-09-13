@@ -42,7 +42,6 @@ struct AddLessonView: View {
 
             Form {
 
-                // MARK: - Student
 
                 Section("Student") {
 
@@ -66,7 +65,6 @@ struct AddLessonView: View {
                     }
                 }
 
-                // MARK: - Lesson Details
 
                 Section("Lesson Details") {
 
@@ -97,7 +95,6 @@ struct AddLessonView: View {
                     )
                 }
 
-                // MARK: - Repeat
 
                 Section("Repeat") {
 
@@ -127,7 +124,6 @@ struct AddLessonView: View {
                     }
                 }
 
-                // MARK: - Notes
 
                 Section("Notes") {
 
@@ -139,7 +135,6 @@ struct AddLessonView: View {
                     .lineLimit(3...6)
                 }
 
-                // MARK: - Add Lesson
 
                 Section {
 
@@ -223,8 +218,8 @@ struct AddLessonView: View {
         }
     }
 
-    // MARK: - Add Lesson
 
+    // validates the lesson time and adds the lesson if there is no conflict
     private func addLesson() {
 
         guard let selectedStudentID
@@ -232,6 +227,7 @@ struct AddLessonView: View {
             return
         }
 
+        // checks whether the new lesson overlaps an existing lesson
         if let conflict =
             viewModel.conflictingLesson(
                 startingDate: date,
@@ -259,11 +255,10 @@ struct AddLessonView: View {
                         time: .shortened
                     )
 
-            conflictMessage =
-                "\(conflict.title) is already scheduled from \(conflictStart) to \(conflictEnd)."
+            conflictMessage = "\(conflict.title) is already scheduled from \(conflictStart) to \(conflictEnd)."
 
-            pendingStudentID =
-                selectedStudentID
+            // stores the selected student so the lesson can still be added after the warning
+            pendingStudentID = selectedStudentID
 
             showConflictAlert = true
 
@@ -284,8 +279,8 @@ struct AddLessonView: View {
         dismiss()
     }
 
-    // MARK: - Calculate Repeated Date
 
+    // calculates the date for each repeated lesson
     private func dateForLesson(
         index: Int
     ) -> Date {
@@ -318,6 +313,7 @@ struct AddLessonView: View {
         
     }
     
+    // adds the lesson after the user chooses to ignore the conflict warning
     private func addLessonIgnoringConflict() {
 
         guard let studentID =

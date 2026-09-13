@@ -31,7 +31,6 @@ struct StudentHomeView: View {
                     spacing: 20
                 ) {
                     
-                    // MARK: - Header
                     
                     MenuBarView(
                         showMenu: $showMenu,
@@ -40,13 +39,11 @@ struct StudentHomeView: View {
                         }
                     )
                     
-                    // MARK: - Welcome
                     
                     Text("Welcome!")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                     
-                    // MARK: - Upcoming Lesson
                     
                     if let lesson = viewModel.upcomingLesson {
                         
@@ -80,6 +77,7 @@ struct StudentHomeView: View {
                             HStack {
                                 
                                 Spacer()
+                                
                                 
                                 Button {
                                     
@@ -118,9 +116,7 @@ struct StudentHomeView: View {
                         Text("No upcoming lessons")
                             .foregroundStyle(.secondary)
                     }
-                    
-                    // MARK: - Weekly Progress
-                    
+                                        
                     VStack(
                         alignment: .leading,
                         spacing: 10
@@ -142,13 +138,13 @@ struct StudentHomeView: View {
                     
                     Divider()
                     
-                    // MARK: - Tasks
                     
                     Text("Tasks")
                         .font(.headline)
                     
                     ForEach(viewModel.practiceTasks) { task in
                         
+                        // toggles the task and plays the completion animation when it is newly completed
                         Button {
                             
                             let wasCompleted = task.isCompleted
@@ -172,9 +168,7 @@ struct StudentHomeView: View {
                                 alignment: .top,
                                 spacing: 12
                             ) {
-                                
-                                // MARK: - Checkbox / Completion Animation
-                                
+                                                                
                                 ZStack {
                                     
                                     if animatingTaskID == task.id {
@@ -263,8 +257,6 @@ struct StudentHomeView: View {
                 .padding()
             }
 
-            // MARK: - Completion Animation
-
             
         .onAppear {
 
@@ -275,8 +267,8 @@ struct StudentHomeView: View {
     }
 }
 
-// MARK: - Preview Helper
 
+// creates sample lesson and task data and a view model for the student home preview
 private func makeStudentHomePreviewViewModel(
     lessonRepository: LocalLessonRepository,
     practiceTaskRepository: LocalPracticeTaskRepository,
@@ -342,8 +334,6 @@ private func makeStudentHomePreviewViewModel(
     )
 }
 
-
-// MARK: - Preview
 
 #Preview {
 

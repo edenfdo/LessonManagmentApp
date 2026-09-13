@@ -34,7 +34,6 @@ struct AddResourceView: View {
             
             Form {
                 
-                // MARK: - Student
                 
                 Section("Student") {
                     
@@ -55,6 +54,7 @@ struct AddResourceView: View {
                         }
                     }
                 }
+                // clears the selected lesson when the student changes
                 .onChange(
                     of: selectedStudentID
                 ) {
@@ -103,7 +103,6 @@ struct AddResourceView: View {
                     }
                 }
                 
-                // MARK: - Resource Details
                 
                 Section("Resource Details") {
                     
@@ -161,7 +160,6 @@ struct AddResourceView: View {
                     }
                 }
                 
-                // MARK: - Share
                 
                 Section {
                     
@@ -208,8 +206,7 @@ struct AddResourceView: View {
                 }
             }
         }
-        
-        // MARK: - File Importer
+    
         
         .fileImporter(
             isPresented: $showFileImporter,
@@ -227,8 +224,8 @@ struct AddResourceView: View {
     }
     
     
-    // MARK: - Select File
     
+    // handles the selected file and stores its URL and file name
     private func handleFileSelection(
         _ result: Result<[URL], Error>
     ) {
@@ -255,6 +252,7 @@ struct AddResourceView: View {
     }
     
     
+    // validates the selected student and file before saving the resource
     private func addResource() {
         
         guard
@@ -266,6 +264,7 @@ struct AddResourceView: View {
         
         do {
             
+            // saves the file and creates the linked resource record
             try viewModel.addResource(
                 title: title,
                 selectedFileURL: selectedFileURL,

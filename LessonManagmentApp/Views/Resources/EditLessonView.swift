@@ -27,6 +27,7 @@ struct EditLessonView: View {
     @State private var showConflictAlert = false
     @State private var conflictMessage = ""
 
+    // pre-fills the edit form with the existing lesson details
     init(
         lesson: Lesson,
         teacher: User,
@@ -133,6 +134,7 @@ struct EditLessonView: View {
                         "Save"
                     ) {
 
+                        // checks for another lesson conflict while ignoring the lesson being edited
                         if let conflict =
                             viewModel.conflictingLesson(
                                 startingDate: date,
@@ -194,7 +196,7 @@ struct EditLessonView: View {
         }
     }
     
-    
+    // updates the lesson with the edited values and closes the form
     private func saveLesson() {
 
         viewModel.updateLesson(

@@ -39,7 +39,6 @@ struct TeacherCalendarView: View {
                     spacing: 20
                 ) {
 
-                    // MARK: - Header
 
                     MenuBarView(
                         showMenu: $showMenu,
@@ -48,7 +47,6 @@ struct TeacherCalendarView: View {
                         }
                     )
 
-                    // MARK: - Page Title
 
                     Text("Calendar")
                         .font(.largeTitle)
@@ -59,7 +57,6 @@ struct TeacherCalendarView: View {
                     )
                     .foregroundStyle(.secondary)
 
-                    // MARK: - Add Lesson
 
                     Button {
 
@@ -85,7 +82,6 @@ struct TeacherCalendarView: View {
                     }
                     .buttonStyle(.plain)
 
-                    // MARK: - Calendar
 
                     LessonCalendarView(
                         selectedDate:
@@ -101,7 +97,6 @@ struct TeacherCalendarView: View {
                     )
                     .cornerRadius(14)
                     
-                    // MARK: - Selected Date
 
                     Text(
                         selectedDate.formatted(
@@ -113,7 +108,6 @@ struct TeacherCalendarView: View {
                     .fontWeight(.semibold)
                     .padding(.top, 4)
 
-                    // MARK: - Lessons
 
                     if lessonsForSelectedDate.isEmpty {
 
@@ -141,7 +135,6 @@ struct TeacherCalendarView: View {
                 .padding()
             }
 
-            // MARK: - Lesson Details Popup
 
             if let lesson = selectedLesson {
 
@@ -191,10 +184,8 @@ struct TeacherCalendarView: View {
                                 lesson
                             ),
                         onToggleTask: { _ in
-                            // Teacher does not toggle student task completion here
                         },
                         onOpenResource: { _ in
-                            // Teacher resource navigation can be added later
                         }
                     )
                 }
@@ -274,8 +265,8 @@ struct TeacherCalendarView: View {
     }
     
 
-    // MARK: - Lesson Card
 
+    // builds the reusable card layout for each lesson
     private func lessonCard(
         _ lesson: Lesson
     ) -> some View {
@@ -459,8 +450,8 @@ struct TeacherCalendarView: View {
         .cornerRadius(14)
     }
 
-    // MARK: - Lessons For Selected Date
 
+    // filters lessons for the selected date and sorts them by time
     private var lessonsForSelectedDate:
         [Lesson] {
 
@@ -477,7 +468,4 @@ struct TeacherCalendarView: View {
                 $0.date < $1.date
             }
     }
-
-   
-   
 }

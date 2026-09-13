@@ -18,6 +18,7 @@ final class TeacherPracticeViewModel: ObservableObject {
     private let userRepository: UserRepository
     private let lessonRepository: LessonRepository
 
+    // creates the view model with access to practice task, user and lesson data
     init(
         practiceTaskRepository: PracticeTaskRepository,
         userRepository: UserRepository,
@@ -28,6 +29,7 @@ final class TeacherPracticeViewModel: ObservableObject {
         self.lessonRepository = lessonRepository
     }
 
+    // loads the teacher's students, lessons and practice tasks
     func loadData(
         teacherID: UUID
     ) {
@@ -52,6 +54,7 @@ final class TeacherPracticeViewModel: ObservableObject {
                 }
     }
 
+    // creates a practice task and links it to the selected lesson
     func assignTask(
         title: String,
         description: String,
@@ -69,6 +72,7 @@ final class TeacherPracticeViewModel: ObservableObject {
             return false
         }
 
+        // ensures the due date occurs after the linked lesson
         if let dueDate = dueDate {
 
             guard dueDate > lesson.date else {
@@ -98,6 +102,7 @@ final class TeacherPracticeViewModel: ObservableObject {
         return true
     }
 
+    // finds the student assigned to a specific practice task
     func studentForTask(
         _ task: PracticeTask
     ) -> User? {
@@ -107,6 +112,7 @@ final class TeacherPracticeViewModel: ObservableObject {
         }
     }
 
+    // finds lessons assigned to a specific student
     func lessonsForStudent(
         studentID: UUID
     ) -> [Lesson] {

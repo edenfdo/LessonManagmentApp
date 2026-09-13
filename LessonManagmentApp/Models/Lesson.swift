@@ -23,7 +23,8 @@ final class Lesson: Identifiable {
 
     var notes: String
     var location: String
-
+    
+    // creates a lesson with all information required for scheduling and linking it to a student and teacher
     init(
             id: UUID,
             title: String,

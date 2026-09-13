@@ -16,6 +16,7 @@ final class StudentResourcesViewModel: ObservableObject {
     private let resourceRepository: ResourceRepository
     private let lessonRepository: LessonRepository
 
+    // creates the view model with access to resource and lesson data
     init(
         resourceRepository: ResourceRepository,
         lessonRepository: LessonRepository
@@ -25,6 +26,7 @@ final class StudentResourcesViewModel: ObservableObject {
         self.lessonRepository = lessonRepository
     }
 
+    // loads the student's resources and lessons
     func loadResources(
         studentID: UUID
     ) {

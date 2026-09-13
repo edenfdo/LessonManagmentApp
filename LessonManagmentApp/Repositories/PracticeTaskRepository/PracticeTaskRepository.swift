@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Defines the operations required for accessing practice task data
-/// in the music lesson management system.
 protocol PracticeTaskRepository {
 
     func getAllTasks() -> [PracticeTask]

@@ -23,8 +23,6 @@ struct ProfileView: View {
                 spacing: 20
             ) {
 
-                // MARK: - Profile Icon
-
                 HStack {
 
                     Spacer()
@@ -37,8 +35,6 @@ struct ProfileView: View {
 
                     Spacer()
                 }
-
-                // MARK: - Account Details
 
                 VStack(
                     alignment: .leading,
@@ -91,8 +87,7 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: - Profile Row
-
+    // creates a reusable row for displaying profile information
     private func profileRow(
         title: String,
         value: String

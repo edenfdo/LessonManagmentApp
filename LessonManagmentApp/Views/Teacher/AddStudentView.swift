@@ -13,8 +13,6 @@ struct AddStudentView: View {
     
     @ObservedObject var viewModel: TeacherStudentsViewModel
 
-    
-
     @Environment(\.dismiss)
     private var dismiss
 
@@ -116,6 +114,7 @@ struct AddStudentView: View {
         }
     }
 
+    // creates the student account using the entered details and closes the form
     private func addStudent() {
 
             viewModel.addStudent(

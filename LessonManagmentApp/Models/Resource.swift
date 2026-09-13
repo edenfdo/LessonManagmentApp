@@ -26,6 +26,7 @@ final class Resource: Identifiable {
     var fileName: String
     var fileTypeRawValue: String
 
+    // converts the stored String value into a ResourceFileType for use throughout the app
     var fileType: ResourceFileType {
         get {
             ResourceFileType(
@@ -38,6 +39,7 @@ final class Resource: Identifiable {
         }
     }
 
+    // creates a resource and stores its file type as a String for persistence
     init(
         id: UUID,
         title: String,
@@ -68,6 +70,7 @@ enum ResourceFileType: String {
 
 extension Resource {
 
+    // removes the file extension so only the resource's file name is displayed
     var fileNameWithoutExtension: String {
 
         let components =
@@ -82,6 +85,7 @@ extension Resource {
 
 extension Resource {
 
+    // retrieves the local file location for the resource using its ID and file name
     var localFileURL: URL {
 
         ResourceFileStorage.fileURL(

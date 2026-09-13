@@ -20,6 +20,7 @@ final class TeacherResourcesViewModel: ObservableObject {
     private let resourceRepository: ResourceRepository
     private let userRepository: UserRepository
 
+    // creates the view model with access to resource, user and lesson data
     init(
         resourceRepository: ResourceRepository,
         userRepository: UserRepository,
@@ -30,8 +31,7 @@ final class TeacherResourcesViewModel: ObservableObject {
         self.lessonRepository = lessonRepository
     }
 
-    // MARK: - Load Data
-
+    // loads the teacher's students, lessons and resources
     func loadData(
         teacherID: UUID
     ) {
@@ -58,8 +58,7 @@ final class TeacherResourcesViewModel: ObservableObject {
                 }
     }
 
-    // MARK: - Add Resource
-
+    // saves a selected file and creates a resource linked to the chosen student and lesson
     func addResource(
         title: String,
         selectedFileURL: URL,
@@ -70,10 +69,12 @@ final class TeacherResourcesViewModel: ObservableObject {
 
         let resourceID = UUID()
 
+        // gains temporary access to the selected file
         let accessing =
             selectedFileURL
                 .startAccessingSecurityScopedResource()
-
+        
+        // stops file access when this function finishes
         defer {
             if accessing {
                 selectedFileURL
@@ -81,6 +82,7 @@ final class TeacherResourcesViewModel: ObservableObject {
             }
         }
 
+        // copies the selected file into the app's local storage
         let savedFileName =
             try ResourceFileStorage
                 .saveFile(
@@ -114,8 +116,7 @@ final class TeacherResourcesViewModel: ObservableObject {
         )
     }
 
-    // MARK: - Find Student
-
+    // finds the student assigned to a specific resource
     func studentForResource(
         _ resource: Resource
     ) -> User? {
@@ -125,8 +126,7 @@ final class TeacherResourcesViewModel: ObservableObject {
         }
     }
 
-    // MARK: - File Type
-
+    // determines whether the selected resource is a PDF or image
     func determineFileType(
         url: URL
     ) -> ResourceFileType {
@@ -140,6 +140,7 @@ final class TeacherResourcesViewModel: ObservableObject {
         return .image
     }
     
+    // finds lessons assigned to a specific student
     func lessonsForStudent(
         studentID: UUID
     ) -> [Lesson] {
@@ -149,8 +150,7 @@ final class TeacherResourcesViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Update Resource
-
+    // updates a resource and replaces its stored file if a new file is selected
     func updateResource(
         resource: Resource,
         title: String,
@@ -160,6 +160,7 @@ final class TeacherResourcesViewModel: ObservableObject {
 
         resource.title = title
 
+        // replaces the existing file only when a new file is selected
         if let selectedFileURL {
 
             let accessing =
@@ -200,6 +201,7 @@ final class TeacherResourcesViewModel: ObservableObject {
         )
     }
     
+    // deletes the stored file and its resource record
     func deleteResource(
         _ resource: Resource,
         teacherID: UUID

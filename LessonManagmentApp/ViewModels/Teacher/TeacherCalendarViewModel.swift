@@ -21,6 +21,7 @@ enum LessonRepeatOption:
         rawValue
     }
 
+    // returns a user-friendly name for each repeat option
     var displayName: String {
 
         switch self {
@@ -51,7 +52,8 @@ final class TeacherCalendarViewModel: ObservableObject {
     
     private let practiceTaskRepository: PracticeTaskRepository
     private let resourceRepository: ResourceRepository
-
+    
+    // creates the view model with access to lesson, user, practice task and resource data
     init(
         lessonRepository: LessonRepository,
         userRepository: UserRepository,
@@ -67,8 +69,8 @@ final class TeacherCalendarViewModel: ObservableObject {
             resourceRepository
     }
 
-    // MARK: - Load Data
 
+    // loads the teacher's students, lessons, practice tasks and resources
     func loadData(
         teacherID: UUID
     ) {
@@ -99,8 +101,8 @@ final class TeacherCalendarViewModel: ObservableObject {
                 )
     }
 
-    // MARK: - Add Lesson
 
+    // creates one or more lessons based on the selected repeat option
     func addLesson(
         title: String,
         date: Date,
@@ -113,6 +115,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         numberOfLessons: Int
     ){
 
+        // determines how many lessons should be created
         let lessonCount =
             repeatOption == .none
             ? 1
@@ -148,8 +151,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         )
     }
 
-    // MARK: - Find Student
-
+    // finds the student assigned to a specific lesson
     func studentForLesson(
         _ lesson: Lesson
     ) -> User? {
@@ -159,8 +161,8 @@ final class TeacherCalendarViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Practice Tasks For Lesson
 
+    // finds practice tasks linked to a specific lesson
     func practiceTasksForLesson(
         _ lesson: Lesson
     ) -> [PracticeTask] {
@@ -170,8 +172,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Resources For Lesson
-
+    // finds resources linked to a specific lesson
     func resourcesForLesson(
         _ lesson: Lesson
     ) -> [Resource] {
@@ -181,8 +182,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Check Lesson Conflict
-
+    // checks whether a new or repeated lesson overlaps an existing lesson
     func conflictingLesson(
         startingDate: Date,
         durationMinutes: Int,
@@ -192,6 +192,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         excludingLessonID: UUID? = nil
     ) -> Lesson? {
 
+        // determines how many lesson dates need to be checked
         let lessonCount =
             repeatOption == .none
             ? 1
@@ -221,6 +222,7 @@ final class TeacherCalendarViewModel: ObservableObject {
                     continue
                 }
 
+                // ignores the lesson currently being edited
                 if existingLesson.id ==
                     excludingLessonID {
                     continue
@@ -238,6 +240,7 @@ final class TeacherCalendarViewModel: ObservableObject {
                             )
                         )
 
+                // checks whether the two lesson time ranges overlap
                 let overlaps =
                     newLessonStart < existingEnd
                     &&
@@ -252,8 +255,8 @@ final class TeacherCalendarViewModel: ObservableObject {
         return nil
     }
 
-    // MARK: - Calculate Recurring Date
 
+    // calculates the date of each repeated lesson
     private func dateForLesson(
         startingDate: Date,
         index: Int,
@@ -287,6 +290,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         }
     }
     
+    // updates an existing lesson and reloads the teacher's calendar data
     func updateLesson(
         _ lesson: Lesson,
         title: String,
@@ -312,6 +316,7 @@ final class TeacherCalendarViewModel: ObservableObject {
         )
     }
     
+    // deletes a lesson and any practice tasks or resources linked to it
     func deleteLesson(
         _ lesson: Lesson,
         teacherID: UUID
@@ -327,7 +332,7 @@ final class TeacherCalendarViewModel: ObservableObject {
                 $0.lessonID == lesson.id
             }
 
-        // Delete attached files + resource records
+        // deletes attached files and resource records
         for resource in linkedResources {
 
             do {
@@ -349,7 +354,7 @@ final class TeacherCalendarViewModel: ObservableObject {
             )
         }
 
-        // Delete linked practice tasks
+        // deletes linked practice tasks
         for task in linkedTasks {
 
             practiceTaskRepository.deleteTask(
@@ -357,12 +362,12 @@ final class TeacherCalendarViewModel: ObservableObject {
             )
         }
 
-        // Delete the lesson itself
+        // deletes the lesson itself
         lessonRepository.deleteLesson(
             lesson
         )
 
-        // Reload calendar data
+        // reloads the teacher's calendar data
         loadData(
             teacherID: teacherID
         )

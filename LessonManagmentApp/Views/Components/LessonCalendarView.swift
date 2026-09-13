@@ -33,8 +33,6 @@ struct LessonCalendarView: View {
             spacing: 16
         ) {
 
-            // MARK: - Month Navigation
-
             HStack {
 
                 Button {
@@ -76,8 +74,6 @@ struct LessonCalendarView: View {
                 }
             }
 
-            // MARK: - Weekday Headings
-
             HStack {
 
                 ForEach(
@@ -96,8 +92,6 @@ struct LessonCalendarView: View {
                     )
                 }
             }
-
-            // MARK: - Calendar Grid
 
             LazyVGrid(
                 columns: calendarColumns,
@@ -134,9 +128,7 @@ struct LessonCalendarView: View {
         .cornerRadius(14)
     }
 
-
-    // MARK: - Calendar Day
-
+    // creates the button and styling for a single calendar day
     private func calendarDay(
         _ date: Date
     ) -> some View {
@@ -226,8 +218,8 @@ struct LessonCalendarView: View {
     }
 
 
-    // MARK: - Month Title
 
+    // formats the displayed month and year for the calendar heading
     private var monthTitle:
         String {
 
@@ -238,9 +230,7 @@ struct LessonCalendarView: View {
         )
     }
 
-
-    // MARK: - Calendar Columns
-
+    // creates seven flexible columns for the days of the week
     private var calendarColumns:
         [GridItem] {
 
@@ -253,9 +243,7 @@ struct LessonCalendarView: View {
         )
     }
 
-
-    // MARK: - Calendar Days
-
+    // builds the dates for the displayed month with empty spaces before the first day
     private var calendarDays:
         [Date?] {
 
@@ -289,7 +277,7 @@ struct LessonCalendarView: View {
                 from: firstDay
             )
 
-        // Monday-first calendar
+        // adjusts the leading empty days so the calendar starts on Monday
         let leadingEmptyDays =
             (weekday + 5) % 7
 
@@ -320,8 +308,7 @@ struct LessonCalendarView: View {
     }
 
 
-    // MARK: - Change Month
-
+    // moves the calendar forward or backward by the given number of months
     private func changeMonth(
         by value: Int
     ) {

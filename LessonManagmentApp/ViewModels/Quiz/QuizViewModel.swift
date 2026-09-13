@@ -14,22 +14,26 @@ final class QuizViewModel: ObservableObject {
 
     private let quizRepository: QuizRepository
 
+    // creates the view model with access to the quiz repository
     init(
         quizRepository: QuizRepository
     ) {
         self.quizRepository = quizRepository
     }
 
+    // loads the available quizzes from the repository
     func loadQuizzes() {
         quizzes = quizRepository.fetchQuizzes()
     }
 
+    // finds the treble clef quiz from the loaded quizzes
     var trebleQuiz: Quiz? {
         quizzes.first {
             $0.title == "Treble Clef Note Reading"
         }
     }
-
+    
+    // finds the bass clef quiz from the loaded quizzes
     var bassQuiz: Quiz? {
         quizzes.first {
             $0.title == "Bass Clef Note Reading"

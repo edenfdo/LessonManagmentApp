@@ -34,8 +34,6 @@ struct QuizPlayerView: View {
                     spacing: 24
                 ) {
 
-                    // MARK: - Header
-
                     HStack {
 
                         Text(title)
@@ -54,8 +52,6 @@ struct QuizPlayerView: View {
                     }
 
                     if quizFinished {
-
-                        // MARK: - Quiz Complete
 
                         VStack(
                             alignment: .center,
@@ -119,8 +115,6 @@ struct QuizPlayerView: View {
 
                     } else {
 
-                        // MARK: - Current Question
-
                         let question =
                             questions[currentQuestionIndex]
 
@@ -134,8 +128,6 @@ struct QuizPlayerView: View {
                             .font(.title3)
                             .fontWeight(.semibold)
 
-                        // MARK: - Note Image
-
                         Image(question.imageName)
                             .resizable()
                             .scaledToFit()
@@ -148,8 +140,6 @@ struct QuizPlayerView: View {
                                 .gray.opacity(0.08)
                             )
                             .cornerRadius(14)
-
-                        // MARK: - Answers
 
                         VStack(spacing: 12) {
 
@@ -202,8 +192,6 @@ struct QuizPlayerView: View {
                             }
                         }
 
-                        // MARK: - Feedback
-
                         if hasSubmitted {
 
                             if selectedAnswer ==
@@ -222,8 +210,6 @@ struct QuizPlayerView: View {
                                 .foregroundStyle(.red)
                             }
                         }
-
-                        // MARK: - Main Button
 
                         Button {
 
@@ -270,8 +256,8 @@ struct QuizPlayerView: View {
         }
     }
 
-    // MARK: - Check Answer
 
+    // checks the selected answer and increases the score if it is correct
     private func checkAnswer(
         question: QuizQuestion
     ) {
@@ -285,8 +271,8 @@ struct QuizPlayerView: View {
         }
     }
 
-    // MARK: - Next Question
 
+    // moves to the next question or finishes the quiz after the final question
     private func goToNextQuestion() {
 
         if currentQuestionIndex <
@@ -302,8 +288,7 @@ struct QuizPlayerView: View {
         }
     }
 
-    // MARK: - Restart Quiz
-
+    // resets the quiz back to its initial state
     private func restartQuiz() {
 
         currentQuestionIndex = 0
@@ -313,8 +298,7 @@ struct QuizPlayerView: View {
         quizFinished = false
     }
 
-    // MARK: - Next Button Title
-
+    // changes the button title when the user reaches the final question
     private var nextButtonTitle: String {
 
         if currentQuestionIndex ==
@@ -326,8 +310,8 @@ struct QuizPlayerView: View {
         return "Next Question"
     }
 
-    // MARK: - Answer Styling
 
+    // determines the answer background based on selection and correctness
     private func answerBackground(
         _ answer: String,
         question: QuizQuestion
@@ -353,6 +337,7 @@ struct QuizPlayerView: View {
         return Color.gray.opacity(0.12)
     }
 
+    // determines the answer text colour after an answer is submitted
     private func answerTextColor(
         _ answer: String,
         question: QuizQuestion

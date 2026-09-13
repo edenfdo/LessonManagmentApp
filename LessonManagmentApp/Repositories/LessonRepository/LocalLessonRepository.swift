@@ -12,10 +12,12 @@ final class LocalLessonRepository: LessonRepository {
 
     private let modelContext: ModelContext
 
+    // creates the repository using the SwiftData model context
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
 
+    // fetches all lessons stored in SwiftData
     func getAllLessons() -> [Lesson] {
 
         let descriptor = FetchDescriptor<Lesson>()
@@ -28,6 +30,7 @@ final class LocalLessonRepository: LessonRepository {
         }
     }
 
+    // returns only lessons assigned to the specified student
     func getLessons(
         forStudentID studentID: UUID
     ) -> [Lesson] {
@@ -37,6 +40,7 @@ final class LocalLessonRepository: LessonRepository {
         }
     }
 
+    // returns only lessons assigned to the specified teacher
     func getLessons(
         forTeacherID teacherID: UUID
     ) -> [Lesson] {
@@ -46,6 +50,7 @@ final class LocalLessonRepository: LessonRepository {
         }
     }
 
+    // adds a new lesson to SwiftData and saves the change
     func addLesson(_ lesson: Lesson) {
 
         modelContext.insert(lesson)
@@ -53,6 +58,7 @@ final class LocalLessonRepository: LessonRepository {
         saveContext()
     }
 
+    // saves any pending changes to the SwiftData context
     private func saveContext() {
 
         do {
@@ -62,6 +68,7 @@ final class LocalLessonRepository: LessonRepository {
         }
     }
     
+    // saves changes made to an existing lesson
     func updateLesson(
         _ lesson: Lesson
     ) {
@@ -78,6 +85,7 @@ final class LocalLessonRepository: LessonRepository {
         }
     }
     
+    // deletes a lesson from SwiftData and saves the change
     func deleteLesson(
         _ lesson: Lesson
     ) {

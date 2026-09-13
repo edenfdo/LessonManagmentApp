@@ -11,6 +11,7 @@ struct LottiePlayerView: UIViewRepresentable {
 
     let name: String
 
+    // creates and configures the lottie animation view inside a UIKit container
     func makeUIView(context: Context) -> UIView {
 
         let containerView = UIView()
@@ -26,6 +27,7 @@ struct LottiePlayerView: UIViewRepresentable {
 
         containerView.addSubview(animationView)
 
+        // constrains the animation so it fills and stays centred in its container
         NSLayoutConstraint.activate([
 
             animationView.widthAnchor.constraint(
@@ -50,6 +52,7 @@ struct LottiePlayerView: UIViewRepresentable {
         return containerView
     }
 
+    // required by UIViewRepresentable
     func updateUIView(
         _ uiView: UIView,
         context: Context

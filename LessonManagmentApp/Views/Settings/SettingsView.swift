@@ -5,13 +5,6 @@
 //  Created by Eden Fernando on 10/9/2026.
 //
 
-//
-//  SettingsView.swift
-//  LessonManagmentApp
-//
-//  Created by Eden Fernando on 10/9/2026.
-//
-
 import SwiftUI
 
 struct SettingsView: View {
@@ -35,27 +28,23 @@ struct SettingsView: View {
                 spacing: 20
             ) {
 
-                // MARK: - Header
 
                 MenuBarView(
                     showMenu: $showMenu,
                     onLogoTap: onLogoTap
                 )
 
-                // MARK: - Page Title
 
                 Text("Settings")
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                // MARK: - Account
 
                 Text("Account")
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
 
-                // MARK: - Profile
 
                 Button {
 
@@ -114,7 +103,6 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
 
-                // MARK: - Change Password
 
                 Button {
 
@@ -176,7 +164,6 @@ struct SettingsView: View {
             .padding()
         }
 
-        // MARK: - Profile Sheet
 
         .sheet(
             isPresented: $showProfileSheet
@@ -187,7 +174,6 @@ struct SettingsView: View {
             )
         }
 
-        // MARK: - Change Password Sheet
 
         .sheet(
             isPresented: $showChangePasswordSheet

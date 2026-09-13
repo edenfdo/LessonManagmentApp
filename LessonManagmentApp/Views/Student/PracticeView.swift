@@ -17,8 +17,6 @@ struct PracticeView: View {
     @Binding var selectedSection: StudentSection
 
     let studentID: UUID
-    
-    
 
     @State private var animatingTaskID: UUID?
 
@@ -33,7 +31,6 @@ struct PracticeView: View {
                     spacing: 20
                 ) {
 
-                    // MARK: - Header
 
                     MenuBarView(
                         showMenu: $showMenu,
@@ -42,13 +39,11 @@ struct PracticeView: View {
                         }
                     )
 
-                    // MARK: - Page Title
 
                     Text("Practice")
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    // MARK: - Weekly Progress
 
                     VStack(
                         alignment: .leading,
@@ -71,7 +66,6 @@ struct PracticeView: View {
 
                     Divider()
 
-                    // MARK: - Tasks
 
                     Text("Your Tasks")
                         .font(.headline)
@@ -80,6 +74,7 @@ struct PracticeView: View {
                         viewModel.practiceTasks
                     ) { task in
 
+                        // toggles the task and plays the completion animation when it is newly completed
                         Button {
 
                             let wasCompleted =
@@ -113,7 +108,6 @@ struct PracticeView: View {
                                 spacing: 12
                             ) {
 
-                                // MARK: - Checkbox
 
                                 ZStack {
 
@@ -157,7 +151,6 @@ struct PracticeView: View {
                                     height: 32
                                 )
 
-                                // MARK: - Task Details
 
                                 VStack(
                                     alignment: .leading,
@@ -239,8 +232,7 @@ struct PracticeView: View {
 }
 
 
-// MARK: - Preview Helper
-
+// creates sample practice tasks and a view model for the practice preview
 private func makePreviewPracticeViewModel(
     repository: LocalPracticeTaskRepository,
     lessonRepository: LocalLessonRepository,
@@ -294,8 +286,6 @@ private func makePreviewPracticeViewModel(
         lessonRepository: lessonRepository
     )
 }
-
-// MARK: - Preview
 
 #Preview {
 

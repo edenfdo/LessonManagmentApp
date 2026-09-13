@@ -14,18 +14,21 @@ final class TeacherStudentsViewModel: ObservableObject {
 
     private let userRepository: UserRepository
 
+    // creates the view model with access to stored users
     init(
         userRepository: UserRepository
     ) {
         self.userRepository = userRepository
     }
 
+    // loads all students from the user repository
     func loadStudents() {
 
         students =
             userRepository.getStudents()
     }
 
+    // creates a new student account and saves it to the user repository
     func addStudent(
         firstName: String,
         lastName: String,
@@ -33,6 +36,7 @@ final class TeacherStudentsViewModel: ObservableObject {
         password: String
     ) {
 
+        // combines the first and last name and removes extra spaces
         let fullName =
             "\(firstName) \(lastName)"
                 .trimmingCharacters(

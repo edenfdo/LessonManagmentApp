@@ -14,8 +14,7 @@ import Foundation
 @MainActor
 struct LessonManagmentAppTests {
 
-    // MARK: - Helper
-
+    // creates an in-memory SwiftData container so each test runs with isolated data
     private func makeContainer() throws -> ModelContainer {
 
         let configuration =
@@ -35,8 +34,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 1. Lesson Scheduling - Happy Path
-
+    // verifies a lesson can be scheduled when it does not overlap another lesson
     @Test
     func scheduleLesson_succeeds_whenTimeDoesNotOverlapExistingLesson() throws {
 
@@ -113,9 +111,7 @@ struct LessonManagmentAppTests {
         #expect(conflict == nil)
     }
 
-
-    // MARK: - 2. Lesson Scheduling - Overlap Error
-
+    // verifies an overlapping lesson is detected as a scheduling conflict
     @Test
     func scheduleLesson_detectsConflict_whenTimesOverlap() throws {
 
@@ -167,7 +163,6 @@ struct LessonManagmentAppTests {
             teacherID: teacherID
         )
 
-        // Starts 30 minutes into an existing 60-minute lesson.
         let overlappingStart =
             existingStart.addingTimeInterval(
                 30 * 60
@@ -186,8 +181,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 3. Lesson Scheduling - Boundary
-
+    // verifies a lesson can start exactly when the previous lesson ends
     @Test
     func scheduleLesson_succeeds_whenStartingExactlyWhenPreviousLessonEnds() throws {
 
@@ -257,8 +251,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 4. Practice Task - Happy Path
-
+    // verifies a practice task can be assigned when its due date is after the lesson
     @Test
     func assignPracticeTask_succeeds_whenDueDateIsAfterLesson() throws {
 
@@ -332,8 +325,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 5. Practice Task - Due Before Lesson
-
+    // verifies a practice task is rejected when its due date is before the lesson
     @Test
     func assignPracticeTask_fails_whenDueDateIsBeforeLesson() throws {
 
@@ -401,8 +393,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 6. Practice Task - Boundary
-
+    // verifies a practice task is rejected when its due date equals the lesson time
     @Test
     func assignPracticeTask_fails_whenDueDateEqualsLessonTime() throws {
 
@@ -465,8 +456,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 7. Login - Happy Path
-
+    // verifies login succeeds with the correct email and password
     @Test
     func login_succeeds_withCorrectEmailAndPassword() throws {
 
@@ -509,8 +499,7 @@ struct LessonManagmentAppTests {
     }
 
 
-    // MARK: - 8. Login - Incorrect Password
-
+    // verifies login fails when the password is incorrect
     @Test
     func login_fails_withIncorrectPassword() throws {
 

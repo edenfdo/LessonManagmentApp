@@ -21,8 +21,6 @@ struct ResourcePreviewView: View {
             spacing: 14
         ) {
 
-            // MARK: - Header
-
             HStack {
 
                 VStack(
@@ -53,8 +51,6 @@ struct ResourcePreviewView: View {
 
             Divider()
 
-            // MARK: - File Viewer
-
             if resource.fileType == .pdf {
 
                 PDFResourceView(
@@ -75,8 +71,6 @@ struct ResourcePreviewView: View {
             }
 
             Divider()
-
-            // MARK: - File Information
 
             HStack {
 
@@ -106,8 +100,7 @@ struct ResourcePreviewView: View {
         .padding()
     }
 
-    // MARK: - Image Viewer
-
+    // loads and displays an image resource from local storage
     @ViewBuilder
     private func imageViewer(
         _ resource: Resource

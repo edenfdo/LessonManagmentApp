@@ -65,6 +65,7 @@ struct TeacherProfileDetailsView: View {
         }
     }
 
+    // creates a reusable field for displaying teacher profile information
     private func profileField(
         title: String,
         value: String

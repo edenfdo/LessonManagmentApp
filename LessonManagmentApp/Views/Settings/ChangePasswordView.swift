@@ -60,6 +60,7 @@ struct ChangePasswordView: View {
 
                     Button {
 
+                        // attempts to change the password and closes the form if successful
                         let success =
                             viewModel.changePassword(
                                 user: user,

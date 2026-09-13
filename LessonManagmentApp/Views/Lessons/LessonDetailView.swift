@@ -30,8 +30,6 @@ struct LessonDetailView: View {
                 spacing: 20
             ) {
 
-                // MARK: - Lesson Information
-
                 Text(lesson.title)
                     .font(.largeTitle)
                     .fontWeight(.bold)
@@ -60,7 +58,6 @@ struct LessonDetailView: View {
 
                 Divider()
 
-                // MARK: - Lesson Notes
 
                 VStack(
                     alignment: .leading,
@@ -89,7 +86,6 @@ struct LessonDetailView: View {
 
                 Divider()
 
-                // MARK: - Practice Tasks
 
                 VStack(
                     alignment: .leading,
@@ -114,6 +110,7 @@ struct LessonDetailView: View {
                             practiceTasks
                         ) { task in
 
+                            // toggles the task and plays the completion animation when it is newly completed
                             Button {
 
                                 let wasCompleted = task.isCompleted
@@ -141,7 +138,6 @@ struct LessonDetailView: View {
                                     spacing: 12
                                 ) {
 
-                                    // MARK: - Checkbox / Completion Animation
 
                                     ZStack {
 
@@ -223,7 +219,6 @@ struct LessonDetailView: View {
 
                 Divider()
 
-                // MARK: - Resources
 
                 VStack(
                     alignment: .leading,
@@ -310,6 +305,8 @@ struct LessonDetailView: View {
             .padding()
         }
     }
+    
+    // calculates the lesson end time using its start time and duration
     private var lessonEndTime: Date {
 
         lesson.date.addingTimeInterval(
@@ -320,8 +317,6 @@ struct LessonDetailView: View {
     }
 }
 
-
-// MARK: - Preview
 
 #Preview {
 

@@ -78,6 +78,7 @@ struct LoginView: View {
         .padding()
     }
 
+    // attempts to log in and passes the authenticated user back to the parent view
     private func login() {
 
         if let user =

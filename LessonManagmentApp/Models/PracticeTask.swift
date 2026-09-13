@@ -5,7 +5,6 @@
 //  Created by Eden Fernando on 30/8/2026.
 //
 
-
 import Foundation
 import SwiftData
 
@@ -21,12 +20,13 @@ final class PracticeTask: Identifiable {
     var studentID: UUID
     var teacherID: UUID
 
-    // Every practice task belongs to a lesson
+    // every practice task belongs to a lesson
     var lessonID: UUID
 
     var dueDate: Date?
     var isCompleted: Bool
 
+    // creates a practice task and links it to a student, teacher and lesson
     init(
         id: UUID,
         title: String,

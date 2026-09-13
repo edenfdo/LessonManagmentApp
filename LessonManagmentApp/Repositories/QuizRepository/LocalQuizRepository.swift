@@ -8,9 +8,11 @@
 import Foundation
 
 final class LocalQuizRepository: QuizRepository {
-    // Stores a static/hardcoded set of quizzes
+    
+    // returns the locally stored hard-coded quizzes and their questions
     func fetchQuizzes() -> [Quiz] {
 
+        // creates the questions for the treble clef quiz
         let trebleQuestions: [QuizQuestion] = [
 
             QuizQuestion(
@@ -63,6 +65,7 @@ final class LocalQuizRepository: QuizRepository {
             )
         ]
 
+        // creates the questions for the bass clef quiz
         let bassQuestions: [QuizQuestion] = [
 
             QuizQuestion(
@@ -115,6 +118,7 @@ final class LocalQuizRepository: QuizRepository {
             )
         ]
 
+        // creates and returns the available quizzes using the question sets above
         return [
 
             Quiz(

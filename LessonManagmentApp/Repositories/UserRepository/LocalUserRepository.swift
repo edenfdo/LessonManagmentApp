@@ -12,10 +12,12 @@ final class LocalUserRepository: UserRepository {
 
     private let modelContext: ModelContext
 
+    // creates the repository using the SwiftData model context
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
 
+    // fetches all users stored in SwiftData
     func getAllUsers() -> [User] {
 
         let descriptor = FetchDescriptor<User>()
@@ -27,14 +29,16 @@ final class LocalUserRepository: UserRepository {
             return []
         }
     }
-
+    
+    // returns only users with the student role
     func getStudents() -> [User] {
 
         getAllUsers().filter {
             $0.role == .student
         }
     }
-
+    
+    // returns only users with the teacher role
     func getTeachers() -> [User] {
 
         getAllUsers().filter {
@@ -42,6 +46,7 @@ final class LocalUserRepository: UserRepository {
         }
     }
 
+    // adds a new user to SwiftData and saves the change
     func addUser(_ user: User) {
 
         modelContext.insert(user)
@@ -53,6 +58,7 @@ final class LocalUserRepository: UserRepository {
         }
     }
     
+    // saves changes made to an existing user
     func updateUser(_ user: User) {
 
         do {

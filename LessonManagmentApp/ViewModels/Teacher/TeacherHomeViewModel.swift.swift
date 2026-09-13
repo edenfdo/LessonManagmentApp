@@ -16,6 +16,7 @@ final class TeacherHomeViewModel: ObservableObject {
     private let lessonRepository: LessonRepository
     private let userRepository: UserRepository
 
+    // creates the view model with access to lesson and user data
     init(
         lessonRepository: LessonRepository,
         userRepository: UserRepository
@@ -24,6 +25,7 @@ final class TeacherHomeViewModel: ObservableObject {
         self.userRepository = userRepository
     }
 
+    // loads today's lessons for the teacher and sorts them by time
     func loadTodaysLessons(
         teacherID: UUID
     ) {
@@ -46,6 +48,7 @@ final class TeacherHomeViewModel: ObservableObject {
                 }
     }
 
+    // finds the student assigned to a specific lesson
     func studentForLesson(
         _ lesson: Lesson
     ) -> User? {

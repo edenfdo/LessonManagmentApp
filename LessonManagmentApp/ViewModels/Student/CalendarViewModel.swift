@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 
-/// Provides lesson information for the student Calendar screen.
 class CalendarViewModel: ObservableObject {
 
     @Published var lessons: [Lesson] = []
@@ -22,6 +21,7 @@ class CalendarViewModel: ObservableObject {
 
     private let lessonRepository: LessonRepository
 
+    // creates the view model with access to lesson, practice task and resource data
     init(
         lessonRepository: LessonRepository,
         practiceTaskRepository: PracticeTaskRepository,
@@ -32,7 +32,7 @@ class CalendarViewModel: ObservableObject {
         self.resourceRepository = resourceRepository
     }
 
-    // Loads all lessons belonging to the student
+    // loads the student's lessons, practice tasks and resources
     func loadData(
         studentID: UUID
     ) {
@@ -56,7 +56,7 @@ class CalendarViewModel: ObservableObject {
                 )
     }
 
-    // Finds lessons that occur on a selected date
+    // finds lessons that occur on the selected date
     func lessons(for date: Date) -> [Lesson] {
 
         lessons.filter { lesson in
@@ -67,6 +67,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
+    // finds practice tasks linked to a specific lesson
     func practiceTasksForLesson(
         _ lesson: Lesson
     ) -> [PracticeTask] {
@@ -76,6 +77,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
 
+    // finds resources linked to a specific lesson
     func resourcesForLesson(
         _ lesson: Lesson
     ) -> [Resource] {
@@ -85,6 +87,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
+    // toggles a task's completion status and saves the change
     func toggleTaskCompletion(
         _ task: PracticeTask
     ) {

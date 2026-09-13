@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 
-/// Provides lesson and practice information for the student Home screen.
 class StudentHomeViewModel: ObservableObject {
 
     @Published var upcomingLesson: Lesson?
@@ -17,6 +16,7 @@ class StudentHomeViewModel: ObservableObject {
     private let lessonRepository: LessonRepository
     private let practiceTaskRepository: PracticeTaskRepository
 
+    // creates the view model with access to lesson and practice task data
     init(
         lessonRepository: LessonRepository,
         practiceTaskRepository: PracticeTaskRepository
@@ -25,11 +25,13 @@ class StudentHomeViewModel: ObservableObject {
         self.practiceTaskRepository = practiceTaskRepository
     }
 
+    // loads the student's next upcoming lesson and practice tasks
     func loadHomeData(for studentID: UUID) {
 
         let studentLessons =
             lessonRepository.getLessons(forStudentID: studentID)
 
+        // filters out past lessons and selects the closest upcoming lesson
         upcomingLesson = studentLessons
             .filter { $0.date >= Date() }
             .sorted { $0.date < $1.date }
@@ -39,6 +41,7 @@ class StudentHomeViewModel: ObservableObject {
             practiceTaskRepository.getTasks(forStudentID: studentID)
     }
     
+    // toggles a task's completion status and saves the change
     func toggleTaskCompletion(_ task: PracticeTask) {
 
         task.isCompleted.toggle()
@@ -46,6 +49,7 @@ class StudentHomeViewModel: ObservableObject {
         practiceTaskRepository.updateTask(task)
     }
 
+    // calculates the student's practice progress as a value between 0 and 1
     var progress: Double {
 
         guard !practiceTasks.isEmpty else {
