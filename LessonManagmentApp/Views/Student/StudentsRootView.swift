@@ -181,17 +181,12 @@ struct StudentRootView: View {
             CalendarView(
                 viewModel: CalendarViewModel(
                     lessonRepository: lessonRepository,
-                    practiceTaskRepository:
-                        practiceTaskRepository,
-                    resourceRepository:
-                        resourceRepository
+                    practiceTaskRepository: practiceTaskRepository,
+                    resourceRepository: resourceRepository
                 ),
                 showMenu: $showMenu,
                 studentID: student.id,
-                selectedSection:
-                    $selectedSection,
-                resourceToOpen:
-                    $resourceToOpen
+                selectedSection: $selectedSection
             )
 
         case .practice:

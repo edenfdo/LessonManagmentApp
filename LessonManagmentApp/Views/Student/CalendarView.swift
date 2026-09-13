@@ -16,10 +16,10 @@ struct CalendarView: View {
     let studentID: UUID
 
     @State private var selectedLesson: Lesson?
+    @State private var selectedResource: Resource?
     @State private var displayedMonth: Date = Date()
     
     @Binding var selectedSection: StudentSection
-    @Binding var resourceToOpen: Resource?
 
 
     var body: some View {
@@ -177,7 +177,8 @@ struct CalendarView: View {
 
             if let lesson = selectedLesson {
 
-                Color.black.opacity(0.3)
+                Color.black
+                    .opacity(0.3)
                     .ignoresSafeArea()
                     .onTapGesture {
                         selectedLesson = nil
@@ -231,12 +232,7 @@ struct CalendarView: View {
                         onOpenResource: { resource in
 
                             selectedLesson = nil
-
-                            resourceToOpen =
-                                resource
-
-                            selectedSection =
-                                .resources
+                            selectedResource = resource
                         }
                     )
                 }
@@ -249,6 +245,31 @@ struct CalendarView: View {
                 )
                 .cornerRadius(20)
                 .shadow(radius: 10)
+                .padding()
+            }
+
+
+            // MARK: - Resource Preview Popup
+
+            if let resource = selectedResource {
+
+                Color.black
+                    .opacity(0.35)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+
+                        selectedResource = nil
+                    }
+
+                ResourcePreviewView(
+                    resource: resource,
+                    subtitle:
+                        "From \(resource.teacherName)",
+                    onClose: {
+
+                        selectedResource = nil
+                    }
+                )
                 .padding()
             }
         }
@@ -321,9 +342,6 @@ private func makeCalendarPreviewViewModel(
     @Previewable
     @State var selectedSection: StudentSection = .calendar
 
-    @Previewable
-    @State var resourceToOpen: Resource?
-
     let studentID = UUID()
     let teacherID = UUID()
 
@@ -365,7 +383,6 @@ private func makeCalendarPreviewViewModel(
         showMenu: $showMenu,
         studentID: studentID,
         selectedSection: $selectedSection,
-        resourceToOpen: $resourceToOpen
     )
     .modelContainer(container)
 }
