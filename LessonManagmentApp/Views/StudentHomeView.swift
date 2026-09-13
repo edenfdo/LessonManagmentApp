@@ -266,12 +266,13 @@ private func makeStudentHomePreviewViewModel(
     let lessonID = UUID()
 
     let sampleLesson = Lesson(
-        id: lessonID,
+        id: UUID(),
         title: "Piano Lesson",
-        date: Date().addingTimeInterval(86400),
+        date: Date(),
+        durationMinutes: 60,
         studentID: studentID,
         teacherID: teacherID,
-        notes: "Practise C major scale and bars 1–16.",
+        notes: "Practise C major scale.",
         location: "Room 3"
     )
 

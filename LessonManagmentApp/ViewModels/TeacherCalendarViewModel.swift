@@ -104,13 +104,14 @@ final class TeacherCalendarViewModel: ObservableObject {
     func addLesson(
         title: String,
         date: Date,
+        durationMinutes: Int,
         location: String,
         notes: String,
         studentID: UUID,
         teacherID: UUID,
         repeatOption: LessonRepeatOption,
         numberOfLessons: Int
-    ) {
+    ){
 
         let lessonCount =
             repeatOption == .none
@@ -130,6 +131,7 @@ final class TeacherCalendarViewModel: ObservableObject {
                 id: UUID(),
                 title: title,
                 date: lessonDate,
+                durationMinutes: durationMinutes,
                 studentID: studentID,
                 teacherID: teacherID,
                 notes: notes,
@@ -177,6 +179,68 @@ final class TeacherCalendarViewModel: ObservableObject {
         resources.filter {
             $0.lessonID == lesson.id
         }
+    }
+    
+    // MARK: - Check Lesson Conflict
+
+    func conflictingLesson(
+        startingDate: Date,
+        durationMinutes: Int,
+        teacherID: UUID,
+        repeatOption: LessonRepeatOption,
+        numberOfLessons: Int
+    ) -> Lesson? {
+
+        let lessonCount =
+            repeatOption == .none
+            ? 1
+            : numberOfLessons
+
+        for index in 0..<lessonCount {
+
+            let newLessonStart =
+                dateForLesson(
+                    startingDate: startingDate,
+                    index: index,
+                    repeatOption: repeatOption
+                )
+
+            let newLessonEnd =
+                newLessonStart.addingTimeInterval(
+                    TimeInterval(
+                        durationMinutes * 60
+                    )
+                )
+
+            for existingLesson in lessons {
+
+                guard existingLesson.teacherID == teacherID
+                else {
+                    continue
+                }
+
+                let existingStart =
+                    existingLesson.date
+
+                let existingEnd =
+                    existingStart.addingTimeInterval(
+                        TimeInterval(
+                            existingLesson.durationMinutes * 60
+                        )
+                    )
+
+                let overlaps =
+                    newLessonStart < existingEnd
+                    &&
+                    newLessonEnd > existingStart
+
+                if overlaps {
+                    return existingLesson
+                }
+            }
+        }
+
+        return nil
     }
 
     // MARK: - Calculate Recurring Date

@@ -16,6 +16,7 @@ final class Lesson: Identifiable {
 
     var title: String
     var date: Date
+    var durationMinutes: Int
 
     var studentID: UUID
     var teacherID: UUID
@@ -24,20 +25,23 @@ final class Lesson: Identifiable {
     var location: String
 
     init(
-        id: UUID,
-        title: String,
-        date: Date,
-        studentID: UUID,
-        teacherID: UUID,
-        notes: String,
-        location: String
-    ) {
-        self.id = id
-        self.title = title
-        self.date = date
-        self.studentID = studentID
-        self.teacherID = teacherID
-        self.notes = notes
-        self.location = location
-    }
+            id: UUID,
+            title: String,
+            date: Date,
+            durationMinutes: Int,
+            studentID: UUID,
+            teacherID: UUID,
+            notes: String,
+            location: String
+        ) {
+
+            self.id = id
+            self.title = title
+            self.date = date
+            self.durationMinutes = durationMinutes
+            self.studentID = studentID
+            self.teacherID = teacherID
+            self.notes = notes
+            self.location = location
+        }
 }

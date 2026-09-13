@@ -21,6 +21,7 @@ struct AddLessonView: View {
     @State private var title = "Piano Lesson"
 
     @State private var date = Date()
+    @State private var durationMinutes = 60
 
     @State private var location = ""
 
@@ -30,6 +31,10 @@ struct AddLessonView: View {
         LessonRepeatOption = .none
 
     @State private var numberOfLessons = 4
+    
+    @State private var showConflictAlert = false
+    @State private var conflictMessage = ""
+    @State private var pendingStudentID: UUID?
 
     var body: some View {
 
@@ -77,6 +82,13 @@ struct AddLessonView: View {
                             .date,
                             .hourAndMinute
                         ]
+                    )
+                    
+                    Stepper(
+                        "Duration: \(durationMinutes) minutes",
+                        value: $durationMinutes,
+                        in: 15...180,
+                        step: 15
                     )
 
                     TextField(
@@ -184,6 +196,30 @@ struct AddLessonView: View {
                     }
                 }
             }
+            .alert(
+                "Lesson Conflict",
+                isPresented: $showConflictAlert
+            ) {
+
+                Button(
+                    "Change Time",
+                    role: .cancel
+                ) { }
+
+                Button(
+                    "Add Anyway",
+                    role: .destructive
+                ) {
+
+                    addLessonIgnoringConflict()
+                }
+
+            } message: {
+
+                Text(
+                    "\(conflictMessage)\n\nDo you still want to add this lesson?"
+                )
+            }
         }
     }
 
@@ -196,9 +232,47 @@ struct AddLessonView: View {
             return
         }
 
+        if let conflict =
+            viewModel.conflictingLesson(
+                startingDate: date,
+                durationMinutes: durationMinutes,
+                teacherID: teacher.id,
+                repeatOption: repeatOption,
+                numberOfLessons: numberOfLessons
+            ) {
+
+            let conflictStart =
+                conflict.date.formatted(
+                    date: .abbreviated,
+                    time: .shortened
+                )
+
+            let conflictEnd =
+                conflict.date
+                    .addingTimeInterval(
+                        TimeInterval(
+                            conflict.durationMinutes * 60
+                        )
+                    )
+                    .formatted(
+                        date: .omitted,
+                        time: .shortened
+                    )
+
+            conflictMessage =
+                "\(conflict.title) is already scheduled from \(conflictStart) to \(conflictEnd)."
+
+            pendingStudentID =
+                selectedStudentID
+
+            showConflictAlert = true
+
+            return
+        }
         viewModel.addLesson(
             title: title,
             date: date,
+            durationMinutes: durationMinutes,
             location: location,
             notes: notes,
             studentID: selectedStudentID,
@@ -241,5 +315,29 @@ struct AddLessonView: View {
                 to: date
             ) ?? date
         }
+        
+    }
+    
+    private func addLessonIgnoringConflict() {
+
+        guard let studentID =
+            pendingStudentID
+        else {
+            return
+        }
+
+        viewModel.addLesson(
+            title: title,
+            date: date,
+            durationMinutes: durationMinutes,
+            location: location,
+            notes: notes,
+            studentID: studentID,
+            teacherID: teacher.id,
+            repeatOption: repeatOption,
+            numberOfLessons: numberOfLessons
+        )
+
+        dismiss()
     }
 }

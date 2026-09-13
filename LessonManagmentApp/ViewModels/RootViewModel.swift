@@ -158,6 +158,7 @@ final class RootViewModel: ObservableObject {
             id: Self.lessonID,
             title: "Piano Lesson",
             date: Date().addingTimeInterval(86400),
+            durationMinutes: 60,
             studentID: Self.studentID,
             teacherID: Self.teacherID,
             notes:

@@ -275,6 +275,7 @@ struct LessonDetailView: View {
             id: lessonID,
             title: "Piano Lesson",
             date: Date(),
+            durationMinutes: 60,
             studentID: UUID(),
             teacherID: UUID(),
             notes:
