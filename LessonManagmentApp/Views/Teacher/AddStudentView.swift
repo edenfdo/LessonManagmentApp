@@ -12,6 +12,8 @@ struct AddStudentView: View {
     @State private var password = ""
     
     @ObservedObject var viewModel: TeacherStudentsViewModel
+    
+    @State private var showDuplicateEmailAlert = false
 
     @Environment(\.dismiss)
     private var dismiss
@@ -112,18 +114,31 @@ struct AddStudentView: View {
                 }
             }
         }
+        .alert(
+            "Email Already Exists",
+            isPresented: $showDuplicateEmailAlert
+        ) {
+            Button("OK", role: .cancel) {
+            }
+        } message: {
+            Text("An account with this email address already exists.")
+        }
     }
+    
 
     // creates the student account using the entered details and closes the form
     private func addStudent() {
+        let wasAdded = viewModel.addStudent(
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        )
 
-            viewModel.addStudent(
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password
-            )
-
+        if wasAdded {
             dismiss()
+        } else {
+            showDuplicateEmailAlert = true
         }
+    }
 }

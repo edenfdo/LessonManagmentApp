@@ -29,7 +29,7 @@ final class LoginViewModel: ObservableObject {
         errorMessage = ""
 
         // normalises the email so spaces and capitalisation do not affect login
-        let cleanedEmail =
+        let normalizedEmail =
             email
                 .trimmingCharacters(
                     in: .whitespacesAndNewlines
@@ -42,9 +42,8 @@ final class LoginViewModel: ObservableObject {
         // finds a user with the matching email and verifies the entered password
         let matchingUser =
             users.first { user in
-
-                user.email.lowercased()
-                    == cleanedEmail
+                user.normalizedEmail
+                    == normalizedEmail
                 &&
                 PasswordHasher.verify(
                     password: password,

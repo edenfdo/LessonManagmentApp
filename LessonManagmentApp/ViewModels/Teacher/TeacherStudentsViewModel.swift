@@ -34,27 +34,37 @@ final class TeacherStudentsViewModel: ObservableObject {
         lastName: String,
         email: String,
         password: String
-    ) {
+    ) -> Bool {
 
+        let normalizedEmail = email
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        let emailAlreadyExists = userRepository
+            .getAllUsers()
+            .contains {
+                $0.normalizedEmail == normalizedEmail
+            }
+
+        guard !emailAlreadyExists else {
+            return false
+        }
+        
         // combines the first and last name and removes extra spaces
-        let fullName =
-            "\(firstName) \(lastName)"
-                .trimmingCharacters(
-                    in: .whitespacesAndNewlines
-                )
+        let fullName = "\(firstName) \(lastName)"
+            .trimmingCharacters(in: .whitespacesAndNewlines)
 
         let student = User(
-            id: UUID(),
             name: fullName,
             email: email,
             password: password,
             role: .student
         )
 
-        userRepository.addUser(
-            student
-        )
-
+        userRepository.addUser(student)
         loadStudents()
+
+        return true
     }
+    
 }

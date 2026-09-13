@@ -15,10 +15,16 @@ final class User: Identifiable {
     var id: UUID
 
     var name: String
+
     var email: String
+
+    @Attribute(.unique)
+    var normalizedEmail: String
+
     var passwordHash: String
+
     var roleRawValue: String
-    
+        
     // converts the stored String value into a UserRole for use throughout the app
     var role: UserRole {
         get {
@@ -32,7 +38,7 @@ final class User: Identifiable {
 
     // creates a user, securely storing the password as a hash and the role as a String
     init(
-        id: UUID,
+        id: UUID = UUID(),
         name: String,
         email: String,
         password: String,
@@ -40,15 +46,15 @@ final class User: Identifiable {
     ) {
         self.id = id
         self.name = name
-        self.email = email
 
-        // hashes the password so the original password is not stored directly
-        self.passwordHash =
-            PasswordHasher.hash(
-                password
-            )
+        let cleanedEmail = email
+            .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        self.roleRawValue =
-            role.rawValue
+        self.email = cleanedEmail
+
+        self.normalizedEmail = cleanedEmail.lowercased()
+
+        self.passwordHash = PasswordHasher.hash(password)
+        self.roleRawValue = role.rawValue
     }
 }
