@@ -162,7 +162,10 @@ struct TeacherRootView: View {
                 teacher: teacher,
                 showMenu: $showMenu,
                 selectedSection: $selectedSection,
-                lessonRepository: lessonRepository
+                viewModel: TeacherHomeViewModel(
+                    lessonRepository: lessonRepository,
+                    userRepository: userRepository
+                )
             )
             
         case .calendar:
