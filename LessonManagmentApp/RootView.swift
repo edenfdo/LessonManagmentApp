@@ -45,12 +45,13 @@ struct RootView: View {
                 switch user.role {
                     
                 case .student:
-                    
+
                     StudentRootView(
                         student: user,
                         lessonRepository: lessonRepository,
                         practiceTaskRepository: practiceTaskRepository,
                         resourceRepository: resourceRepository,
+                        userRepository: userRepository,
                         onLogout: {
                             viewModel.logout()
                         }

@@ -105,6 +105,38 @@ struct TeacherRootView: View {
                         )
 
                         Spacer()
+
+                        // MARK: - Logout
+
+                        Divider()
+
+                        Button {
+
+                            showMenu = false
+                            onLogout()
+
+                        } label: {
+
+                            HStack(
+                                spacing: 16
+                            ) {
+
+                                Image(
+                                    systemName:
+                                        "rectangle.portrait.and.arrow.right"
+                                )
+                                .frame(width: 24)
+
+                                Text("Log Out")
+                                    .fontWeight(.semibold)
+
+                                Spacer()
+                            }
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 16)
+                            .foregroundStyle(.red)
+                        }
+                        .buttonStyle(.plain)
                     }
                     .frame(width: 300)
                     .background(
@@ -123,18 +155,18 @@ struct TeacherRootView: View {
     private var currentPage: some View {
 
         switch selectedSection {
-
+            
         case .home:
-
+            
             TeacherHomeView(
                 teacher: teacher,
                 showMenu: $showMenu,
                 selectedSection: $selectedSection,
                 lessonRepository: lessonRepository
             )
-
+            
         case .calendar:
-
+            
             TeacherCalendarView(
                 showMenu: $showMenu,
                 teacher: teacher,
@@ -146,9 +178,9 @@ struct TeacherRootView: View {
                             userRepository
                     )
             )
-
+            
         case .students:
-
+            
             TeacherStudentsView(
                 showMenu: $showMenu,
                 viewModel: TeacherStudentsViewModel(
@@ -157,9 +189,9 @@ struct TeacherRootView: View {
                 lessonRepository: lessonRepository,
                 practiceTaskRepository: practiceTaskRepository
             )
-
+            
         case .practice:
-
+            
             TeacherPracticeView(
                 showMenu: $showMenu,
                 teacher: teacher,
@@ -173,9 +205,9 @@ struct TeacherRootView: View {
                             lessonRepository
                     )
             )
-
+            
         case .resources:
-
+            
             TeacherResourcesView(
                 showMenu: $showMenu,
                 teacher: teacher,
@@ -186,14 +218,15 @@ struct TeacherRootView: View {
                         lessonRepository: lessonRepository
                     )
             )
-
+            
         case .settings:
-
-            TeacherSettingsView(
+            
+            SettingsView(
                 showMenu: $showMenu,
-                teacherName: teacher.name,
-                teacherEmail: teacher.email,
-                onLogout: onLogout
+                user: teacher,
+                viewModel: SettingsViewModel(
+                    userRepository: userRepository
+                )
             )
         }
     }

@@ -52,4 +52,15 @@ final class LocalUserRepository: UserRepository {
             print("Failed to save user: \(error)")
         }
     }
+    
+    func updateUser(_ user: User) {
+
+        do {
+            try modelContext.save()
+        } catch {
+            print(
+                "Failed to update user: \(error)"
+            )
+        }
+    }
 }

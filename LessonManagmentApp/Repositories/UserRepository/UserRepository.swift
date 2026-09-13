@@ -16,4 +16,6 @@ protocol UserRepository {
     func getTeachers() -> [User]
 
     func addUser(_ user: User)
+    
+    func updateUser(_ user: User)
 }

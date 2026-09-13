@@ -28,25 +28,10 @@ struct TeacherResourcesView: View {
 
                 // MARK: - Header
 
-                HStack {
-
-                    Text("Logo")
-                        .font(.title)
-                        .fontWeight(.bold)
-
-                    Spacer()
-
-                    Button {
-                        showMenu = true
-                    } label: {
-
-                        Image(
-                            systemName: "line.3.horizontal"
-                        )
-                        .font(.title)
-                    }
-                }
-
+                MenuBarView(
+                    showMenu: $showMenu
+                )
+                
                 // MARK: - Page Title
 
                 Text("Resources")

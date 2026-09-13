@@ -8,11 +8,28 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-#Preview {
-    MenuBarView()
+    @Binding var showMenu: Bool
+
+    var body: some View {
+
+        HStack {
+
+            Text("Logo")
+                .font(.title)
+                .fontWeight(.bold)
+
+            Spacer()
+
+            Button {
+                showMenu = true
+            } label: {
+
+                Image(
+                    systemName: "line.3.horizontal"
+                )
+                .font(.title)
+            }
+        }
+    }
 }

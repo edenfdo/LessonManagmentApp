@@ -13,9 +13,11 @@ struct StudentRootView: View {
     @State private var showMenu = false
 
     let student: User
+
     let lessonRepository: LessonRepository
     let practiceTaskRepository: PracticeTaskRepository
     let resourceRepository: ResourceRepository
+    let userRepository: UserRepository
 
     let onLogout: () -> Void
 
@@ -23,11 +25,7 @@ struct StudentRootView: View {
 
         ZStack {
 
-            // Current page
-
             currentPage
-
-            // Shared side menu
 
             if showMenu {
 
@@ -41,7 +39,12 @@ struct StudentRootView: View {
 
                     Spacer()
 
-                    VStack(alignment: .leading, spacing: 0) {
+                    VStack(
+                        alignment: .leading,
+                        spacing: 0
+                    ) {
+
+                        // MARK: - Menu Header
 
                         HStack {
 
@@ -55,8 +58,10 @@ struct StudentRootView: View {
                                 showMenu = false
                             } label: {
 
-                                Image(systemName: "xmark")
-                                    .font(.title2)
+                                Image(
+                                    systemName: "xmark"
+                                )
+                                .font(.title2)
                             }
                         }
                         .padding(.horizontal, 24)
@@ -64,6 +69,8 @@ struct StudentRootView: View {
                         .padding(.bottom, 25)
 
                         Divider()
+
+                        // MARK: - Menu Items
 
                         menuButton(
                             title: "Home",
@@ -79,7 +86,7 @@ struct StudentRootView: View {
 
                         menuButton(
                             title: "Practice",
-                            icon: "music.note",
+                            icon: "checklist",
                             section: .practice
                         )
 
@@ -95,8 +102,6 @@ struct StudentRootView: View {
                             section: .quizzes
                         )
 
-                    
-
                         menuButton(
                             title: "Settings",
                             icon: "gearshape",
@@ -104,9 +109,43 @@ struct StudentRootView: View {
                         )
 
                         Spacer()
+
+                        // MARK: - Logout
+
+                        Divider()
+
+                        Button {
+
+                            showMenu = false
+                            onLogout()
+
+                        } label: {
+
+                            HStack(
+                                spacing: 16
+                            ) {
+
+                                Image(
+                                    systemName:
+                                        "rectangle.portrait.and.arrow.right"
+                                )
+                                .frame(width: 24)
+
+                                Text("Log Out")
+                                    .fontWeight(.semibold)
+
+                                Spacer()
+                            }
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 16)
+                            .foregroundStyle(.red)
+                        }
+                        .buttonStyle(.plain)
                     }
                     .frame(width: 300)
-                    .background(Color(.systemBackground))
+                    .background(
+                        Color(.systemBackground)
+                    )
                     .ignoresSafeArea()
                     .shadow(radius: 10)
                 }
@@ -126,18 +165,21 @@ struct StudentRootView: View {
             StudentHomeView(
                 viewModel: StudentHomeViewModel(
                     lessonRepository: lessonRepository,
-                    practiceTaskRepository: practiceTaskRepository
+                    practiceTaskRepository:
+                        practiceTaskRepository
                 ),
                 studentID: student.id,
                 showMenu: $showMenu,
-                selectedSection: $selectedSection
+                selectedSection:
+                    $selectedSection
             )
 
         case .calendar:
 
             CalendarView(
                 viewModel: CalendarViewModel(
-                    lessonRepository: lessonRepository
+                    lessonRepository:
+                        lessonRepository
                 ),
                 showMenu: $showMenu,
                 studentID: student.id
@@ -147,7 +189,8 @@ struct StudentRootView: View {
 
             PracticeView(
                 viewModel: PracticeViewModel(
-                    practiceTaskRepository: practiceTaskRepository
+                    practiceTaskRepository:
+                        practiceTaskRepository
                 ),
                 showMenu: $showMenu,
                 studentID: student.id
@@ -170,19 +213,21 @@ struct StudentRootView: View {
             QuizzesView(
                 showMenu: $showMenu,
                 viewModel: QuizViewModel(
-                    quizRepository: LocalQuizRepository()
+                    quizRepository:
+                        LocalQuizRepository()
                 )
             )
-            
-        
 
         case .settings:
 
             SettingsView(
                 showMenu: $showMenu,
-                studentName: student.name,
-                studentEmail: student.email,
-                onLogout: onLogout
+                user: student,
+                viewModel:
+                    SettingsViewModel(
+                        userRepository:
+                            userRepository
+                    )
             )
         }
     }
@@ -202,20 +247,36 @@ struct StudentRootView: View {
 
         } label: {
 
-            HStack(spacing: 18) {
+            HStack(
+                spacing: 16
+            ) {
 
-                Image(systemName: icon)
-                    .frame(width: 28)
+                Image(
+                    systemName: icon
+                )
+                .frame(width: 24)
 
                 Text(title)
-                    .font(.title3)
+                    .fontWeight(
+                        selectedSection == section
+                            ? .semibold
+                            : .regular
+                    )
 
                 Spacer()
             }
-            .foregroundStyle(.primary)
             .padding(.horizontal, 24)
-            .padding(.vertical, 18)
-            .contentShape(Rectangle())
+            .padding(.vertical, 16)
+            .foregroundStyle(
+                selectedSection == section
+                    ? Color.blue
+                    : Color.primary
+            )
+            .background(
+                selectedSection == section
+                    ? Color.blue.opacity(0.08)
+                    : Color.clear
+            )
         }
         .buttonStyle(.plain)
     }

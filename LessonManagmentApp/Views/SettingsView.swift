@@ -5,17 +5,25 @@
 //  Created by Eden Fernando on 10/9/2026.
 //
 
+//
+//  SettingsView.swift
+//  LessonManagmentApp
+//
+//  Created by Eden Fernando on 10/9/2026.
+//
+
 import SwiftUI
 
 struct SettingsView: View {
 
     @Binding var showMenu: Bool
 
-    let studentName: String
-    let studentEmail: String
-    let onLogout: () -> Void
+    let user: User
+
+    @StateObject var viewModel: SettingsViewModel
 
     @State private var showProfileSheet = false
+    @State private var showChangePasswordSheet = false
 
     var body: some View {
 
@@ -28,24 +36,9 @@ struct SettingsView: View {
 
                 // MARK: - Header
 
-                HStack {
-
-                    Text("Logo")
-                        .font(.title)
-                        .fontWeight(.bold)
-
-                    Spacer()
-
-                    Button {
-                        showMenu = true
-                    } label: {
-
-                        Image(
-                            systemName: "line.3.horizontal"
-                        )
-                        .font(.title)
-                    }
-                }
+                MenuBarView(
+                    showMenu: $showMenu
+                )
 
                 // MARK: - Page Title
 
@@ -60,6 +53,8 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
 
+                // MARK: - Profile
+
                 Button {
 
                     showProfileSheet = true
@@ -68,20 +63,22 @@ struct SettingsView: View {
 
                     HStack(spacing: 14) {
 
-                        Image(systemName: "person.circle")
-                            .font(.title3)
-                            .frame(
-                                width: 36,
-                                height: 36
+                        Image(
+                            systemName: "person.circle"
+                        )
+                        .font(.title3)
+                        .frame(
+                            width: 36,
+                            height: 36
+                        )
+                        .background(
+                            .blue.opacity(0.10)
+                        )
+                        .clipShape(
+                            RoundedRectangle(
+                                cornerRadius: 9
                             )
-                            .background(
-                                .blue.opacity(0.10)
-                            )
-                            .clipShape(
-                                RoundedRectangle(
-                                    cornerRadius: 9
-                                )
-                            )
+                        )
 
                         VStack(
                             alignment: .leading,
@@ -92,9 +89,11 @@ struct SettingsView: View {
                                 .fontWeight(.medium)
                                 .foregroundStyle(.primary)
 
-                            Text("View your account details")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            Text(
+                                "View your account details"
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         }
 
                         Spacer()
@@ -113,36 +112,64 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
 
-                // MARK: - Log Out
+                // MARK: - Change Password
 
                 Button {
 
-                    onLogout()
+                    showChangePasswordSheet = true
 
                 } label: {
 
-                    HStack {
+                    HStack(spacing: 14) {
 
                         Image(
-                            systemName:
-                                "rectangle.portrait.and.arrow.right"
+                            systemName: "lock"
+                        )
+                        .font(.title3)
+                        .frame(
+                            width: 36,
+                            height: 36
+                        )
+                        .background(
+                            .blue.opacity(0.10)
+                        )
+                        .clipShape(
+                            RoundedRectangle(
+                                cornerRadius: 9
+                            )
                         )
 
-                        Text("Log Out")
-                            .fontWeight(.semibold)
+                        VStack(
+                            alignment: .leading,
+                            spacing: 4
+                        ) {
+
+                            Text("Change Password")
+                                .fontWeight(.medium)
+                                .foregroundStyle(.primary)
+
+                            Text(
+                                "Update your account password"
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
 
                         Spacer()
+
+                        Image(
+                            systemName: "chevron.right"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
                     .padding()
-                    .foregroundStyle(.red)
                     .background(
-                        .red.opacity(0.08)
+                        .gray.opacity(0.10)
                     )
                     .cornerRadius(14)
                 }
                 .buttonStyle(.plain)
-
-                Spacer()
             }
             .padding()
         }
@@ -153,25 +180,21 @@ struct SettingsView: View {
             isPresented: $showProfileSheet
         ) {
 
-            ProfileDetailsView(
-                name: studentName,
-                email: studentEmail
+            ProfileView(
+                user: user
+            )
+        }
+
+        // MARK: - Change Password Sheet
+
+        .sheet(
+            isPresented: $showChangePasswordSheet
+        ) {
+
+            ChangePasswordView(
+                user: user,
+                viewModel: viewModel
             )
         }
     }
-}
-
-#Preview {
-
-    @Previewable
-    @State var showMenu = false
-
-    SettingsView(
-        showMenu: $showMenu,
-        studentName: "Mia",
-        studentEmail: "mia@email.com",
-        onLogout: {
-            print("Logged out")
-        }
-    )
 }
