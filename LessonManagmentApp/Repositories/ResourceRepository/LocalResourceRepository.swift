@@ -96,4 +96,24 @@ final class LocalResourceRepository:
             )
         }
     }
+    
+    func deleteResource(
+        _ resource: Resource
+    ) {
+
+        modelContext.delete(
+            resource
+        )
+
+        do {
+
+            try modelContext.save()
+
+        } catch {
+
+            print(
+                "Failed to delete resource: \(error)"
+            )
+        }
+    }
 }

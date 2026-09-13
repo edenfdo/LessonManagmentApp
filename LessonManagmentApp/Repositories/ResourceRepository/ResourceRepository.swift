@@ -26,4 +26,6 @@ protocol ResourceRepository {
     func updateResource(
         _ resource: Resource
     )
+    
+    func deleteResource(_ resource: Resource)
 }

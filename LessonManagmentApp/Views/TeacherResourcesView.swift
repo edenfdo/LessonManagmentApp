@@ -27,6 +27,9 @@ struct TeacherResourcesView: View {
 
     
     @State private var resourceToEdit: Resource?
+    @State private var resourceToDelete: Resource?
+    @State private var showDeleteAlert = false
+    
     var body: some View {
 
         ZStack {
@@ -175,6 +178,40 @@ struct TeacherResourcesView: View {
                 viewModel: viewModel
             )
         }
+        .alert(
+            "Delete Resource?",
+            isPresented: $showDeleteAlert
+        ) {
+
+            Button(
+                "Cancel",
+                role: .cancel
+            ) {
+                resourceToDelete = nil
+            }
+
+            Button(
+                "Delete",
+                role: .destructive
+            ) {
+
+                if let resource = resourceToDelete {
+
+                    viewModel.deleteResource(
+                        resource,
+                        teacherID: teacher.id
+                    )
+                }
+
+                resourceToDelete = nil
+            }
+
+        } message: {
+
+            Text(
+                "Are you sure you want to delete this resource? This action cannot be undone."
+            )
+        }
     }
 
     // MARK: - Resource Card
@@ -214,11 +251,70 @@ struct TeacherResourcesView: View {
                 spacing: 6
             ) {
 
-                Text(
-                    resource.title
-                )
-                .font(.headline)
-                .foregroundStyle(.primary)
+                // MARK: - Title + Edit Icon
+
+                HStack {
+
+                    Text(
+                        resource.title
+                    )
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                    Spacer()
+
+                    Menu {
+
+                        Button {
+
+                            resourceToEdit = resource
+
+                        } label: {
+
+                            Label(
+                                "Edit Resource",
+                                systemImage: "pencil"
+                            )
+                        }
+
+                        Button(
+                            role: .destructive
+                        ) {
+
+                            resourceToDelete = resource
+                            showDeleteAlert = true
+
+                        } label: {
+
+                            Label(
+                                "Delete Resource",
+                                systemImage: "trash"
+                            )
+                        }
+
+                    } label: {
+
+                        Image(
+                            systemName: "ellipsis"
+                        )
+                        .font(.headline)
+                        .frame(
+                            width: 30,
+                            height: 30
+                        )
+                        .background(
+                            Color.gray.opacity(0.12)
+                        )
+                        .clipShape(
+                            RoundedRectangle(
+                                cornerRadius: 8
+                            )
+                        )
+                        .foregroundStyle(.primary)
+                    }
+                }
+
+                // MARK: - Student
 
                 if let student =
                     viewModel.studentForResource(
@@ -231,6 +327,8 @@ struct TeacherResourcesView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 }
+
+                // MARK: - Lesson
 
                 if let lessonID =
                     resource.lessonID,
@@ -256,11 +354,15 @@ struct TeacherResourcesView: View {
                     .foregroundStyle(.secondary)
                 }
 
+                // MARK: - Shared Date
+
                 Text(
                     "Shared \(resource.datePosted, style: .date)"
                 )
                 .font(.caption)
                 .foregroundStyle(.secondary)
+
+                // MARK: - File + View
 
                 HStack {
 
@@ -272,28 +374,6 @@ struct TeacherResourcesView: View {
                     .lineLimit(1)
 
                     Spacer()
-
-                    Button {
-
-                        resourceToEdit = resource
-
-                    } label: {
-
-                        HStack(
-                            spacing: 4
-                        ) {
-
-                            Image(
-                                systemName: "pencil"
-                            )
-
-                            Text("Edit")
-                        }
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.blue)
-                    }
-                    .buttonStyle(.plain)
 
                     Button {
 
@@ -332,7 +412,6 @@ struct TeacherResourcesView: View {
         )
         .cornerRadius(14)
     }
-
     // MARK: - Popup Subtitle
 
     private func popupSubtitle(

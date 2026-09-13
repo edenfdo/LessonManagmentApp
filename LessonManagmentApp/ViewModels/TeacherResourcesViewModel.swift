@@ -199,5 +199,33 @@ final class TeacherResourcesViewModel: ObservableObject {
             teacherID: teacherID
         )
     }
+    
+    func deleteResource(
+        _ resource: Resource,
+        teacherID: UUID
+    ) {
+
+        do {
+
+            try ResourceFileStorage.deleteFile(
+                resourceID: resource.id,
+                fileName: resource.fileName
+            )
+
+            resourceRepository.deleteResource(
+                resource
+            )
+
+            loadData(
+                teacherID: teacherID
+            )
+
+        } catch {
+
+            print(
+                "Failed to delete resource file: \(error)"
+            )
+        }
+    }
 }
 

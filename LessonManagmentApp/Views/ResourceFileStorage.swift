@@ -130,4 +130,25 @@ enum ResourceFileStorage {
             resourceID: resourceID
         )
     }
+    
+    static func deleteFile(
+        resourceID: UUID,
+        fileName: String
+    ) throws {
+
+        let fileURL =
+            fileURL(
+                resourceID: resourceID,
+                fileName: fileName
+            )
+
+        if FileManager.default.fileExists(
+            atPath: fileURL.path
+        ) {
+
+            try FileManager.default.removeItem(
+                at: fileURL
+            )
+        }
+    }
 }
