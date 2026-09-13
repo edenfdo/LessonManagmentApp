@@ -11,6 +11,7 @@ import SwiftUI
 struct TeacherCalendarView: View {
 
     @Binding var showMenu: Bool
+    @Binding var selectedSection: TeacherSection
 
     let teacher: User
 
@@ -41,7 +42,10 @@ struct TeacherCalendarView: View {
                     // MARK: - Header
 
                     MenuBarView(
-                        showMenu: $showMenu
+                        showMenu: $showMenu,
+                        onLogoTap: {
+                            selectedSection = .home
+                        }
                     )
 
                     // MARK: - Page Title

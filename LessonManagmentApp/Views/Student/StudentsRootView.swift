@@ -200,10 +200,11 @@ struct StudentRootView: View {
                 viewModel: PracticeViewModel(
                     practiceTaskRepository:
                         practiceTaskRepository,
-                    lessonRepository: lessonRepository
-
+                    lessonRepository:
+                        lessonRepository
                 ),
                 showMenu: $showMenu,
+                selectedSection: $selectedSection,
                 studentID: student.id
             )
 
@@ -211,23 +212,22 @@ struct StudentRootView: View {
 
             ResourcesView(
                 showMenu: $showMenu,
-                viewModel:
-                    StudentResourcesViewModel(
-                        resourceRepository: resourceRepository,
-                        lessonRepository: lessonRepository
-                    ),
+                selectedSection: $selectedSection,
+                viewModel: StudentResourcesViewModel(
+                    resourceRepository: resourceRepository,
+                    lessonRepository: lessonRepository
+                ),
                 studentID: student.id,
-                resourceToOpen:
-                    $resourceToOpen
+                resourceToOpen: $resourceToOpen
             )
 
         case .quizzes:
 
             QuizzesView(
                 showMenu: $showMenu,
+                selectedSection: $selectedSection,
                 viewModel: QuizViewModel(
-                    quizRepository:
-                        LocalQuizRepository()
+                    quizRepository: LocalQuizRepository()
                 )
             )
 
@@ -235,6 +235,9 @@ struct StudentRootView: View {
 
             SettingsView(
                 showMenu: $showMenu,
+                onLogoTap: {
+                    selectedSection = .home
+                },
                 user: student,
                 viewModel: SettingsViewModel(
                     userRepository: userRepository

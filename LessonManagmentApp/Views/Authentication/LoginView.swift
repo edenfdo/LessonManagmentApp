@@ -19,9 +19,13 @@ struct LoginView: View {
 
             Spacer()
 
-            Text("Music Lesson Hub")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+            Image("applogo")
+                .resizable()
+                .scaledToFit()
+                .frame(
+                    width: 300,
+                    height: 300
+                )
 
             Text("Sign in to continue")
                 .foregroundStyle(.secondary)

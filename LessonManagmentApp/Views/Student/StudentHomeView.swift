@@ -34,7 +34,10 @@ struct StudentHomeView: View {
                     // MARK: - Header
                     
                     MenuBarView(
-                        showMenu: $showMenu
+                        showMenu: $showMenu,
+                        onLogoTap: {
+                            selectedSection = .home
+                        }
                     )
                     
                     // MARK: - Welcome

@@ -172,6 +172,7 @@ struct TeacherRootView: View {
 
             TeacherCalendarView(
                 showMenu: $showMenu,
+                selectedSection: $selectedSection,
                 teacher: teacher,
                 viewModel: TeacherCalendarViewModel(
                     lessonRepository: lessonRepository,
@@ -185,6 +186,7 @@ struct TeacherRootView: View {
             
             TeacherStudentsView(
                 showMenu: $showMenu,
+                selectedSection: $selectedSection,
                 viewModel: TeacherStudentsViewModel(
                     userRepository: userRepository
                 ),
@@ -196,35 +198,35 @@ struct TeacherRootView: View {
             
             TeacherPracticeView(
                 showMenu: $showMenu,
+                selectedSection: $selectedSection,
                 teacher: teacher,
-                viewModel:
-                    TeacherPracticeViewModel(
-                        practiceTaskRepository:
-                            practiceTaskRepository,
-                        userRepository:
-                            userRepository,
-                        lessonRepository:
-                            lessonRepository
-                    )
+                viewModel: TeacherPracticeViewModel(
+                    practiceTaskRepository: practiceTaskRepository,
+                    userRepository: userRepository,
+                    lessonRepository: lessonRepository
+                )
             )
             
         case .resources:
             
             TeacherResourcesView(
                 showMenu: $showMenu,
+                selectedSection: $selectedSection,
                 teacher: teacher,
-                viewModel:
-                    TeacherResourcesViewModel(
-                        resourceRepository: resourceRepository,
-                        userRepository: userRepository,
-                        lessonRepository: lessonRepository
-                    )
+                viewModel: TeacherResourcesViewModel(
+                    resourceRepository: resourceRepository,
+                    userRepository: userRepository,
+                    lessonRepository: lessonRepository
+                )
             )
             
         case .settings:
             
             SettingsView(
                 showMenu: $showMenu,
+                onLogoTap: {
+                    selectedSection = .home
+                },
                 user: teacher,
                 viewModel: SettingsViewModel(
                     userRepository: userRepository

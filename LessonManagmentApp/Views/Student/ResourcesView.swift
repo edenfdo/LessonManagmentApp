@@ -11,6 +11,7 @@ import SwiftData
 struct ResourcesView: View {
     
     @Binding var showMenu: Bool
+    @Binding var selectedSection: StudentSection
     
     @StateObject var viewModel: StudentResourcesViewModel
     let studentID: UUID
@@ -71,7 +72,10 @@ struct ResourcesView: View {
                     // MARK: - Header
                     
                     MenuBarView(
-                        showMenu: $showMenu
+                        showMenu: $showMenu,
+                        onLogoTap: {
+                            selectedSection = .home
+                        }
                     )
                     
                     // MARK: - Page Title
@@ -384,6 +388,9 @@ struct ResourcesView: View {
         
         @Previewable
         @State var resourceToOpen: Resource?
+        
+        @Previewable
+        @State var selectedSection: StudentSection = .resources
 
         let studentID = UUID()
 
@@ -411,14 +418,14 @@ struct ResourcesView: View {
 
         ResourcesView(
             showMenu: $showMenu,
+            selectedSection: $selectedSection,
             viewModel:
                 StudentResourcesViewModel(
                     resourceRepository: resourceRepository,
                     lessonRepository: lessonRepository
                 ),
             studentID: studentID,
-            resourceToOpen:
-                $resourceToOpen
+            resourceToOpen: $resourceToOpen
         )
         .modelContainer(
             container

@@ -10,6 +10,7 @@ import SwiftUI
 struct TeacherPracticeView: View {
 
     @Binding var showMenu: Bool
+    @Binding var selectedSection: TeacherSection
 
     let teacher: User
     
@@ -29,7 +30,10 @@ struct TeacherPracticeView: View {
                 // MARK: - Header
 
                 MenuBarView(
-                    showMenu: $showMenu
+                    showMenu: $showMenu,
+                    onLogoTap: {
+                        selectedSection = .home
+                    }
                 )
 
                 // MARK: - Page Title

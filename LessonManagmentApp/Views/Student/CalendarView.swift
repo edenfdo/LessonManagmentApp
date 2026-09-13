@@ -35,7 +35,10 @@ struct CalendarView: View {
                     // MARK: - Header
 
                     MenuBarView(
-                        showMenu: $showMenu
+                        showMenu: $showMenu,
+                        onLogoTap: {
+                            selectedSection = .home
+                        }
                     )
 
                     // MARK: - Page Title

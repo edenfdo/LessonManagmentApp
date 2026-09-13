@@ -10,6 +10,7 @@ import SwiftUI
 struct TeacherStudentsView: View {
 
     @Binding var showMenu: Bool
+    @Binding var selectedSection: TeacherSection
     @State private var showAddStudentSheet = false
 
     @StateObject var viewModel: TeacherStudentsViewModel
@@ -31,7 +32,10 @@ struct TeacherStudentsView: View {
                 // MARK: - Header
 
                 MenuBarView(
-                    showMenu: $showMenu
+                    showMenu: $showMenu,
+                    onLogoTap: {
+                        selectedSection = .home
+                    }
                 )
 
                 // MARK: - Page Title

@@ -10,19 +10,35 @@ import SwiftUI
 struct MenuBarView: View {
 
     @Binding var showMenu: Bool
+    let onLogoTap: () -> Void
 
     var body: some View {
 
         HStack {
 
-            Text("Logo")
-                .font(.title)
-                .fontWeight(.bold)
+            Button {
+
+                onLogoTap()
+
+            } label: {
+
+                Image("applogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(
+                        width: 120,
+                        height: 50,
+                        alignment: .leading
+                    )
+            }
+            .buttonStyle(.plain)
 
             Spacer()
 
             Button {
+
                 showMenu = true
+
             } label: {
 
                 Image(

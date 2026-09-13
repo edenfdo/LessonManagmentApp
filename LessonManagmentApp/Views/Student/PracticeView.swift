@@ -14,8 +14,11 @@ struct PracticeView: View {
     @StateObject var viewModel: PracticeViewModel
 
     @Binding var showMenu: Bool
+    @Binding var selectedSection: StudentSection
 
     let studentID: UUID
+    
+    
 
     @State private var animatingTaskID: UUID?
 
@@ -33,7 +36,10 @@ struct PracticeView: View {
                     // MARK: - Header
 
                     MenuBarView(
-                        showMenu: $showMenu
+                        showMenu: $showMenu,
+                        onLogoTap: {
+                            selectedSection = .home
+                        }
                     )
 
                     // MARK: - Page Title
@@ -291,7 +297,10 @@ private func makePreviewPracticeViewModel(
 
     @Previewable
     @State var showMenu = false
-
+    
+    @Previewable
+    @State var selectedSection: StudentSection = .practice
+    
     let studentID = UUID()
     let teacherID = UUID()
 
@@ -326,6 +335,7 @@ private func makePreviewPracticeViewModel(
     PracticeView(
         viewModel: viewModel,
         showMenu: $showMenu,
+        selectedSection: $selectedSection,
         studentID: studentID
     )
     .modelContainer(container)

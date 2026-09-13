@@ -10,6 +10,7 @@ import SwiftUI
 struct QuizzesView: View {
 
     @Binding var showMenu: Bool
+    @Binding var selectedSection: StudentSection
 
     @State private var showTrebleQuiz = false
     @State private var showBassQuiz = false
@@ -28,7 +29,10 @@ struct QuizzesView: View {
                 // MARK: - Header
 
                 MenuBarView(
-                    showMenu: $showMenu
+                    showMenu: $showMenu,
+                    onLogoTap: {
+                        selectedSection = .home
+                    }
                 )
 
                 // MARK: - Page Title
@@ -230,8 +234,12 @@ struct QuizzesView: View {
     @Previewable
     @State var showMenu = false
 
+    @Previewable
+    @State var selectedSection: StudentSection = .quizzes
+
     QuizzesView(
         showMenu: $showMenu,
+        selectedSection: $selectedSection,
         viewModel: QuizViewModel(
             quizRepository: LocalQuizRepository()
         )

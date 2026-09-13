@@ -17,6 +17,7 @@ import SwiftUI
 struct SettingsView: View {
 
     @Binding var showMenu: Bool
+    let onLogoTap: () -> Void
 
     let user: User
 
@@ -37,7 +38,8 @@ struct SettingsView: View {
                 // MARK: - Header
 
                 MenuBarView(
-                    showMenu: $showMenu
+                    showMenu: $showMenu,
+                    onLogoTap: onLogoTap
                 )
 
                 // MARK: - Page Title
