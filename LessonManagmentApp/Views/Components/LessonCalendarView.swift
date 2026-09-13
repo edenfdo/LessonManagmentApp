@@ -309,22 +309,14 @@ struct LessonCalendarView: View {
 
 
     // moves the calendar forward or backward by the given number of months
-    private func changeMonth(
-        by value: Int
-    ) {
-
-        if let newMonth =
-            calendar.date(
-                byAdding: .month,
-                value: value,
-                to: displayedMonth
-            ) {
-
-            displayedMonth =
-                newMonth
-
-            selectedDate =
-                newMonth
+    private func changeMonth(by value: Int) {
+        if let newMonth = calendar.date(
+            byAdding: .month,
+            value: value,
+            to: displayedMonth
+        ) {
+            displayedMonth = newMonth
+            selectedDate = newMonth
         }
     }
 }
