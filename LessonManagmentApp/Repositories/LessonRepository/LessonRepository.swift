@@ -18,4 +18,12 @@ protocol LessonRepository {
     func getLessons(forTeacherID teacherID: UUID) -> [Lesson]
 
     func addLesson(_ lesson: Lesson)
+    
+    func updateLesson(
+        _ lesson: Lesson
+    )
+    
+    func deleteLesson(
+        _ lesson: Lesson
+    )
 }

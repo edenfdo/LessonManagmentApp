@@ -143,9 +143,18 @@ struct TeacherPracticeView: View {
                     Text(task.title)
                         .font(.headline)
 
-                    Text(task.taskDescription)
+                    if !task.taskDescription
+                        .trimmingCharacters(
+                            in: .whitespacesAndNewlines
+                        )
+                        .isEmpty {
+
+                        Text(
+                            task.taskDescription
+                        )
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    }
 
                     if let student =
                         viewModel.studentForTask(task) {
@@ -153,6 +162,27 @@ struct TeacherPracticeView: View {
                         Text("Student: \(student.name)")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                    }
+
+                    // Lesson attached to this task
+                    if let lesson =
+                        viewModel.lessons.first(
+                            where: {
+                                $0.id == task.lessonID
+                            }
+                        ) {
+
+                        Text(
+                            "Lesson: \(lesson.title)"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                        Text(
+                            "Lesson Date: \(lesson.date.formatted(date: .abbreviated, time: .omitted))"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
 
                     if let dueDate = task.dueDate {

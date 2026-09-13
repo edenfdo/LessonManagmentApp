@@ -65,4 +65,24 @@ final class LocalPracticeTaskRepository: PracticeTaskRepository {
             )
         }
     }
+    
+    func deleteTask(
+        _ task: PracticeTask
+    ) {
+
+        modelContext.delete(
+            task
+        )
+
+        do {
+
+            try modelContext.save()
+
+        } catch {
+
+            print(
+                "Failed to delete practice task: \(error)"
+            )
+        }
+    }
 }

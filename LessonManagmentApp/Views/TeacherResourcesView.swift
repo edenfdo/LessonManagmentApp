@@ -344,6 +344,12 @@ struct TeacherResourcesView: View {
                     )
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    
+                    Text(
+                        "Lesson Date: \(lesson.date, style: .date)"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
 
                 } else {
 

@@ -157,12 +157,39 @@ struct PracticeView: View {
                                     Text(task.title)
                                         .fontWeight(.semibold)
 
-                                    Text(
-                                        task.taskDescription
-                                    )
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                                    if !task.taskDescription
+                                        .trimmingCharacters(
+                                            in: .whitespacesAndNewlines
+                                        )
+                                        .isEmpty {
 
+                                        Text(
+                                            task.taskDescription
+                                        )
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                    }
+
+                                    // Lesson attached to this task
+                                    if let lesson =
+                                        viewModel.lessonForTask(
+                                            task
+                                        ) {
+
+                                        Text(
+                                            "Lesson: \(lesson.title)"
+                                        )
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+
+                                        Text(
+                                            "Lesson Date: \(lesson.date, style: .date)"
+                                        )
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    }
+
+                                    // Due date
                                     if let dueDate =
                                         task.dueDate {
 
@@ -204,10 +231,9 @@ struct PracticeView: View {
 
 // MARK: - Preview Helper
 
-// MARK: - Preview Helper
-
 private func makePreviewPracticeViewModel(
     repository: LocalPracticeTaskRepository,
+    lessonRepository: LocalLessonRepository,
     studentID: UUID,
     teacherID: UUID
 ) -> PracticeViewModel {
@@ -254,7 +280,8 @@ private func makePreviewPracticeViewModel(
     repository.addTask(task3)
 
     return PracticeViewModel(
-        practiceTaskRepository: repository
+        practiceTaskRepository: repository,
+        lessonRepository: lessonRepository
     )
 }
 
@@ -269,20 +296,29 @@ private func makePreviewPracticeViewModel(
     let teacherID = UUID()
 
     let container = try! ModelContainer(
-        for: PracticeTask.self,
-        configurations: ModelConfiguration(
-            isStoredInMemoryOnly: true
-        )
+        for:
+            PracticeTask.self,
+            Lesson.self,
+        configurations:
+            ModelConfiguration(
+                isStoredInMemoryOnly: true
+            )
     )
 
     let practiceTaskRepository =
         LocalPracticeTaskRepository(
             modelContext: container.mainContext
         )
+    
+    let lessonRepository =
+        LocalLessonRepository(
+            modelContext: container.mainContext
+        )
 
     let viewModel =
         makePreviewPracticeViewModel(
             repository: practiceTaskRepository,
+            lessonRepository: lessonRepository,
             studentID: studentID,
             teacherID: teacherID
         )

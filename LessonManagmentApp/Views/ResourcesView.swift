@@ -295,6 +295,34 @@ struct ResourcesView: View {
                     .secondary
                 )
                 
+                if let lessonID = resource.lessonID,
+                   let lesson = viewModel.lessons.first(
+                       where: {
+                           $0.id == lessonID
+                       }
+                   ) {
+
+                    Text(
+                        "Lesson: \(lesson.title)"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                    Text(
+                        "Lesson Date: \(lesson.date, style: .date)"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                } else {
+
+                    Text(
+                        "General resource"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                
                 Text(
                     "Posted \(resource.datePosted, style: .date)"
                 )
@@ -361,7 +389,9 @@ struct ResourcesView: View {
 
         let container =
             try! ModelContainer(
-                for: Resource.self,
+                for:
+                    Resource.self,
+                    Lesson.self,
                 configurations:
                     ModelConfiguration(
                         isStoredInMemoryOnly: true
@@ -373,13 +403,18 @@ struct ResourcesView: View {
                 modelContext:
                     container.mainContext
             )
+        
+        let lessonRepository =
+            LocalLessonRepository(
+                modelContext: container.mainContext
+            )
 
         ResourcesView(
             showMenu: $showMenu,
             viewModel:
                 StudentResourcesViewModel(
-                    resourceRepository:
-                        resourceRepository
+                    resourceRepository: resourceRepository,
+                    lessonRepository: lessonRepository
                 ),
             studentID: studentID,
             resourceToOpen:

@@ -188,7 +188,8 @@ final class TeacherCalendarViewModel: ObservableObject {
         durationMinutes: Int,
         teacherID: UUID,
         repeatOption: LessonRepeatOption,
-        numberOfLessons: Int
+        numberOfLessons: Int,
+        excludingLessonID: UUID? = nil
     ) -> Lesson? {
 
         let lessonCount =
@@ -214,8 +215,14 @@ final class TeacherCalendarViewModel: ObservableObject {
 
             for existingLesson in lessons {
 
-                guard existingLesson.teacherID == teacherID
+                guard
+                    existingLesson.teacherID == teacherID
                 else {
+                    continue
+                }
+
+                if existingLesson.id ==
+                    excludingLessonID {
                     continue
                 }
 
@@ -223,11 +230,13 @@ final class TeacherCalendarViewModel: ObservableObject {
                     existingLesson.date
 
                 let existingEnd =
-                    existingStart.addingTimeInterval(
-                        TimeInterval(
-                            existingLesson.durationMinutes * 60
+                    existingStart
+                        .addingTimeInterval(
+                            TimeInterval(
+                                existingLesson
+                                    .durationMinutes * 60
+                            )
                         )
-                    )
 
                 let overlaps =
                     newLessonStart < existingEnd
@@ -276,6 +285,87 @@ final class TeacherCalendarViewModel: ObservableObject {
                 to: startingDate
             ) ?? startingDate
         }
+    }
+    
+    func updateLesson(
+        _ lesson: Lesson,
+        title: String,
+        date: Date,
+        durationMinutes: Int,
+        location: String,
+        notes: String,
+        teacherID: UUID
+    ) {
+
+        lesson.title = title
+        lesson.date = date
+        lesson.durationMinutes = durationMinutes
+        lesson.location = location
+        lesson.notes = notes
+
+        lessonRepository.updateLesson(
+            lesson
+        )
+
+        loadData(
+            teacherID: teacherID
+        )
+    }
+    
+    func deleteLesson(
+        _ lesson: Lesson,
+        teacherID: UUID
+    ) {
+
+        let linkedResources =
+            resources.filter {
+                $0.lessonID == lesson.id
+            }
+
+        let linkedTasks =
+            practiceTasks.filter {
+                $0.lessonID == lesson.id
+            }
+
+        // Delete attached files + resource records
+        for resource in linkedResources {
+
+            do {
+
+                try ResourceFileStorage.deleteFile(
+                    resourceID: resource.id,
+                    fileName: resource.fileName
+                )
+
+            } catch {
+
+                print(
+                    "Failed to delete resource file: \(error)"
+                )
+            }
+
+            resourceRepository.deleteResource(
+                resource
+            )
+        }
+
+        // Delete linked practice tasks
+        for task in linkedTasks {
+
+            practiceTaskRepository.deleteTask(
+                task
+            )
+        }
+
+        // Delete the lesson itself
+        lessonRepository.deleteLesson(
+            lesson
+        )
+
+        // Reload calendar data
+        loadData(
+            teacherID: teacherID
+        )
     }
 }
 

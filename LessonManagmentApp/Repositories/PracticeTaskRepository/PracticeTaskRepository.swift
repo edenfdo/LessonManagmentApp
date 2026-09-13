@@ -18,4 +18,8 @@ protocol PracticeTaskRepository {
     func addTask(_ task: PracticeTask)
 
     func updateTask(_ task: PracticeTask)
+    
+    func deleteTask(
+        _ task: PracticeTask
+    )
 }

@@ -192,7 +192,45 @@ struct CalendarView: View {
                                     // Lesson location
                                     Text(lesson.location)
                                         .foregroundStyle(.secondary)
+                                    
+                                    HStack(
+                                        spacing: 20
+                                    ) {
 
+                                        HStack(
+                                            spacing: 6
+                                        ) {
+
+                                            Image(
+                                                systemName: "paperclip"
+                                            )
+                                            .foregroundStyle(.secondary)
+
+                                            Text(
+                                                "\(viewModel.resourcesForLesson(lesson).count)"
+                                            )
+                                            .foregroundStyle(.secondary)
+                                        }
+
+                                        HStack(
+                                            spacing: 6
+                                        ) {
+
+                                            Image(
+                                                systemName: "checklist"
+                                            )
+                                            .foregroundStyle(.secondary)
+
+                                            Text(
+                                                "\(viewModel.practiceTasksForLesson(lesson).count)"
+                                            )
+                                            .foregroundStyle(.secondary)
+                                        }
+
+                                        Spacer()
+                                    }
+                                    .font(.subheadline)
+                                    
                                     // Visual cue
                                     HStack {
 

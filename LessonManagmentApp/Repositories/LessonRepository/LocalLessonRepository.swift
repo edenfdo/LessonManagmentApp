@@ -61,4 +61,40 @@ final class LocalLessonRepository: LessonRepository {
             print("Failed to save lesson: \(error)")
         }
     }
+    
+    func updateLesson(
+        _ lesson: Lesson
+    ) {
+
+        do {
+
+            try modelContext.save()
+
+        } catch {
+
+            print(
+                "Failed to update lesson: \(error)"
+            )
+        }
+    }
+    
+    func deleteLesson(
+        _ lesson: Lesson
+    ) {
+
+        modelContext.delete(
+            lesson
+        )
+
+        do {
+
+            try modelContext.save()
+
+        } catch {
+
+            print(
+                "Failed to delete lesson: \(error)"
+            )
+        }
+    }
 }

@@ -20,6 +20,10 @@ struct TeacherCalendarView: View {
     @State private var selectedDate = Date()
     @State private var displayedMonth = Date()
     @State private var selectedLesson: Lesson?
+    
+    @State private var lessonToEdit: Lesson?
+    @State private var lessonToDelete: Lesson?
+    @State private var showDeleteAlert = false
 
     private let calendar = Calendar.current
 
@@ -298,7 +302,52 @@ struct TeacherCalendarView: View {
                 viewModel: viewModel
             )
         }
+        .sheet(
+            item: $lessonToEdit
+        ) { lesson in
+
+            EditLessonView(
+                lesson: lesson,
+                teacher: teacher,
+                viewModel: viewModel
+            )
+        }
+        .alert(
+            "Delete Lesson?",
+            isPresented: $showDeleteAlert
+        ) {
+
+            Button(
+                "Cancel",
+                role: .cancel
+            ) {
+                lessonToDelete = nil
+            }
+
+            Button(
+                "Delete",
+                role: .destructive
+            ) {
+
+                if let lesson = lessonToDelete {
+
+                    viewModel.deleteLesson(
+                        lesson,
+                        teacherID: teacher.id
+                    )
+                }
+
+                lessonToDelete = nil
+            }
+
+        } message: {
+
+            Text(
+                "Are you sure you want to delete this lesson? This action cannot be undone."
+            )
+        }
     }
+    
 
     // MARK: - Calendar Day
 
@@ -389,17 +438,63 @@ struct TeacherCalendarView: View {
 
             HStack {
 
-                Text(lesson.title)
-                    .font(.headline)
+                Text(
+                    lesson.title
+                )
+                .font(.headline)
+                .foregroundStyle(.primary)
 
                 Spacer()
 
-                Text(
-                    lesson.date,
-                    style: .time
-                )
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                Menu {
+
+                    Button {
+
+                        lessonToEdit = lesson
+
+                    } label: {
+
+                        Label(
+                            "Edit Lesson",
+                            systemImage: "pencil"
+                        )
+                    }
+
+                    Button(
+                        role: .destructive
+                    ) {
+
+                        lessonToDelete = lesson
+                        showDeleteAlert = true
+
+                    } label: {
+
+                        Label(
+                            "Delete Lesson",
+                            systemImage: "trash"
+                        )
+                    }
+
+                } label: {
+
+                    Image(
+                        systemName: "ellipsis"
+                    )
+                    .font(.headline)
+                    .frame(
+                        width: 30,
+                        height: 30
+                    )
+                    .background(
+                        Color.gray.opacity(0.12)
+                    )
+                    .clipShape(
+                        RoundedRectangle(
+                            cornerRadius: 8
+                        )
+                    )
+                    .foregroundStyle(.primary)
+                }
             }
 
             if let student =
@@ -419,6 +514,21 @@ struct TeacherCalendarView: View {
                 .foregroundStyle(.secondary)
             }
 
+            HStack(
+                spacing: 8
+            ) {
+
+                Image(
+                    systemName: "clock"
+                )
+                .foregroundStyle(.secondary)
+
+                Text(
+                    "\(lesson.date.formatted(date: .omitted, time: .shortened)) – \(lesson.date.addingTimeInterval(TimeInterval(lesson.durationMinutes * 60)).formatted(date: .omitted, time: .shortened))"
+                )
+                .foregroundStyle(.secondary)
+            }
+            
             HStack {
 
                 Image(

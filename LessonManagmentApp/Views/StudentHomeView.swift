@@ -208,13 +208,22 @@ struct StudentHomeView: View {
                                     
                                     Text(task.title)
                                         .fontWeight(.semibold)
-                                    
-                                    Text(task.taskDescription)
+
+                                    if !task.taskDescription
+                                        .trimmingCharacters(
+                                            in: .whitespacesAndNewlines
+                                        )
+                                        .isEmpty {
+
+                                        Text(
+                                            task.taskDescription
+                                        )
                                         .font(.subheadline)
                                         .foregroundStyle(.secondary)
-                                    
+                                    }
+
                                     if let dueDate = task.dueDate {
-                                        
+
                                         Text(
                                             "Due \(dueDate, style: .date)"
                                         )
@@ -266,7 +275,7 @@ private func makeStudentHomePreviewViewModel(
     let lessonID = UUID()
 
     let sampleLesson = Lesson(
-        id: UUID(),
+        id: lessonID,
         title: "Piano Lesson",
         date: Date(),
         durationMinutes: 60,

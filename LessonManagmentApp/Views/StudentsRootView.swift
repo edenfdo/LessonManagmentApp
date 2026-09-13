@@ -199,7 +199,9 @@ struct StudentRootView: View {
             PracticeView(
                 viewModel: PracticeViewModel(
                     practiceTaskRepository:
-                        practiceTaskRepository
+                        practiceTaskRepository,
+                    lessonRepository: lessonRepository
+
                 ),
                 showMenu: $showMenu,
                 studentID: student.id
@@ -211,8 +213,8 @@ struct StudentRootView: View {
                 showMenu: $showMenu,
                 viewModel:
                     StudentResourcesViewModel(
-                        resourceRepository:
-                            resourceRepository
+                        resourceRepository: resourceRepository,
+                        lessonRepository: lessonRepository
                     ),
                 studentID: student.id,
                 resourceToOpen:

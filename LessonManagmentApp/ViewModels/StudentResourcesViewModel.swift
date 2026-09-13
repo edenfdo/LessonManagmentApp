@@ -11,13 +11,18 @@ import Combine
 final class StudentResourcesViewModel: ObservableObject {
 
     @Published var resources: [Resource] = []
+    @Published var lessons: [Lesson] = []
 
     private let resourceRepository: ResourceRepository
+    private let lessonRepository: LessonRepository
 
     init(
-        resourceRepository: ResourceRepository
+        resourceRepository: ResourceRepository,
+        lessonRepository: LessonRepository
     ) {
+
         self.resourceRepository = resourceRepository
+        self.lessonRepository = lessonRepository
     }
 
     func loadResources(
@@ -27,6 +32,12 @@ final class StudentResourcesViewModel: ObservableObject {
         resources =
             resourceRepository
                 .getResources(
+                    forStudentID: studentID
+                )
+
+        lessons =
+            lessonRepository
+                .getLessons(
                     forStudentID: studentID
                 )
     }

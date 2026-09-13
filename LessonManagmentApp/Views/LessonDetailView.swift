@@ -57,9 +57,7 @@ struct LessonDetailView: View {
                         lesson.location
                     )
                     
-                    Text(
-                        "Ends \(lessonEndTime, style: .time)"
-                    )
+                   
                 }
                 .foregroundStyle(.secondary)
 
