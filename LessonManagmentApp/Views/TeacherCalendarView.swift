@@ -252,7 +252,15 @@ struct TeacherCalendarView: View {
                     Divider()
 
                     LessonDetailView(
-                        lesson: lesson
+                        lesson: lesson,
+                        practiceTasks:
+                            viewModel.practiceTasksForLesson(
+                                lesson
+                            ),
+                        resources:
+                            viewModel.resourcesForLesson(
+                                lesson
+                            )
                     )
                 }
                 .frame(

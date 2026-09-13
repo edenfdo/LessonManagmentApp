@@ -40,18 +40,31 @@ enum LessonRepeatOption:
 
 final class TeacherCalendarViewModel: ObservableObject {
 
+    @Published var practiceTasks: [PracticeTask] = []
+    @Published var resources: [Resource] = []
+    
     @Published var lessons: [Lesson] = []
     @Published var students: [User] = []
 
     private let lessonRepository: LessonRepository
     private let userRepository: UserRepository
+    
+    private let practiceTaskRepository: PracticeTaskRepository
+    private let resourceRepository: ResourceRepository
 
     init(
         lessonRepository: LessonRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        practiceTaskRepository: PracticeTaskRepository,
+        resourceRepository: ResourceRepository
     ) {
+
         self.lessonRepository = lessonRepository
         self.userRepository = userRepository
+        self.practiceTaskRepository =
+            practiceTaskRepository
+        self.resourceRepository =
+            resourceRepository
     }
 
     // MARK: - Load Data
@@ -74,6 +87,19 @@ final class TeacherCalendarViewModel: ObservableObject {
                 .sorted {
                     $0.date < $1.date
                 }
+        
+        practiceTasks =
+            practiceTaskRepository
+                .getAllTasks()
+                .filter {
+                    $0.teacherID == teacherID
+                }
+
+        resources =
+            resourceRepository
+                .getResources(
+                    forTeacherID: teacherID
+                )
     }
 
     // MARK: - Add Lesson
@@ -131,6 +157,28 @@ final class TeacherCalendarViewModel: ObservableObject {
 
         students.first {
             $0.id == lesson.studentID
+        }
+    }
+    
+    // MARK: - Practice Tasks For Lesson
+
+    func practiceTasksForLesson(
+        _ lesson: Lesson
+    ) -> [PracticeTask] {
+
+        practiceTasks.filter {
+            $0.lessonID == lesson.id
+        }
+    }
+
+    // MARK: - Resources For Lesson
+
+    func resourcesForLesson(
+        _ lesson: Lesson
+    ) -> [Resource] {
+
+        resources.filter {
+            $0.lessonID == lesson.id
         }
     }
 

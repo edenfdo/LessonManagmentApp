@@ -166,17 +166,16 @@ struct TeacherRootView: View {
             )
             
         case .calendar:
-            
+
             TeacherCalendarView(
                 showMenu: $showMenu,
                 teacher: teacher,
-                viewModel:
-                    TeacherCalendarViewModel(
-                        lessonRepository:
-                            lessonRepository,
-                        userRepository:
-                            userRepository
-                    )
+                viewModel: TeacherCalendarViewModel(
+                    lessonRepository: lessonRepository,
+                    userRepository: userRepository,
+                    practiceTaskRepository: practiceTaskRepository,
+                    resourceRepository: resourceRepository
+                )
             )
             
         case .students:
