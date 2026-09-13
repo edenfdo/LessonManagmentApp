@@ -81,9 +81,6 @@ final class TeacherCalendarViewModel: ObservableObject {
                 .getLessons(
                     forTeacherID: teacherID
                 )
-                .filter {
-                    $0.date >= Date()
-                }
                 .sorted {
                     $0.date < $1.date
                 }
