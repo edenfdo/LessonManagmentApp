@@ -64,7 +64,14 @@ struct QuizPlayerView: View {
 
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: 70))
-                                .foregroundStyle(.green)
+                                .foregroundStyle(
+                                     Color(
+                                        red: 183 / 255,
+                                        green: 41 / 255,
+                                        blue: 41 / 255
+                                    )
+                                    
+                                )
 
                             Text("Quiz Complete!")
                                 .font(.largeTitle)

@@ -135,7 +135,11 @@ struct TeacherPracticeView: View {
                 .font(.title3)
                 .foregroundStyle(
                     task.isCompleted
-                    ? .green
+                    ? Color(
+                        red: 183 / 255,
+                        green: 41 / 255,
+                        blue: 41 / 255
+                    )
                     : .secondary
                 )
 

@@ -189,12 +189,14 @@ struct LessonCalendarView: View {
             .background {
 
                 if today {
-
                     Circle()
                         .fill(
-                            Color.red
+                            Color(
+                                red: 183 / 255,
+                                green: 41 / 255,
+                                blue: 41 / 255
+                            )
                         )
-
                 } else if hasLesson {
 
                     Circle()

@@ -5,14 +5,9 @@
 //  Created by Eden Fernando on 6/9/2026.
 //
 
-//
-//  LessonDetailView.swift
-//  LessonManagmentApp
-//
-//  Created by Eden Fernando on 6/9/2026.
-//
 
 import SwiftUI
+import Lottie
 
 struct LessonDetailView: View {
 
@@ -23,6 +18,8 @@ struct LessonDetailView: View {
     
     let onToggleTask: (PracticeTask) -> Void
     let onOpenResource: (Resource) -> Void
+    
+    @State private var animatingTaskID: UUID?
 
     var body: some View {
 
@@ -119,9 +116,23 @@ struct LessonDetailView: View {
 
                             Button {
 
+                                let wasCompleted = task.isCompleted
+
                                 onToggleTask(
                                     task
                                 )
+
+                                if !wasCompleted {
+
+                                    animatingTaskID = task.id
+
+                                    DispatchQueue.main.asyncAfter(
+                                        deadline: .now() + 1.5
+                                    ) {
+
+                                        animatingTaskID = nil
+                                    }
+                                }
 
                             } label: {
 
@@ -130,16 +141,44 @@ struct LessonDetailView: View {
                                     spacing: 12
                                 ) {
 
-                                    Image(
-                                        systemName:
-                                            task.isCompleted
-                                            ? "checkmark.circle.fill"
-                                            : "circle"
-                                    )
-                                    .foregroundStyle(
-                                        task.isCompleted
-                                        ? .green
-                                        : .secondary
+                                    // MARK: - Checkbox / Completion Animation
+
+                                    ZStack {
+
+                                        if animatingTaskID == task.id {
+
+                                            LottieView(
+                                                animation: .named("taskComplete")
+                                            )
+                                            .playing()
+                                            .frame(
+                                                width: 32,
+                                                height: 32
+                                            )
+
+                                        } else {
+
+                                            Image(
+                                                systemName:
+                                                    task.isCompleted
+                                                    ? "checkmark.circle.fill"
+                                                    : "circle"
+                                            )
+                                            .font(.title3)
+                                            .foregroundStyle(
+                                                task.isCompleted
+                                                ? Color(
+                                                    red: 183 / 255,
+                                                    green: 41 / 255,
+                                                    blue: 41 / 255
+                                                )
+                                                : .secondary
+                                            )
+                                        }
+                                    }
+                                    .frame(
+                                        width: 32,
+                                        height: 32
                                     )
 
                                     VStack(
